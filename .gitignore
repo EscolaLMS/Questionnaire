@@ -1,0 +1,10 @@
+./.env
+./phpunit.xml
+./testbench.yaml
+.env
+.idea/
+.phpunit.result.cache
+composer.lock
+src/oa_version.php
+tags
+vendor/
