@@ -3,6 +3,10 @@
 namespace EscolaLms\Questionnaire;
 
 use EscolaLms\Core\Providers\Injectable;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
+use EscolaLms\Questionnaire\Repository\QuestionnaireRepository;
+use EscolaLms\Questionnaire\Repository\QuestionRepository;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -13,8 +17,8 @@ class EscolaLmsQuestionnaireServiceProvider extends ServiceProvider
     use Injectable;
 
     private const CONTRACTS = [
-        //PageRepositoryContract::class => PageRepository::class,
-        //PageServiceContract::class => PageService::class,
+        QuestionnaireRepositoryContract::class => QuestionnaireRepository::class,
+        QuestionRepositoryContract::class => QuestionRepository::class,
     ];
 
     public function boot()

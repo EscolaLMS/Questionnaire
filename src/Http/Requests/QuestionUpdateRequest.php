@@ -4,7 +4,6 @@ namespace EscolaLms\Questionnaire\Http\Requests;
 
 use EscolaLms\Questionnaire\Models\Question;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class QuestionUpdateRequest extends FormRequest
@@ -17,15 +16,12 @@ class QuestionUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'slug' => ['string', Rule::unique('pages')->ignore($this->route('id'))],
-            'title' => ['string'],
-            'content' => ['string'],
+            'title' => 'string',
+            'description' => 'string',
+            'questionnaire_id' => 'integer',
+            'position' => 'integer',
+            'active' => 'boolean',
         ];
-    }
-
-    public function getParamSlug(): string
-    {
-        return $this->get('slug');
     }
 
     public function getParamTitle(): string
@@ -33,8 +29,23 @@ class QuestionUpdateRequest extends FormRequest
         return $this->get('title');
     }
 
-    public function getParamContent(): string
+    public function getParamDescription(): string
     {
-        return $this->get('content');
+        return $this->get('description');
+    }
+
+    public function getParamQuestionnaireId(): string
+    {
+        return $this->get('questionnaire_id');
+    }
+
+    public function getParamPosition(): string
+    {
+        return $this->get('position', 1);
+    }
+
+    public function getParamActive(): string
+    {
+        return $this->get('active', true);
     }
 }

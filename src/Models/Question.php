@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Models;
 
+use EscolaLms\Questionnaire\Database\Factories\QuestionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -82,5 +83,10 @@ class Question extends Model
     public function answers(): HasMany
     {
         return $this->hasMany(QuestionAnswer::class, 'question_id');
+    }
+
+    protected static function newFactory(): QuestionFactory
+    {
+        return QuestionFactory::new();
     }
 }

@@ -16,9 +16,11 @@ class QuestionCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'slug' => 'string|required|unique:pages',
             'title' => 'string|required',
-            'content' => 'string|required',
+            'description' => 'string|required',
+            'questionnaire_id' => 'integer|required',
+            'position' => 'integer',
+            'active' => 'boolean',
         ];
     }
 
@@ -27,13 +29,23 @@ class QuestionCreateRequest extends FormRequest
         return $this->get('title');
     }
 
-    public function getParamSlug(): string
+    public function getParamDescription(): string
     {
-        return $this->get('slug');
+        return $this->get('description');
     }
 
-    public function getParamContent(): string
+    public function getParamQuestionnaireId(): string
     {
-        return $this->get('content', '');
+        return $this->get('questionnaire_id');
+    }
+
+    public function getParamPosition(): string
+    {
+        return $this->get('position', 1);
+    }
+
+    public function getParamActive(): string
+    {
+        return $this->get('active', true);
     }
 }

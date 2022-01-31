@@ -3,10 +3,10 @@
 namespace EscolaLms\Questionnaire\Models;
 
 use EscolaLms\Core\Models\User;
+use EscolaLms\Questionnaire\Database\Factories\QuestionAnswerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @OA\Schema(
@@ -56,7 +56,6 @@ class QuestionAnswer extends Model
     public $fillable = [
         'user_id',
         'question_id',
-        'questionnaire_id',
         'rate',
     ];
 
@@ -68,5 +67,10 @@ class QuestionAnswer extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    protected static function newFactory(): QuestionAnswerFactory
+    {
+        return QuestionAnswerFactory::new();
     }
 }

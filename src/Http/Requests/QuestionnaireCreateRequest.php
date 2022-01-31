@@ -2,9 +2,11 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
+use EscolaLms\Questionnaire\Enums\ModelEnum;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class QuestionnaireCreateRequest extends FormRequest
 {
@@ -16,10 +18,19 @@ class QuestionnaireCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'slug' => 'string|required|unique:pages',
+            'model' => [
+                'required',
+                Rule::in(ModelEnum::getValues()),
+            ],
             'title' => 'string|required',
-            'content' => 'string|required',
+            'model_id' => 'integer|required',
+            'active' => 'boolean',
         ];
+    }
+
+    public function getParamModel(): string
+    {
+        return $this->get('model');
     }
 
     public function getParamTitle(): string
@@ -27,13 +38,13 @@ class QuestionnaireCreateRequest extends FormRequest
         return $this->get('title');
     }
 
-    public function getParamSlug(): string
+    public function getParamModelId(): string
     {
-        return $this->get('slug');
+        return $this->get('model_id');
     }
 
-    public function getParamContent(): string
+    public function getParamActive(): string
     {
-        return $this->get('content', '');
+        return $this->get('active', true);
     }
 }

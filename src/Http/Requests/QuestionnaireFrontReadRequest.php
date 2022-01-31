@@ -16,7 +16,7 @@ class QuestionnaireFrontReadRequest extends FormRequest
         return [];
     }
 
-    public function getParamSlug()
+    public function getParamId()
     {
         return $this->route('id');
     }

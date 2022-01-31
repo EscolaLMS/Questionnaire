@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
+use EscolaLms\Questionnaire\Enums\ModelEnum;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -17,15 +18,18 @@ class QuestionnaireUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'slug' => ['string', Rule::unique('pages')->ignore($this->route('id'))],
-            'title' => ['string'],
-            'content' => ['string'],
+            'model' => [
+                Rule::in(ModelEnum::getValues()),
+            ],
+            'title' => 'string',
+            'model_id' => 'integer',
+            'active' => 'boolean',
         ];
     }
 
-    public function getParamSlug(): string
+    public function getParamModel(): string
     {
-        return $this->get('slug');
+        return $this->get('model');
     }
 
     public function getParamTitle(): string
@@ -33,8 +37,13 @@ class QuestionnaireUpdateRequest extends FormRequest
         return $this->get('title');
     }
 
-    public function getParamContent(): string
+    public function getParamModelId(): string
     {
-        return $this->get('content');
+        return $this->get('model_id');
+    }
+
+    public function getParamActive(): string
+    {
+        return $this->get('active', true);
     }
 }

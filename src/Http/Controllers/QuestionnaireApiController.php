@@ -3,29 +3,28 @@
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
-use EscolaLms\Pages\Http\Controllers\Contracts\PagesApiContract;
-use EscolaLms\Pages\Http\Exceptions\Contracts\Renderable;
-use EscolaLms\Pages\Http\Resources\PageResource;
-use EscolaLms\Pages\Http\Services\Contracts\PageServiceContract;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
+use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 
 class QuestionnaireApiController extends EscolaLmsBaseController implements QuestionnaireApiContract
 {
-    private PageServiceContract $pageService;
+    private QuestionnaireRepositoryContract $questionnaireRepository;
 
-    public function __construct(PageServiceContract $pageService)
+    public function __construct(QuestionnaireRepositoryContract $questionnaireRepository)
     {
-        $this->pageService = $pageService;
+        $this->questionnaireRepository = $questionnaireRepository;
     }
 
     public function list(QuestionnaireFrontListingRequest $request): JsonResponse
     {
         try {
-            $pages = $this->pageService->search(['active' => true]);
-            return $this->sendResponseForResource(PageResource::collection($pages), "pages list retrieved successfully");
+            $questionnaires = $this->questionnaireRepository->searchAndPaginate(['active' => true]);
+            return $this->sendResponseForResource(QuestionnaireResource::collection($questionnaires), "questionnaire list retrieved successfully");
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -34,15 +33,15 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
     public function read(QuestionnaireFrontReadRequest $request): JsonResponse
     {
         try {
-            $slug = $request->getParamSlug();
-            $page = $this->pageService->getBySlug($slug);
-            if ($page->exists) {
-                if (!$page->active) {
-                    return $this->sendError(sprintf("You don't have access to page with slug '%s'", $slug), 403);
+            $id = $request->getParamId();
+            $questionnaire = $this->questionnaireRepository->find($id);
+            if ($questionnaire && $questionnaire->exists) {
+                if (!$questionnaire->active) {
+                    return $this->sendError(sprintf("You don't have access to questionnaire with id '%s'", $id), 403);
                 }
-                return $this->sendResponseForResource(PageResource::make($page), "page fetched successfully");
+                return $this->sendResponseForResource(QuestionnaireResource::make($questionnaire), "questionnaire fetched successfully");
             }
-            return $this->sendError(sprintf("Page with slug '%s' doesn't exists", $slug), 404);
+            return $this->sendError(sprintf("Questionnaire with id '%s' doesn't exists", $id), 404);
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }

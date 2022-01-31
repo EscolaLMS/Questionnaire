@@ -1,6 +1,8 @@
 <?php
 
 use EscolaLms\Core\Models\User;
+use EscolaLms\Questionnaire\Models\Question;
+use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +15,7 @@ class CreateQuestionnaireTable extends Migration
             Schema::create(
                 'questionnaires',
                 function (Blueprint $table) {
-                    $table->uuid('id')->primary();
+                    $table->id('id');
                     $table->string('title');
                     $table->string('model');
                     $table->integer('model_id');
@@ -22,12 +24,12 @@ class CreateQuestionnaireTable extends Migration
                 }
             );
         }
-        if (!Schema::hasTable('question')) {
+        if (!Schema::hasTable('questions')) {
             Schema::create(
-                'question',
+                'questions',
                 function (Blueprint $table) {
-                    $table->uuid('id')->primary();
-                    $table->morphs('questionnaires');
+                    $table->id('id');
+                    $table->foreignIdFor(Questionnaire::class, 'questionnaire_id');
                     $table->string('title');
                     $table->string('description');
                     $table->integer('position');
@@ -40,9 +42,9 @@ class CreateQuestionnaireTable extends Migration
             Schema::create(
                 'question_answers',
                 function (Blueprint $table) {
-                    $table->uuid('id')->primary();
+                    $table->id('id');
                     $table->foreignIdFor(User::class, 'user_id');
-                    $table->morphs('questions');
+                    $table->foreignIdFor(Question::class, 'questions_id');
                     $table->string('rate');
                     $table->timestamps();
                 }

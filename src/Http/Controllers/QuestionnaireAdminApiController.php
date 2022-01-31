@@ -3,33 +3,37 @@
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
-use EscolaLms\Pages\Http\Controllers\Contracts\PagesAdminApiContract;
-use EscolaLms\Pages\Http\Exceptions\Contracts\Renderable;
-use EscolaLms\Pages\Http\Resources\PageResource;
-use EscolaLms\Pages\Http\Services\Contracts\PageServiceContract;
+use EscolaLms\Questionnaire\Enums\ModelEnum;
+use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireAdminApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireCreateRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireDeleteRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReadRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireUpdateRequest;
+use EscolaLms\Questionnaire\Models\Questionnaire;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionnaireAdminApiController extends EscolaLmsBaseController implements QuestionnaireAdminApiContract
 {
-    private PageServiceContract $pageService;
+    private QuestionnaireRepositoryContract $questionnaireRepository;
 
-    public function __construct(PageServiceContract $pageService)
+    public function __construct(QuestionnaireRepositoryContract $questionnaireRepository)
     {
-        $this->pageService = $pageService;
+        $this->questionnaireRepository = $questionnaireRepository;
     }
 
     public function list(QuestionnaireListingRequest $request): JsonResponse
     {
         try {
-            $pages = $this->pageService->search();
-            return $this->sendResponseForResource(PageResource::collection($pages), "pages list retrieved successfully");
+            $pages = $this->questionnaireRepository->searchAndPaginate();
+            return $this->sendResponseForResource(
+                QuestionnaireResource::collection($pages),
+                "Questionnaire list retrieved successfully"
+            );
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -38,14 +42,19 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     public function create(QuestionnaireCreateRequest $request): JsonResponse
     {
         try {
-            $slug = $request->getParamSlug();
-            $title = $request->getParamTitle();
-            $content = $request->getParamContent();
-            $active = $request->get('active');
+            /** @var Questionnaire $questionnaire */
+            $questionnaire = Questionnaire::factory()->newModel([
+                'title' => $request->getParamTitle(),
+                'model' => $request->getParamModel(),
+                'model_id' => $request->getParamModelId(),
+                'active' => $request->get('active') ?? true,
+            ]);
 
-            $user = Auth::user();
-            $page = $this->pageService->insert($slug, $title, $content, $user->id, $active);
-            return $this->sendResponseForResource(PageResource::make($page), "page created successfully");
+            $questionnaire = $this->questionnaireRepository->insert($questionnaire);
+            return $this->sendResponseForResource(
+                QuestionnaireResource::make($questionnaire),
+                "Questionnaire created successfully"
+            );
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -56,11 +65,14 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
         try {
             $input = $request->all();
 
-            $updated = $this->pageService->update($id, $input);
+            $updated = $this->questionnaireRepository->update($input, $id);
             if (!$updated) {
-                return $this->sendError(sprintf("Page with slug '%s' doesn't exists", $id), 404);
+                return $this->sendError(sprintf("Questionnaire with slug '%s' doesn't exists", $id), 404);
             }
-            return $this->sendResponseForResource(PageResource::make($updated), "page updated successfully");
+            return $this->sendResponseForResource(
+                QuestionnaireResource::make($updated),
+                "Questionnaire updated successfully"
+            );
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -69,11 +81,11 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     public function delete(QuestionnaireDeleteRequest $request, int $id): JsonResponse
     {
         try {
-            $deleted = $this->pageService->deleteById($id);
+            $deleted = $this->questionnaireRepository->deleteQuestionnaire($id);
             if (!$deleted) {
-                return $this->sendError(sprintf("Page with id '%s' doesn't exists", $id), 404);
+                return $this->sendError(sprintf("Questionnaire with id '%s' doesn't exists", $id), 404);
             }
-            return $this->sendResponse($deleted, "page updated successfully");
+            return $this->sendResponse($deleted, "Questionnaire delete successfully");
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -82,11 +94,26 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     public function read(QuestionnaireReadRequest $request, int $id): JsonResponse
     {
         try {
-            $page = $this->pageService->getById($id);
-            if ($page->exists) {
-                return $this->sendResponseForResource(PageResource::make($page), "page fetched successfully");
+            $questionnaire = $this->questionnaireRepository->find($id);
+            if ($questionnaire->exists) {
+                return $this->sendResponseForResource(
+                    QuestionnaireResource::make($questionnaire),
+                    "Questionnaire fetched successfully"
+                );
             }
-            return $this->sendError(sprintf("Page with id '%s' doesn't exists", $id), 404);
+            return $this->sendError(sprintf("Questionnaire with id '%s' doesn't exists", $id), 404);
+        } catch (Renderable $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+    public function models(QuestionnaireListingRequest $request): JsonResponse
+    {
+        try {
+            return $this->sendResponseForResource(
+                JsonResource::collection(ModelEnum::getValues()),
+                "Model list retrieved successfully"
+            );
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }

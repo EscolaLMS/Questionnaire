@@ -3,39 +3,36 @@
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
-use EscolaLms\Pages\Http\Controllers\Contracts\PagesAdminApiContract;
-use EscolaLms\Pages\Http\Exceptions\Contracts\Renderable;
-use EscolaLms\Pages\Http\Requests\QuestionnaireCreateRequest;
-use EscolaLms\Pages\Http\Requests\QuestionnaireDeleteRequest;
-use EscolaLms\Pages\Http\Requests\QuestionnaireListingRequest;
-use EscolaLms\Pages\Http\Requests\QuestionnaireReadRequest;
-use EscolaLms\Pages\Http\Requests\QuestionnaireUpdateRequest;
-use EscolaLms\Pages\Http\Resources\PageResource;
-use EscolaLms\Pages\Http\Services\Contracts\PageServiceContract;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionAdminApiContract;
-use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireAdminApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionCreateRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionDeleteRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionReadRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionUpdateRequest;
+use EscolaLms\Questionnaire\Http\Resources\QuestionResource;
+use EscolaLms\Questionnaire\Models\Question;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class QuestionAdminApiController extends EscolaLmsBaseController implements QuestionAdminApiContract
 {
-    private PageServiceContract $pageService;
+    private QuestionRepositoryContract $questionRepository;
 
-    public function __construct(PageServiceContract $pageService)
+    public function __construct(QuestionRepositoryContract $questionRepository)
     {
-        $this->pageService = $pageService;
+        $this->questionRepository = $questionRepository;
     }
 
     public function list(QuestionListingRequest $request): JsonResponse
     {
         try {
-            $pages = $this->pageService->search();
-            return $this->sendResponseForResource(PageResource::collection($pages), "pages list retrieved successfully");
+            $questions = $this->questionRepository->searchAndPaginate();
+            return $this->sendResponseForResource(
+                QuestionResource::collection($questions),
+                "Question list retrieved successfully"
+            );
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -44,14 +41,21 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
     public function create(QuestionCreateRequest $request): JsonResponse
     {
         try {
-            $slug = $request->getParamSlug();
-            $title = $request->getParamTitle();
-            $content = $request->getParamContent();
-            $active = $request->get('active');
+            /** @var Question $question */
+            $question = Question::factory()->newModel([
+                'description' => $request->getParamDescription(),
+                'title' => $request->getParamTitle(),
+                'questionnaire_id' => $request->getParamQuestionnaireId(),
+                'position' => $request->getParamPosition(),
+                'active' => $request->get('active'),
+            ]);
 
-            $user = Auth::user();
-            $page = $this->pageService->insert($slug, $title, $content, $user->id, $active);
-            return $this->sendResponseForResource(PageResource::make($page), "page created successfully");
+            $question = $this->questionRepository->insert($question);
+
+            return $this->sendResponseForResource(
+                QuestionResource::make($question),
+                "Question created successfully"
+            );
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -62,11 +66,14 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
         try {
             $input = $request->all();
 
-            $updated = $this->pageService->update($id, $input);
+            $updated = $this->questionRepository->update($input, $id);
             if (!$updated) {
-                return $this->sendError(sprintf("Page with slug '%s' doesn't exists", $id), 404);
+                return $this->sendError(sprintf("Question with slug '%s' doesn't exists", $id), 404);
             }
-            return $this->sendResponseForResource(PageResource::make($updated), "page updated successfully");
+            return $this->sendResponseForResource(
+                QuestionResource::make($updated),
+                "Question updated successfully"
+            );
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -75,11 +82,11 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
     public function delete(QuestionDeleteRequest $request, int $id): JsonResponse
     {
         try {
-            $deleted = $this->pageService->deleteById($id);
+            $deleted = $this->questionRepository->delete($id);
             if (!$deleted) {
-                return $this->sendError(sprintf("Page with id '%s' doesn't exists", $id), 404);
+                return $this->sendError(sprintf("Question with id '%s' doesn't exists", $id), 404);
             }
-            return $this->sendResponse($deleted, "page updated successfully");
+            return $this->sendResponse($deleted, "Question delete successfully");
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
@@ -88,11 +95,14 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
     public function read(QuestionReadRequest $request, int $id): JsonResponse
     {
         try {
-            $page = $this->pageService->getById($id);
-            if ($page->exists) {
-                return $this->sendResponseForResource(PageResource::make($page), "page fetched successfully");
+            $questions = $this->questionRepository->find($id);
+            if ($questions && $questions->exists) {
+                return $this->sendResponseForResource(
+                    QuestionResource::make($questions),
+                    "Question fetched successfully"
+                );
             }
-            return $this->sendError(sprintf("Page with id '%s' doesn't exists", $id), 404);
+            return $this->sendError(sprintf("Question with id '%s' doesn't exists", $id), 404);
         } catch (Renderable $e) {
             return $this->sendError($e->getMessage());
         }
