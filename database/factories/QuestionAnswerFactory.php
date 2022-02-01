@@ -6,6 +6,7 @@ use Database\Factories\EscolaLms\Core\Models\UserFactory;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
+use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class QuestionAnswerFactory extends Factory
@@ -20,6 +21,12 @@ class QuestionAnswerFactory extends Factory
             $question = QuestionFactory::new();
         }
 
+        /** @var QuestionnaireModel $questionnaireModel */
+        $questionnaireModel = QuestionnaireModel::query()->inRandomOrder()->first();
+        if (empty($questionnaireModel)) {
+            $questionnaireModel = QuestionnaireModelFactory::new();
+        }
+
         /** @var User $user */
         $user = User::query()->inRandomOrder()->first();
         if (empty($question)) {
@@ -27,6 +34,7 @@ class QuestionAnswerFactory extends Factory
         }
 
         return [
+            'questionnaire_model_id' => $questionnaireModel->id,
             'question_id' => $question->id,
             'user_id' => $user->id,
             'rate' => $this->faker->numberBetween(1, 5),

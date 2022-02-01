@@ -31,11 +31,11 @@ class QuestionnaireUpdateRequest extends FormRequest
                 'required',
                 Rule::exists(Questionnaire::class, 'id'),
             ],
-            'model' => [
+            /*'model' => [
                 Rule::in(ModelEnum::getValues()),
-            ],
+            ],*/
             'title' => 'string',
-            'model_id' => 'integer',
+            //'model_id' => 'integer',
             'active' => 'boolean',
         ];
     }
@@ -45,20 +45,20 @@ class QuestionnaireUpdateRequest extends FormRequest
         return $this->route('id');
     }
 
-    public function getParamModel(): string
+    /*public function getParamModel(): string
     {
         return $this->get('model');
-    }
+    }*/
 
     public function getParamTitle(): string
     {
         return $this->get('title');
     }
 
-    public function getParamModelId(): string
+    /*public function getParamModelId(): string
     {
         return $this->get('model_id');
-    }
+    }*/
 
     public function getParamActive(): bool
     {

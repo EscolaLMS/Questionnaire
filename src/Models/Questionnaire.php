@@ -10,21 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @OA\Schema(
  *     schema="Questionnaire",
- *     required={"title","model","model_id"},
+ *     required={"title"},
  *     @OA\Property(
  *          property="title",
  *          type="string",
  *          description="questionnaire title"
- *     ),
- *     @OA\Property(
- *         property="model_id",
- *         type="integer",
- *         description="identifier of the model object who is asigne to questionnaire"
- *     ),
- *     @OA\Property(
- *          property="model",
- *          type="string",
- *          description="Questionnaire for model"
  *     ),
  *     @OA\Property(
  *          property="active",
@@ -34,9 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * )
  *
  * @property integer $id
- * @property string $model
  * @property string $title
- * @property integer $model_id
  * @property boolean $active
  */
 class Questionnaire extends Model
@@ -53,22 +41,23 @@ class Questionnaire extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'model' => 'string',
         'title' => 'string',
-        'model_id' => 'integer',
         'active' => 'boolean'
     ];
 
     public $fillable = [
-        'model',
         'title',
-        'model_id',
         'active'
     ];
 
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class, 'questionnaire_id');
+    }
+
+    public function questionnaireModels(): HasMany
+    {
+        return $this->hasMany(QuestionnaireModel::class, 'questionnaire_id');
     }
 
     protected static function newFactory(): QuestionnaireFactory

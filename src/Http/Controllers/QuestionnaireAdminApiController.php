@@ -39,8 +39,8 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     {
         $questionnaire = new Questionnaire([
             'title' => $request->getParamTitle(),
-            'model' => $request->getParamModel(),
-            'model_id' => $request->getParamModelId(),
+            //'model' => $request->getParamModel(),
+            //'model_id' => $request->getParamModelId(),
             'active' => $request->getParamActive(),
         ]);
 

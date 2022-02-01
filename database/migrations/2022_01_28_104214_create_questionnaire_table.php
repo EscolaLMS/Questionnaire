@@ -3,6 +3,7 @@
 use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
+use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,9 +18,19 @@ class CreateQuestionnaireTable extends Migration
                 function (Blueprint $table) {
                     $table->id('id');
                     $table->string('title');
-                    $table->string('model');
-                    $table->integer('model_id');
                     $table->boolean('active')->default(false);
+                    $table->timestamps();
+                }
+            );
+        }
+        if (!Schema::hasTable('questionnaire_models')) {
+            Schema::create(
+                'questionnaire_models',
+                function (Blueprint $table) {
+                    $table->id('id');
+                    $table->foreignIdFor(Questionnaire::class, 'questionnaire_id');
+                    $table->string('modelable_type');
+                    $table->integer('modelable_id');
                     $table->timestamps();
                 }
             );
@@ -45,6 +56,7 @@ class CreateQuestionnaireTable extends Migration
                     $table->id('id');
                     $table->foreignIdFor(User::class, 'user_id');
                     $table->foreignIdFor(Question::class, 'questions_id');
+                    $table->foreignIdFor(QuestionnaireModel::class, 'questionnaire_model_id');
                     $table->integer('rate');
                     $table->timestamps();
                 }
@@ -55,6 +67,7 @@ class CreateQuestionnaireTable extends Migration
     public function down(): void
     {
         Schema::dropIfExists('question_answers');
+        Schema::dropIfExists('questionnaire_models');
         Schema::dropIfExists('questions');
         Schema::dropIfExists('questionnaires');
     }

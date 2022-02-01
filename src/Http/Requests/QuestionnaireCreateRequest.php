@@ -18,30 +18,30 @@ class QuestionnaireCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'model' => [
+            /*'model' => [
                 'required',
                 Rule::in(ModelEnum::getValues()),
-            ],
+            ],*/
             'title' => 'string|required',
-            'model_id' => 'integer|required',
+            //'model_id' => 'integer|required',
             'active' => 'boolean',
         ];
     }
 
-    public function getParamModel(): string
+    /*public function getParamModel(): string
     {
         return $this->get('model');
-    }
+    }*/
 
     public function getParamTitle(): string
     {
         return $this->get('title');
     }
 
-    public function getParamModelId(): string
+    /*public function getParamModelId(): string
     {
         return $this->get('model_id');
-    }
+    }*/
 
     public function getParamActive(): bool
     {
