@@ -13,22 +13,22 @@ interface QuestionnaireAdminApiContract
 {
     /**
      * @OA\Get(
-     *     path="/api/admin/pages",
-     *     summary="Lists available pages",
-     *     tags={"Pages"},
+     *     path="/api/admin/questionnaire",
+     *     summary="Lists available questionnaires",
+     *     tags={"Questionnaire"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Response(
      *         response=200,
-     *         description="list of available pages",
+     *         description="list of available questionnaires",
      *         @OA\MediaType(
      *            mediaType="application/json",
      *            @OA\Schema(
      *                type="object",
-     *                description="map of pages identified by a slug value",
+     *                description="map of questionnaires",
      *                @OA\AdditionalProperties(
-     *                    ref="#/components/schemas/Page"
+     *                    ref="#/components/schemas/Questionnaire"
      *                )
      *            )
      *         )
@@ -54,20 +54,20 @@ interface QuestionnaireAdminApiContract
 
     /**
      * @OA\Post(
-     *     path="/api/admin/pages",
-     *     summary="Create a new page identified by id",
-     *     tags={"Pages"},
+     *     path="/api/admin/questionnaire",
+     *     summary="Create a new questionnaire identified by id",
+     *     tags={"Questionnaire"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\RequestBody(
-     *         description="Page attributes",
+     *         description="Questionnaire attributes",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/Page")
+     *         @OA\JsonContent(ref="#/components/schemas/Questionnaire")
      *     ),
      *     @OA\Response(
      *          response=200,
-     *          description="page created successfully",
+     *          description="Questionnaire created successfully",
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -79,7 +79,7 @@ interface QuestionnaireAdminApiContract
      *      ),
      *     @OA\Response(
      *          response=409,
-     *          description="there already is a page identified by chosen slug identifier",
+     *          description="there already is a questionnaire",
      *      ),
      *     @OA\Response(
      *          response=422,
@@ -98,14 +98,14 @@ interface QuestionnaireAdminApiContract
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/pages/{id}",
-     *     summary="Update an existing page identified by id",
-     *     tags={"Pages"},
+     *     path="/api/admin/questionnaire/{id}",
+     *     summary="Update an existing questionnaire identified by id",
+     *     tags={"Questionnaire"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Parameter(
-     *         description="Unique human-readable page identifier",
+     *         description="Unique human-readable questionnaire identifier",
      *         in="path",
      *         name="id",
      *         required=true,
@@ -114,13 +114,13 @@ interface QuestionnaireAdminApiContract
      *         )
      *     ),
      *     @OA\RequestBody(
-     *         description="Page attributes",
+     *         description="Questionnaire attributes",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/Page")
+     *         @OA\JsonContent(ref="#/components/schemas/Questionnaire")
      *     ),
      *     @OA\Response(
      *          response=200,
-     *          description="page updated successfully",
+     *          description="Questionnaire updated successfully",
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -132,7 +132,7 @@ interface QuestionnaireAdminApiContract
      *      ),
      *     @OA\Response(
      *          response=400,
-     *          description="cannot find a page with provided slug identifier",
+     *          description="cannot find a questionnaire",
      *      ),
      *     @OA\Response(
      *          response=422,
@@ -145,20 +145,21 @@ interface QuestionnaireAdminApiContract
      * )
      *
      * @param QuestionnaireUpdateRequest $request
+     * @param int $id
      * @return JsonResponse
      */
     public function update(QuestionnaireUpdateRequest $request, int $id): JsonResponse;
 
     /**
      * @OA\Delete(
-     *     path="/api/admin/pages/{id}",
-     *     summary="Delete a page identified by a id",
-     *     tags={"Pages"},
+     *     path="/api/admin/questionnaire/{id}",
+     *     summary="Delete a questionnaire identified by a id",
+     *     tags={"Questionnaire"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Parameter(
-     *         description="Unique human-readable page identifier",
+     *         description="Unique human-readable questionnaire identifier",
      *         in="path",
      *         name="id",
      *         required=true,
@@ -168,7 +169,7 @@ interface QuestionnaireAdminApiContract
      *     ),
      *     @OA\Response(
      *          response=200,
-     *          description="page deleted successfully",
+     *          description="Questionnaire deleted successfully",
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -180,7 +181,7 @@ interface QuestionnaireAdminApiContract
      *      ),
      *     @OA\Response(
      *          response=400,
-     *          description="cannot find a page with provided slug identifier",
+     *          description="cannot find a questionnaire",
      *      ),
      *     @OA\Response(
      *          response=500,
@@ -189,20 +190,21 @@ interface QuestionnaireAdminApiContract
      * )
      *
      * @param QuestionnaireDeleteRequest $request
+     * @param int $id
      * @return JsonResponse
      */
     public function delete(QuestionnaireDeleteRequest $request, int $id): JsonResponse;
 
     /**
      * @OA\Get(
-     *     path="/api/admin/pages/{id}",
-     *     summary="Read a page identified by a given id identifier",
-     *     tags={"Pages"},
+     *     path="/api/admin/questionnaire/{id}",
+     *     summary="Read a questionnaire identified by a given id identifier",
+     *     tags={"Questionnaire"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Parameter(
-     *         description="Unique human-readable page identifier",
+     *         description="Unique human-readable questionnaire identifier",
      *         in="path",
      *         name="id",
      *         required=true,
@@ -213,7 +215,7 @@ interface QuestionnaireAdminApiContract
      *     @OA\Response(
      *         response=200,
      *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/Page")
+     *         @OA\JsonContent(ref="#/components/schemas/Questionnaire")
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -230,6 +232,7 @@ interface QuestionnaireAdminApiContract
      * )
      *
      * @param QuestionnaireReadRequest $request
+     * @param int $id
      * @return JsonResponse
      */
     public function read(QuestionnaireReadRequest $request, int $id): JsonResponse;

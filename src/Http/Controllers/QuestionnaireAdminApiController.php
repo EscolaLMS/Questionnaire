@@ -29,9 +29,9 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     public function list(QuestionnaireListingRequest $request): JsonResponse
     {
         try {
-            $pages = $this->questionnaireRepository->searchAndPaginate();
+            $questionnaires = $this->questionnaireRepository->searchAndPaginate();
             return $this->sendResponseForResource(
-                QuestionnaireResource::collection($pages),
+                QuestionnaireResource::collection($questionnaires),
                 "Questionnaire list retrieved successfully"
             );
         } catch (Renderable $e) {

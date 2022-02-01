@@ -10,19 +10,19 @@ interface QuestionnaireApiContract
 {
     /**
      * @OA\Get(
-     *     path="/api/pages",
-     *     summary="Lists available pages",
-     *     tags={"Pages"},
+     *     path="/api/questionnaire",
+     *     summary="Lists available questionnaires",
+     *     tags={"Questionnaire"},
      *     @OA\Response(
      *         response=200,
-     *         description="list of available pages",
+     *         description="list of available questionnaires",
      *         @OA\MediaType(
      *            mediaType="application/json",
      *            @OA\Schema(
      *                type="object",
-     *                description="map of pages identified by a slug value",
+     *                description="map of questionnaires",
      *                @OA\AdditionalProperties(
-     *                    ref="#/components/schemas/Page"
+     *                    ref="#/components/schemas/Questionnaire"
      *                )
      *            )
      *         )
@@ -48,11 +48,11 @@ interface QuestionnaireApiContract
 
     /**
      * @OA\Get(
-     *     path="/api/pages/{slug}",
-     *     summary="Read a page identified by a given slug identifier",
-     *     tags={"Pages"},
+     *     path="/api/questionnaire/{slug}",
+     *     summary="Read a questionnaire identified by a given slug identifier",
+     *     tags={"Questionnaire"},
      *     @OA\Parameter(
-     *         description="Unique human-readable page identifier",
+     *         description="Unique human-readable questionnaire identifier",
      *         in="path",
      *         name="slug",
      *         required=true,
@@ -63,7 +63,7 @@ interface QuestionnaireApiContract
      *     @OA\Response(
      *         response=200,
      *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/Page")
+     *         @OA\JsonContent(ref="#/components/schemas/Questionnaire")
      *      ),
      *     @OA\Response(
      *          response=401,

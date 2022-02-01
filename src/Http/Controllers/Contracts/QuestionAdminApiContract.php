@@ -13,22 +13,22 @@ interface QuestionAdminApiContract
 {
     /**
      * @OA\Get(
-     *     path="/api/admin/pages",
-     *     summary="Lists available pages",
-     *     tags={"Pages"},
+     *     path="/api/admin/question",
+     *     summary="Lists available questions",
+     *     tags={"Question"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Response(
      *         response=200,
-     *         description="list of available pages",
+     *         description="list of available questions",
      *         @OA\MediaType(
      *            mediaType="application/json",
      *            @OA\Schema(
      *                type="object",
-     *                description="map of pages identified by a slug value",
+     *                description="map of questions",
      *                @OA\AdditionalProperties(
-     *                    ref="#/components/schemas/Page"
+     *                    ref="#/components/schemas/Question"
      *                )
      *            )
      *         )
@@ -54,20 +54,20 @@ interface QuestionAdminApiContract
 
     /**
      * @OA\Post(
-     *     path="/api/admin/pages",
-     *     summary="Create a new page identified by id",
-     *     tags={"Pages"},
+     *     path="/api/admin/question",
+     *     summary="Create a new question identified by id",
+     *     tags={"Question"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\RequestBody(
-     *         description="Page attributes",
+     *         description="Question attributes",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/Page")
+     *         @OA\JsonContent(ref="#/components/schemas/Question")
      *     ),
      *     @OA\Response(
      *          response=200,
-     *          description="page created successfully",
+     *          description="Question created successfully",
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -76,10 +76,6 @@ interface QuestionAdminApiContract
      *     @OA\Response(
      *          response=403,
      *          description="user doesn't have required access rights",
-     *      ),
-     *     @OA\Response(
-     *          response=409,
-     *          description="there already is a page identified by chosen slug identifier",
      *      ),
      *     @OA\Response(
      *          response=422,
@@ -98,14 +94,14 @@ interface QuestionAdminApiContract
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/pages/{id}",
-     *     summary="Update an existing page identified by id",
-     *     tags={"Pages"},
+     *     path="/api/admin/question/{id}",
+     *     summary="Update an existing question identified by id",
+     *     tags={"Question"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Parameter(
-     *         description="Unique human-readable page identifier",
+     *         description="Unique human-readable question identifier",
      *         in="path",
      *         name="id",
      *         required=true,
@@ -114,13 +110,13 @@ interface QuestionAdminApiContract
      *         )
      *     ),
      *     @OA\RequestBody(
-     *         description="Page attributes",
+     *         description="Question attributes",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/Page")
+     *         @OA\JsonContent(ref="#/components/schemas/Question")
      *     ),
      *     @OA\Response(
      *          response=200,
-     *          description="page updated successfully",
+     *          description="Question updated successfully",
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -132,7 +128,7 @@ interface QuestionAdminApiContract
      *      ),
      *     @OA\Response(
      *          response=400,
-     *          description="cannot find a page with provided slug identifier",
+     *          description="cannot find a question with provided slug identifier",
      *      ),
      *     @OA\Response(
      *          response=422,
@@ -145,20 +141,21 @@ interface QuestionAdminApiContract
      * )
      *
      * @param QuestionUpdateRequest $request
+     * @param int $id
      * @return JsonResponse
      */
     public function update(QuestionUpdateRequest $request, int $id): JsonResponse;
 
     /**
      * @OA\Delete(
-     *     path="/api/admin/pages/{id}",
-     *     summary="Delete a page identified by a id",
-     *     tags={"Pages"},
+     *     path="/api/admin/question/{id}",
+     *     summary="Delete a question identified by a id",
+     *     tags={"Question"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Parameter(
-     *         description="Unique human-readable page identifier",
+     *         description="Unique human-readable question identifier",
      *         in="path",
      *         name="id",
      *         required=true,
@@ -168,7 +165,7 @@ interface QuestionAdminApiContract
      *     ),
      *     @OA\Response(
      *          response=200,
-     *          description="page deleted successfully",
+     *          description="Question deleted successfully",
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -180,7 +177,7 @@ interface QuestionAdminApiContract
      *      ),
      *     @OA\Response(
      *          response=400,
-     *          description="cannot find a page with provided slug identifier",
+     *          description="cannot find a question",
      *      ),
      *     @OA\Response(
      *          response=500,
@@ -189,20 +186,21 @@ interface QuestionAdminApiContract
      * )
      *
      * @param QuestionDeleteRequest $request
+     * @param int $id
      * @return JsonResponse
      */
     public function delete(QuestionDeleteRequest $request, int $id): JsonResponse;
 
     /**
      * @OA\Get(
-     *     path="/api/admin/pages/{id}",
-     *     summary="Read a page identified by a given id identifier",
-     *     tags={"Pages"},
+     *     path="/api/admin/question/{id}",
+     *     summary="Read a question identified by a given id identifier",
+     *     tags={"Question"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Parameter(
-     *         description="Unique human-readable page identifier",
+     *         description="Unique human-readable question identifier",
      *         in="path",
      *         name="id",
      *         required=true,
@@ -213,7 +211,7 @@ interface QuestionAdminApiContract
      *     @OA\Response(
      *         response=200,
      *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/Page")
+     *         @OA\JsonContent(ref="#/components/schemas/Question")
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -230,6 +228,7 @@ interface QuestionAdminApiContract
      * )
      *
      * @param QuestionReadRequest $request
+     * @param int $id
      * @return JsonResponse
      */
     public function read(QuestionReadRequest $request, int $id): JsonResponse;

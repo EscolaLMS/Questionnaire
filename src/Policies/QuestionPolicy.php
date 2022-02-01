@@ -42,7 +42,7 @@ class QuestionPolicy
 
     /**
      * @param User $user
-     * @param ?Question $page
+     * @param ?Question $question
      * @return bool
      */
     public function update(User $user, ?Question $question = null): bool

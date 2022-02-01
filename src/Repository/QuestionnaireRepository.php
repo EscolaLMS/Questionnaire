@@ -25,7 +25,7 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
     }
 
     /**
-     * @param Questionnaire $page
+     * @param Questionnaire $questionnaire
      * @return Questionnaire
      */
     public function insert(Questionnaire $questionnaire): Questionnaire
