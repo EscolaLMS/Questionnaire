@@ -3,8 +3,10 @@
 namespace EscolaLms\Questionnaire\Http\Requests;
 
 use EscolaLms\Questionnaire\Models\Question;
+use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class QuestionUpdateRequest extends FormRequest
 {
@@ -18,7 +20,11 @@ class QuestionUpdateRequest extends FormRequest
         return [
             'title' => 'string',
             'description' => 'string',
-            'questionnaire_id' => 'integer',
+            'questionnaire_id' => [
+                'integer',
+                'required',
+                Rule::exists(Questionnaire::class, 'id'),
+            ],
             'position' => 'integer',
             'active' => 'boolean',
         ];

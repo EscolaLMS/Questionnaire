@@ -22,28 +22,32 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
 
     public function list(QuestionnaireFrontListingRequest $request): JsonResponse
     {
-        try {
-            $questionnaires = $this->questionnaireRepository->searchAndPaginate(['active' => true]);
-            return $this->sendResponseForResource(QuestionnaireResource::collection($questionnaires), "questionnaire list retrieved successfully");
-        } catch (Renderable $e) {
-            return $this->sendError($e->getMessage());
-        }
+        $questionnaires = $this->questionnaireRepository->searchAndPaginate(['active' => true]);
+
+        return $this->sendResponseForResource(
+            QuestionnaireResource::collection($questionnaires),
+            "questionnaire list retrieved successfully"
+        );
     }
 
     public function read(QuestionnaireFrontReadRequest $request): JsonResponse
     {
-        try {
-            $id = $request->getParamId();
-            $questionnaire = $this->questionnaireRepository->find($id);
-            if ($questionnaire && $questionnaire->exists) {
-                if (!$questionnaire->active) {
-                    return $this->sendError(sprintf("You don't have access to questionnaire with id '%s'", $id), 403);
-                }
-                return $this->sendResponseForResource(QuestionnaireResource::make($questionnaire), "questionnaire fetched successfully");
+        $id = $request->getParamId();
+        $questionnaire = $this->questionnaireRepository->find($id);
+        if ($questionnaire && $questionnaire->exists) {
+            if (!$questionnaire->active) {
+                return $this->sendError(
+                    sprintf("You don't have access to questionnaire with id '%s'", $id),
+                    403
+                );
             }
-            return $this->sendError(sprintf("Questionnaire with id '%s' doesn't exists", $id), 404);
-        } catch (Renderable $e) {
-            return $this->sendError($e->getMessage());
+
+            return $this->sendResponseForResource(
+                QuestionnaireResource::make($questionnaire),
+                "questionnaire fetched successfully"
+            );
         }
+
+        return $this->sendError(sprintf("Questionnaire with id '%s' doesn't exists", $id), 404);
     }
 }

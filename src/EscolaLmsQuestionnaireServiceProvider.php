@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire;
 
-use EscolaLms\Core\Providers\Injectable;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
 use EscolaLms\Questionnaire\Repository\QuestionnaireRepository;
@@ -14,9 +13,7 @@ use Illuminate\Support\ServiceProvider;
  */
 class EscolaLmsQuestionnaireServiceProvider extends ServiceProvider
 {
-    use Injectable;
-
-    private const CONTRACTS = [
+    public $bindings = [
         QuestionnaireRepositoryContract::class => QuestionnaireRepository::class,
         QuestionRepositoryContract::class => QuestionRepository::class,
     ];
@@ -33,7 +30,6 @@ class EscolaLmsQuestionnaireServiceProvider extends ServiceProvider
     public function register()
     {
         parent::register();
-        $this->injectContract(self::CONTRACTS);
 
         $this->app->register(AuthServiceProvider::class);
     }

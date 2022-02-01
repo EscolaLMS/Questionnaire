@@ -29,7 +29,7 @@ class QuestionAnswerFactory extends Factory
         return [
             'question_id' => $question->id,
             'user_id' => $user->id,
-            'rate' => $this->faker->randomNumber(),
+            'rate' => $this->faker->numberBetween(1, 5),
         ];
     }
 }

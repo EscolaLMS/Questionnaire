@@ -27,84 +27,68 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
 
     public function list(QuestionListingRequest $request): JsonResponse
     {
-        try {
-            $questions = $this->questionRepository->searchAndPaginate();
-            return $this->sendResponseForResource(
-                QuestionResource::collection($questions),
-                "Question list retrieved successfully"
-            );
-        } catch (Renderable $e) {
-            return $this->sendError($e->getMessage());
-        }
+        $questions = $this->questionRepository->searchAndPaginate();
+
+        return $this->sendResponseForResource(
+            QuestionResource::collection($questions),
+            "Question list retrieved successfully"
+        );
     }
 
     public function create(QuestionCreateRequest $request): JsonResponse
     {
-        try {
-            /** @var Question $question */
-            $question = Question::factory()->newModel([
-                'description' => $request->getParamDescription(),
-                'title' => $request->getParamTitle(),
-                'questionnaire_id' => $request->getParamQuestionnaireId(),
-                'position' => $request->getParamPosition(),
-                'active' => $request->get('active'),
-            ]);
+        /** @var Question $question */
+        $question = Question::factory()->newModel([
+            'description' => $request->getParamDescription(),
+            'title' => $request->getParamTitle(),
+            'questionnaire_id' => $request->getParamQuestionnaireId(),
+            'position' => $request->getParamPosition(),
+            'active' => $request->get('active'),
+        ]);
 
-            $question = $this->questionRepository->insert($question);
+        $question = $this->questionRepository->insert($question);
 
-            return $this->sendResponseForResource(
-                QuestionResource::make($question),
-                "Question created successfully"
-            );
-        } catch (Renderable $e) {
-            return $this->sendError($e->getMessage());
-        }
+        return $this->sendResponseForResource(
+            QuestionResource::make($question),
+            "Question created successfully"
+        );
     }
 
     public function update(QuestionUpdateRequest $request, int $id): JsonResponse
     {
-        try {
-            $input = $request->all();
+        $input = $request->all();
 
-            $updated = $this->questionRepository->update($input, $id);
-            if (!$updated) {
-                return $this->sendError(sprintf("Question with slug '%s' doesn't exists", $id), 404);
-            }
-            return $this->sendResponseForResource(
-                QuestionResource::make($updated),
-                "Question updated successfully"
-            );
-        } catch (Renderable $e) {
-            return $this->sendError($e->getMessage());
+        $updated = $this->questionRepository->update($input, $id);
+        if (!$updated) {
+            return $this->sendError(sprintf("Question with slug '%s' doesn't exists", $id), 404);
         }
+
+        return $this->sendResponseForResource(
+            QuestionResource::make($updated),
+            "Question updated successfully"
+        );
     }
 
     public function delete(QuestionDeleteRequest $request, int $id): JsonResponse
     {
-        try {
-            $deleted = $this->questionRepository->delete($id);
-            if (!$deleted) {
-                return $this->sendError(sprintf("Question with id '%s' doesn't exists", $id), 404);
-            }
-            return $this->sendResponse($deleted, "Question delete successfully");
-        } catch (Renderable $e) {
-            return $this->sendError($e->getMessage());
+        $deleted = $this->questionRepository->delete($id);
+        if (!$deleted) {
+            return $this->sendError(sprintf("Question with id '%s' doesn't exists", $id), 404);
         }
+
+        return $this->sendResponse($deleted, "Question delete successfully");
     }
 
     public function read(QuestionReadRequest $request, int $id): JsonResponse
     {
-        try {
-            $questions = $this->questionRepository->find($id);
-            if ($questions && $questions->exists) {
-                return $this->sendResponseForResource(
-                    QuestionResource::make($questions),
-                    "Question fetched successfully"
-                );
-            }
-            return $this->sendError(sprintf("Question with id '%s' doesn't exists", $id), 404);
-        } catch (Renderable $e) {
-            return $this->sendError($e->getMessage());
+        $questions = $this->questionRepository->find($id);
+        if ($questions && $questions->exists) {
+            return $this->sendResponseForResource(
+                QuestionResource::make($questions),
+                "Question fetched successfully"
+            );
         }
+
+        return $this->sendError(sprintf("Question with id '%s' doesn't exists", $id), 404);
     }
 }

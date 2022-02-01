@@ -26,7 +26,8 @@ class QuestionUpdateTest extends TestCase
             $this->uri($question->id),
             [
                 'title' => $questionNew->title,
-                'description' => $questionNew->description
+                'description' => $questionNew->description,
+                'questionnaire_id' => $question->questionnaire_id,
             ]
         );
         $response->assertOk();
@@ -48,6 +49,7 @@ class QuestionUpdateTest extends TestCase
             $this->uri($question->id),
             [
                 'description' => $questionNew->description,
+                'questionnaire_id' => $question->questionnaire_id,
             ]
         );
         $response->assertStatus(200);
@@ -69,6 +71,7 @@ class QuestionUpdateTest extends TestCase
             $this->uri($question->id),
             [
                 'title' => $questionNew->title,
+                'questionnaire_id' => $question->questionnaire_id,
             ]
         );
         $response->assertStatus(200);
@@ -89,6 +92,7 @@ class QuestionUpdateTest extends TestCase
             [
                 'title' => $question->title,
                 'description' => $question->description,
+                'questionnaire_id' => $question->questionnaire_id,
             ]
         );
 
@@ -109,6 +113,7 @@ class QuestionUpdateTest extends TestCase
             [
                 'title' => $questionNew->title,
                 'description' => $questionNew->description,
+                'questionnaire_id' => $question->questionnaire_id,
             ]
         );
         $response->assertUnauthorized();
