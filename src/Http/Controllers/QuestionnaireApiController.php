@@ -8,7 +8,6 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 
 class QuestionnaireApiController extends EscolaLmsBaseController implements QuestionnaireApiContract
@@ -34,20 +33,10 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
     {
         $id = $request->getParamId();
         $questionnaire = $this->questionnaireRepository->find($id);
-        if ($questionnaire && $questionnaire->exists) {
-            if (!$questionnaire->active) {
-                return $this->sendError(
-                    __("You don't have access to questionnaire with id ':id'", ['id' => $id]),
-                    403
-                );
-            }
 
-            return $this->sendResponseForResource(
-                QuestionnaireResource::make($questionnaire),
-                __("questionnaire fetched successfully")
-            );
-        }
-
-        return $this->sendError(__("Questionnaire with id ':id' doesn't exists", ['id' => $id]), 404);
+        return $this->sendResponseForResource(
+            QuestionnaireResource::make($questionnaire),
+            __("questionnaire fetched successfully")
+        );
     }
 }

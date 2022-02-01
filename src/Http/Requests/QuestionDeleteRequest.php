@@ -5,16 +5,41 @@ namespace EscolaLms\Questionnaire\Http\Requests;
 use EscolaLms\Questionnaire\Models\Question;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class QuestionDeleteRequest extends FormRequest
 {
+    protected function prepareForValidation()
+    {
+        parent::prepareForValidation();
+        $this->merge(['id' => $this->route('id')]);
+    }
+
     public function authorize(): bool
     {
-        return Gate::allows('delete', Question::class);
+        $question = $this->getQuestion();
+
+        return Gate::allows('delete', $question);
     }
 
     public function rules(): array
     {
-        return [];
+        return [
+            'id' => [
+                'integer',
+                'required',
+                Rule::exists(Question::class, 'id'),
+            ],
+        ];
+    }
+
+    public function getParamId()
+    {
+        return $this->route('id');
+    }
+
+    public function getQuestion(): Question
+    {
+        return Question::findOrFail($this->route('id'));
     }
 }

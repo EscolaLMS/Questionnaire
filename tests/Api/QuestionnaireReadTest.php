@@ -20,6 +20,7 @@ class QuestionnaireReadTest extends TestCase
         $questionnaire = Questionnaire::factory()->createOne();
 
         $response = $this->getJson($this->uri($questionnaire->id));
+
         $response->assertOk();
         $response->assertJsonFragment(collect($questionnaire->getAttributes())->except('id')->toArray());
     }
@@ -27,7 +28,8 @@ class QuestionnaireReadTest extends TestCase
     public function testCannotFindMissingQuestionnaire(): void
     {
         $response = $this->getJson($this->uri(99999));
-        $response->assertNotFound();
+
+        $response->assertStatus(404);
     }
 
     public function testAdminCanReadExistingQuestionnaireById(): void

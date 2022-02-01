@@ -54,11 +54,7 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
     public function update(QuestionUpdateRequest $request, int $id): JsonResponse
     {
         $input = $request->all();
-
         $updated = $this->questionRepository->update($input, $id);
-        if (!$updated) {
-            return $this->sendError(__("Question with slug ':id' doesn't exists", ['id' => $id]), 404);
-        }
 
         return $this->sendResponseForResource(
             QuestionResource::make($updated),
@@ -68,10 +64,7 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
 
     public function delete(QuestionDeleteRequest $request, int $id): JsonResponse
     {
-        $deleted = $this->questionRepository->delete($id);
-        if (!$deleted) {
-            return $this->sendError(__("Question with id ':id' doesn't exists", ['id' => $id]), 404);
-        }
+        $this->questionRepository->delete($id);
 
         return $this->sendResponse(true, __("Question delete successfully"));
     }
@@ -79,13 +72,10 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
     public function read(QuestionReadRequest $request, int $id): JsonResponse
     {
         $questions = $this->questionRepository->find($id);
-        if ($questions && $questions->exists) {
-            return $this->sendResponseForResource(
-                QuestionResource::make($questions),
-                __("Question fetched successfully")
-            );
-        }
 
-        return $this->sendError(__("Question with id ':id' doesn't exists", ['id' => $id]), 404);
+        return $this->sendResponseForResource(
+            QuestionResource::make($questions),
+            __("Question fetched successfully")
+        );
     }
 }

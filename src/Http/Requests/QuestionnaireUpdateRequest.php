@@ -10,14 +10,27 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class QuestionnaireUpdateRequest extends FormRequest
 {
+    protected function prepareForValidation()
+    {
+        parent::prepareForValidation();
+        $this->merge(['id' => $this->route('id')]);
+    }
+
     public function authorize(): bool
     {
-        return Gate::allows('update', Questionnaire::class);
+        $questionnaire = $this->getQuestionnaire();
+
+        return Gate::allows('update', $questionnaire);
     }
 
     public function rules(): array
     {
         return [
+            'id' => [
+                'integer',
+                'required',
+                Rule::exists(Questionnaire::class, 'id'),
+            ],
             'model' => [
                 Rule::in(ModelEnum::getValues()),
             ],
@@ -25,6 +38,11 @@ class QuestionnaireUpdateRequest extends FormRequest
             'model_id' => 'integer',
             'active' => 'boolean',
         ];
+    }
+
+    public function getParamId()
+    {
+        return $this->route('id');
     }
 
     public function getParamModel(): string
@@ -45,5 +63,10 @@ class QuestionnaireUpdateRequest extends FormRequest
     public function getParamActive(): bool
     {
         return $this->get('active', true);
+    }
+
+    public function getQuestionnaire(): Questionnaire
+    {
+        return Questionnaire::findOrFail($this->route('id'));
     }
 }

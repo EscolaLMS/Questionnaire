@@ -55,11 +55,7 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     public function update(QuestionnaireUpdateRequest $request, int $id): JsonResponse
     {
         $input = $request->all();
-
         $updated = $this->questionnaireRepository->update($input, $id);
-        if (!$updated) {
-            return $this->sendError(__("Questionnaire with slug ':id' doesn't exists", ['id' => $id]), 404);
-        }
 
         return $this->sendResponseForResource(
             QuestionnaireResource::make($updated),
@@ -69,10 +65,7 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function delete(QuestionnaireDeleteRequest $request, int $id): JsonResponse
     {
-        $deleted = $this->questionnaireRepository->deleteQuestionnaire($id);
-        if (!$deleted) {
-            return $this->sendError(__("Questionnaire with id ':id' doesn't exists", ['id' => $id]), 404);
-        }
+        $this->questionnaireRepository->deleteQuestionnaire($id);
 
         return $this->sendResponse(true, __("Questionnaire delete successfully"));
     }
@@ -80,14 +73,11 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     public function read(QuestionnaireReadRequest $request, int $id): JsonResponse
     {
         $questionnaire = $this->questionnaireRepository->find($id);
-        if ($questionnaire->exists) {
-            return $this->sendResponseForResource(
-                QuestionnaireResource::make($questionnaire),
-                __("Questionnaire fetched successfully")
-            );
-        }
 
-        return $this->sendError(__("Questionnaire with id ':id' doesn't exists", ['id' => $id]), 404);
+        return $this->sendResponseForResource(
+            QuestionnaireResource::make($questionnaire),
+            __("Questionnaire fetched successfully")
+        );
     }
 
     public function models(QuestionnaireListingRequest $request): JsonResponse

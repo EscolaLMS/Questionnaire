@@ -10,14 +10,27 @@ use Illuminate\Validation\Rule;
 
 class QuestionUpdateRequest extends FormRequest
 {
+    protected function prepareForValidation()
+    {
+        parent::prepareForValidation();
+        $this->merge(['id' => $this->route('id')]);
+    }
+
     public function authorize(): bool
     {
-        return Gate::allows('update', Question::class);
+        $question = $this->getQuestion();
+
+        return Gate::allows('update', $question);
     }
 
     public function rules(): array
     {
         return [
+            'id' => [
+                'integer',
+                'required',
+                Rule::exists(Question::class, 'id'),
+            ],
             'title' => 'string',
             'description' => 'string',
             'questionnaire_id' => [
@@ -28,6 +41,11 @@ class QuestionUpdateRequest extends FormRequest
             'position' => 'integer',
             'active' => 'boolean',
         ];
+    }
+
+    public function getParamId()
+    {
+        return $this->route('id');
     }
 
     public function getParamTitle(): string
@@ -53,5 +71,10 @@ class QuestionUpdateRequest extends FormRequest
     public function getParamActive(): bool
     {
         return $this->get('active', true);
+    }
+
+    public function getQuestion(): Question
+    {
+        return Question::findOrFail($this->route('id'));
     }
 }

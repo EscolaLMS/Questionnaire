@@ -16,7 +16,7 @@ class QuestionPolicy
         return $user->can(QuestionnairePermissionsEnum::QUESTION_LIST);
     }
 
-    public function read(User $user): bool
+    public function read(User $user, Question $question): bool
     {
         return $user->can(QuestionnairePermissionsEnum::QUESTION_READ);
     }
@@ -26,12 +26,12 @@ class QuestionPolicy
         return $user->can(QuestionnairePermissionsEnum::QUESTION_CREATE);
     }
 
-    public function delete(User $user, ?Question $question = null): bool
+    public function delete(User $user, Question $question): bool
     {
         return $user->can(QuestionnairePermissionsEnum::QUESTION_DELETE);
     }
 
-    public function update(User $user, ?Question $question = null): bool
+    public function update(User $user, Question $question): bool
     {
         return $user->can(QuestionnairePermissionsEnum::QUESTION_UPDATE);
     }
