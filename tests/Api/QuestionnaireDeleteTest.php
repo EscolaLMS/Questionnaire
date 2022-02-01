@@ -22,7 +22,7 @@ class QuestionnaireDeleteTest extends TestCase
         $questionnaire = Questionnaire::factory()->createOne();
         $response = $this->actingAs($this->user, 'api')->delete($this->uri($questionnaire->id));
         $response->assertOk();
-        $this->assertEquals(0, Questionnaire::factory()->make()->newQuery()->where('id', $questionnaire->id)->count());
+        $this->assertEquals(0, Questionnaire::where('id', $questionnaire->id)->count());
     }
 
     public function testAdminCannotDeleteMissingQuestionnaire(): void

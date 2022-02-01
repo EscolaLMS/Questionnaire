@@ -24,10 +24,6 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
         return $this->allQuery($search)->orderBy($orderColumn, $orderDirection)->paginate($perPage);
     }
 
-    /**
-     * @param Question $question
-     * @return Question
-     */
     public function insert(Question $question): Question
     {
         return $this->createUsingModel($question);

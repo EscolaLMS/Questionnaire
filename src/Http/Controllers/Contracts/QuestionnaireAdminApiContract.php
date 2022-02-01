@@ -46,9 +46,6 @@ interface QuestionnaireAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionnaireListingRequest $request
-     * @return JsonResponse
      */
     public function list(QuestionnaireListingRequest $request): JsonResponse;
 
@@ -90,9 +87,6 @@ interface QuestionnaireAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionnaireCreateRequest $request
-     * @return JsonResponse
      */
     public function create(QuestionnaireCreateRequest $request): JsonResponse;
 
@@ -143,10 +137,6 @@ interface QuestionnaireAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionnaireUpdateRequest $request
-     * @param int $id
-     * @return JsonResponse
      */
     public function update(QuestionnaireUpdateRequest $request, int $id): JsonResponse;
 
@@ -188,10 +178,6 @@ interface QuestionnaireAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionnaireDeleteRequest $request
-     * @param int $id
-     * @return JsonResponse
      */
     public function delete(QuestionnaireDeleteRequest $request, int $id): JsonResponse;
 
@@ -230,10 +216,6 @@ interface QuestionnaireAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionnaireReadRequest $request
-     * @param int $id
-     * @return JsonResponse
      */
     public function read(QuestionnaireReadRequest $request, int $id): JsonResponse;
 }

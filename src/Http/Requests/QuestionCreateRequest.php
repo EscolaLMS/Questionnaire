@@ -50,7 +50,7 @@ class QuestionCreateRequest extends FormRequest
         return $this->get('position', 1);
     }
 
-    public function getParamActive(): string
+    public function getParamActive(): bool
     {
         return $this->get('active', true);
     }

@@ -26,7 +26,7 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
 
         return $this->sendResponseForResource(
             QuestionnaireResource::collection($questionnaires),
-            "questionnaire list retrieved successfully"
+            __("Questionnaire list retrieved successfully")
         );
     }
 
@@ -37,17 +37,17 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
         if ($questionnaire && $questionnaire->exists) {
             if (!$questionnaire->active) {
                 return $this->sendError(
-                    sprintf("You don't have access to questionnaire with id '%s'", $id),
+                    __("You don't have access to questionnaire with id ':id'", ['id' => $id]),
                     403
                 );
             }
 
             return $this->sendResponseForResource(
                 QuestionnaireResource::make($questionnaire),
-                "questionnaire fetched successfully"
+                __("questionnaire fetched successfully")
             );
         }
 
-        return $this->sendError(sprintf("Questionnaire with id '%s' doesn't exists", $id), 404);
+        return $this->sendError(__("Questionnaire with id ':id' doesn't exists", ['id' => $id]), 404);
     }
 }

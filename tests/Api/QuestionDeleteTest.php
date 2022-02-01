@@ -22,7 +22,7 @@ class QuestionDeleteTest extends TestCase
         $question = Question::factory()->createOne();
         $response = $this->actingAs($this->user, 'api')->delete($this->uri($question->id));
         $response->assertOk();
-        $this->assertEquals(0, Question::factory()->make()->newQuery()->where('id', $question->id)->count());
+        $this->assertEquals(0, Question::where('id', $question->id)->count());
     }
 
     public function testAdminCannotDeleteMissingQuestion(): void

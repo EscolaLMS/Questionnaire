@@ -24,19 +24,11 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
         return $this->allQuery($search)->orderBy($orderColumn, $orderDirection)->paginate($perPage);
     }
 
-    /**
-     * @param Questionnaire $questionnaire
-     * @return Questionnaire
-     */
     public function insert(Questionnaire $questionnaire): Questionnaire
     {
         return $this->createUsingModel($questionnaire);
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function deleteQuestionnaire(int $id): bool
     {
         $questionnaire = $this->find($id);

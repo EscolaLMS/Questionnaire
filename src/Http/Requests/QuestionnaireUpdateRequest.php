@@ -42,7 +42,7 @@ class QuestionnaireUpdateRequest extends FormRequest
         return $this->get('model_id');
     }
 
-    public function getParamActive(): string
+    public function getParamActive(): bool
     {
         return $this->get('active', true);
     }

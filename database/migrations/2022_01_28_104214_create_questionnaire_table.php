@@ -45,7 +45,7 @@ class CreateQuestionnaireTable extends Migration
                     $table->id('id');
                     $table->foreignIdFor(User::class, 'user_id');
                     $table->foreignIdFor(Question::class, 'questions_id');
-                    $table->string('rate');
+                    $table->integer('rate');
                     $table->timestamps();
                 }
             );

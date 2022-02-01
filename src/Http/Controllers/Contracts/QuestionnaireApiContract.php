@@ -40,9 +40,6 @@ interface QuestionnaireApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionnaireFrontListingRequest $request
-     * @return JsonResponse
      */
     public function list(QuestionnaireFrontListingRequest $request): JsonResponse;
 
@@ -78,9 +75,6 @@ interface QuestionnaireApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionnaireFrontReadRequest $request
-     * @return JsonResponse
      */
     public function read(QuestionnaireFrontReadRequest $request): JsonResponse;
 }

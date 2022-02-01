@@ -46,9 +46,6 @@ interface QuestionAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionListingRequest $request
-     * @return JsonResponse
      */
     public function list(QuestionListingRequest $request): JsonResponse;
 
@@ -86,9 +83,6 @@ interface QuestionAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionCreateRequest $request
-     * @return JsonResponse
      */
     public function create(QuestionCreateRequest $request): JsonResponse;
 
@@ -139,10 +133,6 @@ interface QuestionAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionUpdateRequest $request
-     * @param int $id
-     * @return JsonResponse
      */
     public function update(QuestionUpdateRequest $request, int $id): JsonResponse;
 
@@ -184,10 +174,6 @@ interface QuestionAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionDeleteRequest $request
-     * @param int $id
-     * @return JsonResponse
      */
     public function delete(QuestionDeleteRequest $request, int $id): JsonResponse;
 
@@ -226,10 +212,6 @@ interface QuestionAdminApiContract
      *          description="server-side error",
      *      ),
      * )
-     *
-     * @param QuestionReadRequest $request
-     * @param int $id
-     * @return JsonResponse
      */
     public function read(QuestionReadRequest $request, int $id): JsonResponse;
 }

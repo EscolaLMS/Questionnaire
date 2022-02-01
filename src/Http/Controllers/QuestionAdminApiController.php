@@ -12,9 +12,7 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionUpdateRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionResource;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class QuestionAdminApiController extends EscolaLmsBaseController implements QuestionAdminApiContract
 {
@@ -31,26 +29,25 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
 
         return $this->sendResponseForResource(
             QuestionResource::collection($questions),
-            "Question list retrieved successfully"
+            __("Question list retrieved successfully")
         );
     }
 
     public function create(QuestionCreateRequest $request): JsonResponse
     {
-        /** @var Question $question */
-        $question = Question::factory()->newModel([
+        $question = new Question([
             'description' => $request->getParamDescription(),
             'title' => $request->getParamTitle(),
             'questionnaire_id' => $request->getParamQuestionnaireId(),
             'position' => $request->getParamPosition(),
-            'active' => $request->get('active'),
+            'active' => $request->getParamActive(),
         ]);
 
         $question = $this->questionRepository->insert($question);
 
         return $this->sendResponseForResource(
             QuestionResource::make($question),
-            "Question created successfully"
+            __("Question created successfully")
         );
     }
 
@@ -60,12 +57,12 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
 
         $updated = $this->questionRepository->update($input, $id);
         if (!$updated) {
-            return $this->sendError(sprintf("Question with slug '%s' doesn't exists", $id), 404);
+            return $this->sendError(__("Question with slug ':id' doesn't exists", ['id' => $id]), 404);
         }
 
         return $this->sendResponseForResource(
             QuestionResource::make($updated),
-            "Question updated successfully"
+            __("Question updated successfully")
         );
     }
 
@@ -73,10 +70,10 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
     {
         $deleted = $this->questionRepository->delete($id);
         if (!$deleted) {
-            return $this->sendError(sprintf("Question with id '%s' doesn't exists", $id), 404);
+            return $this->sendError(__("Question with id ':id' doesn't exists", ['id' => $id]), 404);
         }
 
-        return $this->sendResponse($deleted, "Question delete successfully");
+        return $this->sendResponse(true, __("Question delete successfully"));
     }
 
     public function read(QuestionReadRequest $request, int $id): JsonResponse
@@ -85,10 +82,10 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
         if ($questions && $questions->exists) {
             return $this->sendResponseForResource(
                 QuestionResource::make($questions),
-                "Question fetched successfully"
+                __("Question fetched successfully")
             );
         }
 
-        return $this->sendError(sprintf("Question with id '%s' doesn't exists", $id), 404);
+        return $this->sendError(__("Question with id ':id' doesn't exists", ['id' => $id]), 404);
     }
 }
