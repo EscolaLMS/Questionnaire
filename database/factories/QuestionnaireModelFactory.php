@@ -2,9 +2,9 @@
 
 namespace EscolaLms\Questionnaire\Database\Factories;
 
-use EscolaLms\Questionnaire\Enums\ModelEnum;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class QuestionnaireModelFactory extends Factory
@@ -22,9 +22,18 @@ class QuestionnaireModelFactory extends Factory
             $questionnaire = Questionnaire::query()->inRandomOrder()->first();
         }
 
+        /** @var QuestionnaireModelType $questionnaireModelType */
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            QuestionnaireModelType::factory()
+                ->count(1)
+                ->create();
+            $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        }
+
         return [
             'questionnaire_id' => $questionnaire->id,
-            'modelable_type' => array_rand(ModelEnum::asSelectArray()),
+            'modelable_type_id' => $questionnaireModelType->id,
             'modelable_id' => 1,
         ];
     }

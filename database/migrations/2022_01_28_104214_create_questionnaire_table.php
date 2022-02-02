@@ -4,6 +4,7 @@ use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,13 +24,24 @@ class CreateQuestionnaireTable extends Migration
                 }
             );
         }
+        if (!Schema::hasTable('questionnaire_model_types')) {
+            Schema::create(
+                'questionnaire_model_types',
+                function (Blueprint $table) {
+                    $table->id('id');
+                    $table->string('title');
+                    $table->string('modelable_class')->unique();
+                    $table->timestamps();
+                }
+            );
+        }
         if (!Schema::hasTable('questionnaire_models')) {
             Schema::create(
                 'questionnaire_models',
                 function (Blueprint $table) {
                     $table->id('id');
                     $table->foreignIdFor(Questionnaire::class, 'questionnaire_id');
-                    $table->string('modelable_type');
+                    $table->foreignIdFor(QuestionnaireModelType::class, 'modelable_type_id');
                     $table->integer('modelable_id');
                     $table->timestamps();
                 }
@@ -68,6 +80,7 @@ class CreateQuestionnaireTable extends Migration
     {
         Schema::dropIfExists('question_answers');
         Schema::dropIfExists('questionnaire_models');
+        Schema::dropIfExists('questionnaire_model_types');
         Schema::dropIfExists('questions');
         Schema::dropIfExists('questionnaires');
     }

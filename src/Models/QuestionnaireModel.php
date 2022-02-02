@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @OA\Schema(
  *     schema="QuestionnaireModel",
- *     required={"questionnaire_id","modelable_type","modelable_id"},
+ *     required={"questionnaire_id","modelable_type_id","modelable_id"},
  *     @OA\Property(
  *         property="questionnaire_id",
  *         type="integer",
@@ -22,15 +22,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *         description="identifier of the model object who is asigne to questionnaire"
  *     ),
  *     @OA\Property(
- *          property="modelable_type",
- *          type="string",
- *          description="modelable_type"
+ *          property="modelable_type_id",
+ *          type="integer",
+ *          description="modelable_type_id"
  *     ),
  * )
  *
  * @property integer $id
  * @property integer $questionnaire_id
- * @property string $modelable_type
+ * @property integer modelable_type_id
  * @property integer $modelable_id
  */
 class QuestionnaireModel extends Model
@@ -48,13 +48,13 @@ class QuestionnaireModel extends Model
     protected $casts = [
         'id' => 'integer',
         'questionnaire_id' => 'integer',
-        'modelable_type' => 'string',
+        'modelable_type_id' => 'integer',
         'modelable_id' => 'integer',
     ];
 
     public $fillable = [
         'questionnaire_id',
-        'modelable_type',
+        'modelable_type_id',
         'modelable_id',
     ];
 
@@ -63,8 +63,13 @@ class QuestionnaireModel extends Model
         return $this->belongsTo(Questionnaire::class, 'questionnaire_id');
     }
 
-    protected static function newFactory(): QuestionnaireModelFactory
+    public function modelableType(): BelongsTo
     {
-        return QuestionnaireModelFactory::new();
+        return $this->belongsTo(QuestionnaireModelType::class, 'modelable_type_id');
+    }
+
+    protected static function newFactory(): QuestionnaireModelTypeFactory
+    {
+        return QuestionnaireModelTypeFactory::new();
     }
 }
