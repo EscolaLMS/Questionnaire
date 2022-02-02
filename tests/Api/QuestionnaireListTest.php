@@ -15,13 +15,16 @@ class QuestionnaireListTest extends TestCase
         $this->authenticateAsAdmin();
 
         $response = $this->actingAs($this->user, 'api')->getJson('/api/admin/questionnaire');
+
         $response->assertOk();
+
         $response->assertJsonStructure([
             'success',
             'data',
             'meta',
             'message'
         ]);
+
         $response->assertJsonCount(0, 'data');
     }
 

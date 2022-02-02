@@ -31,10 +31,19 @@ class QuestionnaireModelFactory extends Factory
             $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
         }
 
+        $model = new $questionnaireModelType->modelable_class();
+        $newModel = $model::query()->inRandomOrder()->first();
+        if (empty($newModel)) {
+            $model::factory()
+                ->count(1)
+                ->create();
+            $newModel = $model::query()->inRandomOrder()->first();
+        }
+
         return [
             'questionnaire_id' => $questionnaire->id,
             'modelable_type_id' => $questionnaireModelType->id,
-            'modelable_id' => 1,
+            'modelable_id' => $newModel->id,
         ];
     }
 }

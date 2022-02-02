@@ -58,7 +58,7 @@ class QuestionnaireModel extends Model
         'modelable_id',
     ];
 
-    public function questions(): BelongsTo
+    public function questionnaire(): BelongsTo
     {
         return $this->belongsTo(Questionnaire::class, 'questionnaire_id');
     }
@@ -68,8 +68,8 @@ class QuestionnaireModel extends Model
         return $this->belongsTo(QuestionnaireModelType::class, 'modelable_type_id');
     }
 
-    protected static function newFactory(): QuestionnaireModelTypeFactory
+    protected static function newFactory(): QuestionnaireModelFactory
     {
-        return QuestionnaireModelTypeFactory::new();
+        return QuestionnaireModelFactory::new();
     }
 }

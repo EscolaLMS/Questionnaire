@@ -18,19 +18,28 @@ class QuestionAnswerFactory extends Factory
         /** @var Question $question */
         $question = Question::query()->inRandomOrder()->first();
         if (empty($question)) {
-            $question = QuestionFactory::new();
+            QuestionFactory::factory()
+                ->count(1)
+                ->create();
+            $question = QuestionFactory::query()->inRandomOrder()->first();
         }
 
         /** @var QuestionnaireModel $questionnaireModel */
         $questionnaireModel = QuestionnaireModel::query()->inRandomOrder()->first();
         if (empty($questionnaireModel)) {
-            $questionnaireModel = QuestionnaireModelFactory::new();
+            QuestionnaireModelFactory::factory()
+                ->count(1)
+                ->create();
+            $questionnaireModel = QuestionnaireModelFactory::query()->inRandomOrder()->first();
         }
 
         /** @var User $user */
         $user = User::query()->inRandomOrder()->first();
         if (empty($question)) {
-            $user = UserFactory::new();
+            UserFactory::factory()
+                ->count(1)
+                ->create();
+            $questionnaireModel = UserFactory::query()->inRandomOrder()->first();
         }
 
         return [

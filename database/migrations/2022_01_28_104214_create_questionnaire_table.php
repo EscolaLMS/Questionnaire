@@ -67,7 +67,7 @@ class CreateQuestionnaireTable extends Migration
                 function (Blueprint $table) {
                     $table->id('id');
                     $table->foreignIdFor(User::class, 'user_id');
-                    $table->foreignIdFor(Question::class, 'questions_id');
+                    $table->foreignIdFor(Question::class, 'question_id');
                     $table->foreignIdFor(QuestionnaireModel::class, 'questionnaire_model_id');
                     $table->integer('rate');
                     $table->timestamps();
