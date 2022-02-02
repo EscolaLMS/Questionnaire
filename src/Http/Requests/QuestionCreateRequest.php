@@ -40,12 +40,12 @@ class QuestionCreateRequest extends FormRequest
         return $this->get('description');
     }
 
-    public function getParamQuestionnaireId(): string
+    public function getParamQuestionnaireId(): int
     {
         return $this->get('questionnaire_id');
     }
 
-    public function getParamPosition(): string
+    public function getParamPosition(): int
     {
         return $this->get('position', 1);
     }

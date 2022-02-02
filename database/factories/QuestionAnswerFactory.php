@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire\Database\Factories;
 
-use Database\Factories\EscolaLms\Core\Models\UserFactory;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
@@ -18,28 +17,28 @@ class QuestionAnswerFactory extends Factory
         /** @var Question $question */
         $question = Question::query()->inRandomOrder()->first();
         if (empty($question)) {
-            QuestionFactory::factory()
+            Question::factory()
                 ->count(1)
                 ->create();
-            $question = QuestionFactory::query()->inRandomOrder()->first();
+            $question = Question::query()->inRandomOrder()->first();
         }
 
         /** @var QuestionnaireModel $questionnaireModel */
         $questionnaireModel = QuestionnaireModel::query()->inRandomOrder()->first();
         if (empty($questionnaireModel)) {
-            QuestionnaireModelFactory::factory()
+            QuestionnaireModel::factory()
                 ->count(1)
                 ->create();
-            $questionnaireModel = QuestionnaireModelFactory::query()->inRandomOrder()->first();
+            $questionnaireModel = QuestionnaireModel::query()->inRandomOrder()->first();
         }
 
         /** @var User $user */
         $user = User::query()->inRandomOrder()->first();
         if (empty($user)) {
-            UserFactory::factory()
+            User::factory()
                 ->count(1)
                 ->create();
-            $user = UserFactory::query()->inRandomOrder()->first();
+            $user = User::query()->inRandomOrder()->first();
         }
 
         return [

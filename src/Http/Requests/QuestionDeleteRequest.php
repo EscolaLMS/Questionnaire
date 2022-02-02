@@ -33,7 +33,7 @@ class QuestionDeleteRequest extends FormRequest
         ];
     }
 
-    public function getParamId()
+    public function getParamId(): int
     {
         return $this->route('id');
     }
