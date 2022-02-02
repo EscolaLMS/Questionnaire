@@ -19,7 +19,7 @@ jobs:
         run: cp -r env/codecov/. .
 
       - name: add Swagger main annotaion
-        run: php -r "file_put_contents('src/EscolaLmsNotificationsServiceProvider.php', str_replace('SWAGGER_VERSION', '@OA\Info(title=\"EscolaLMS\", version=\"0.0.1\")', file_get_contents('src/EscolaLmsNotificationsServiceProvider.php')));"
+        run: php -r "file_put_contents('src/EscolaLmsQuestionnaireServiceProvider.php', str_replace('SWAGGER_VERSION', '@OA\Info(title=\"EscolaLMS\", version=\"0.0.1\")', file_get_contents('src/EscolaLmsQuestionnaireServiceProvider.php')));"
 
       - name: Update composer
         run: COMPOSER_ROOT_VERSION=0.9.9 composer update
