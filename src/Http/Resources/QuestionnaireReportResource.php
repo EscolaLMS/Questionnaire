@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire\Http\Resources;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionnaireReportResource extends JsonResource

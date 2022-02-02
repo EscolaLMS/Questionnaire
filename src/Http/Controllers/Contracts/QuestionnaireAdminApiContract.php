@@ -6,6 +6,7 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionnaireCreateRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireDeleteRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReadRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReportRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireUpdateRequest;
 use Illuminate\Http\JsonResponse;
 
@@ -195,7 +196,7 @@ interface QuestionnaireAdminApiContract
      *         name="id",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -218,4 +219,86 @@ interface QuestionnaireAdminApiContract
      * )
      */
     public function read(QuestionnaireReadRequest $request, int $id): JsonResponse;
+
+    /**
+     * @OA\Get(
+     *     path="/api/admin/questionnaire/model",
+     *     summary="Lists available questionnaire model type",
+     *     tags={"QuestionnaireModelType"},
+     *     security={
+     *         {"passport": {}},
+     *     },
+     *     @OA\Response(
+     *         response=200,
+     *         description="list of available questionnaire model type",
+     *         @OA\MediaType(
+     *            mediaType="application/json",
+     *            @OA\Schema(
+     *                type="object",
+     *                description="map of questionnaire model type",
+     *                @OA\AdditionalProperties(
+     *                    ref="#/components/schemas/QuestionnaireModelType"
+     *                )
+     *            )
+     *         )
+     *      ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="endpoint requires authentication",
+     *     ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    public function getModelsType(QuestionnaireListingRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
+     *     path="/api/admin/questionnaire/report/{id}",
+     *     summary="Read a questionnaire report identified by a given id identifier",
+     *     tags={"QuestionnaireReport"},
+     *     security={
+     *         {"passport": {}},
+     *     },
+     *     @OA\Parameter(
+     *         description="Unique human-readable questionnaire identifier",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/QuestionnaireReportResource")
+     *      ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="endpoint requires authentication",
+     *     ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    public function report(
+        QuestionnaireReportRequest $request,
+        int $id,
+        ?int $model_type_id = null,
+        ?int $model_id = null,
+        ?int $user_id = null
+    ): JsonResponse;
 }

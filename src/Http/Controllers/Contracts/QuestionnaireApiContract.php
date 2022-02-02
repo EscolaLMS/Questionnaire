@@ -54,7 +54,7 @@ interface QuestionnaireApiContract
      *         name="slug",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

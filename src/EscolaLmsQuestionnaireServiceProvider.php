@@ -3,9 +3,11 @@
 namespace EscolaLms\Questionnaire;
 
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelTypeRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
 use EscolaLms\Questionnaire\Repository\QuestionAnswerRepository;
+use EscolaLms\Questionnaire\Repository\QuestionnaireModelTypeRepository;
 use EscolaLms\Questionnaire\Repository\QuestionnaireRepository;
 use EscolaLms\Questionnaire\Repository\QuestionRepository;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
@@ -22,6 +24,7 @@ class EscolaLmsQuestionnaireServiceProvider extends ServiceProvider
         QuestionAnswerRepositoryContract::class => QuestionAnswerRepository::class,
         QuestionnaireRepositoryContract::class => QuestionnaireRepository::class,
         QuestionRepositoryContract::class => QuestionRepository::class,
+        QuestionnaireModelTypeRepositoryContract::class => QuestionnaireModelTypeRepository::class
     ];
 
     public function boot()

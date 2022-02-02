@@ -12,7 +12,6 @@ Route::group(['prefix' => 'api/admin', 'middleware' => ['auth:api']], function (
         Route::post('/', [QuestionnaireAdminApiController::class, 'create']);
         Route::delete('/{id}', [QuestionnaireAdminApiController::class, 'delete']);
         Route::patch('/{id}', [QuestionnaireAdminApiController::class, 'update']);
-        Route::get('/models', [QuestionnaireAdminApiController::class, 'models']);
         Route::group(['prefix' => 'report'], function () {
             Route::get('/{id}', [QuestionnaireAdminApiController::class, 'report']);
             Route::get('/{id}/{model_type_id}', [QuestionnaireAdminApiController::class, 'report']);
@@ -20,6 +19,7 @@ Route::group(['prefix' => 'api/admin', 'middleware' => ['auth:api']], function (
             Route::get('/{id}/{model_type_id}/{model_id}/{user_id}', [QuestionnaireAdminApiController::class, 'report']);
         });
     });
+    Route::get('/questionnaire-models', [QuestionnaireAdminApiController::class, 'getModelsType']);
 
     Route::group(['prefix' => 'question'], function () {
         Route::get('/', [QuestionAdminApiController::class, 'list']);

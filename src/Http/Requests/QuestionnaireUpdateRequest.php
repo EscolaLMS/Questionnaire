@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
-use EscolaLms\Questionnaire\Enums\ModelEnum;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
