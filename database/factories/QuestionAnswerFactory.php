@@ -36,10 +36,7 @@ class QuestionAnswerFactory extends Factory
         /** @var User $user */
         $user = User::query()->inRandomOrder()->first();
         if (empty($question)) {
-            UserFactory::factory()
-                ->count(1)
-                ->create();
-            $questionnaireModel = UserFactory::query()->inRandomOrder()->first();
+            $user = UserFactory::new();
         }
 
         return [
