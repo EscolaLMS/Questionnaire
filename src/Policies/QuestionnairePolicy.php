@@ -21,9 +21,14 @@ class QuestionnairePolicy
         return $user->can(QuestionnairePermissionsEnum::QUESTIONNAIRE_READ);
     }
 
-    public function readFront(?User $user = null, Questionnaire $questionnaire): bool
+    public function listFront(User $user): bool
     {
-        return $questionnaire->active;
+        return !empty($user);
+    }
+
+    public function readFront(User $user, Questionnaire $questionnaire): bool
+    {
+        return !empty($user) && $questionnaire->active;
     }
 
     public function create(User $user): bool

@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class QuestionDeleteRequest extends FormRequest
 {
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         parent::prepareForValidation();
         $this->merge(['id' => $this->route('id')]);

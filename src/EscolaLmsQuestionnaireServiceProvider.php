@@ -2,10 +2,14 @@
 
 namespace EscolaLms\Questionnaire;
 
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
+use EscolaLms\Questionnaire\Repository\QuestionAnswerRepository;
 use EscolaLms\Questionnaire\Repository\QuestionnaireRepository;
 use EscolaLms\Questionnaire\Repository\QuestionRepository;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
+use EscolaLms\Questionnaire\Services\QuestionnaireAnswerService;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -14,6 +18,8 @@ use Illuminate\Support\ServiceProvider;
 class EscolaLmsQuestionnaireServiceProvider extends ServiceProvider
 {
     public $bindings = [
+        QuestionnaireAnswerServiceContract::class => QuestionnaireAnswerService::class,
+        QuestionAnswerRepositoryContract::class => QuestionAnswerRepository::class,
         QuestionnaireRepositoryContract::class => QuestionnaireRepository::class,
         QuestionRepositoryContract::class => QuestionRepository::class,
     ];

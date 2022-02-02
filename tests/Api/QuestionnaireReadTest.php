@@ -21,6 +21,8 @@ class QuestionnaireReadTest extends TestCase
 
     public function testCanReadExistingQuestionnaire(): void
     {
+        $this->authenticateAsAdmin();
+
         $questionnaire = Questionnaire::factory()->createOne();
         QuestionnaireModel::factory()->createOne();
         Questionnaire::factory()
@@ -35,7 +37,7 @@ class QuestionnaireReadTest extends TestCase
             ->count(20)
             ->create();
 
-        $response = $this->getJson($this->uri($questionnaire->id));
+        $response = $this->actingAs($this->user, 'api')->getJson($this->uri($questionnaire->id));
 
         $response->assertOk();
         $response->assertJsonFragment(collect($questionnaire->getAttributes())->except('id')->toArray());
