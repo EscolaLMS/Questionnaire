@@ -9,12 +9,12 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class QuestionnaireRepository extends BaseRepository implements QuestionnaireRepositoryContract
 {
-    public function model()
+    public function model(): string
     {
         return Questionnaire::class;
     }
 
-    public function getFieldsSearchable()
+    public function getFieldsSearchable(): array
     {
         return [];
     }
@@ -32,10 +32,6 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
     public function deleteQuestionnaire(int $id): bool
     {
         $questionnaire = $this->find($id);
-        if (!$questionnaire) {
-            return false;
-        }
-        //TODO remove all questions
         try {
             return $questionnaire->delete();
         } catch (\Exception $err) {

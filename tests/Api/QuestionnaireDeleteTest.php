@@ -2,7 +2,10 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
+use EscolaLms\Questionnaire\Models\Question;
+use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
+use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -23,6 +26,32 @@ class QuestionnaireDeleteTest extends TestCase
         $response = $this->actingAs($this->user, 'api')->delete($this->uri($questionnaire->id));
         $response->assertOk();
         $this->assertEquals(0, Questionnaire::where('id', $questionnaire->id)->count());
+    }
+
+    public function testAdminCanDeleteExistingQuestionnaireWithAllRelations(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaire = Questionnaire::factory()->createOne();
+        QuestionnaireModel::factory()->createOne();
+        Question::factory()
+            ->count(20)
+            ->create();
+        QuestionAnswer::factory()
+            ->count(200)
+            ->create();
+
+        $this->assertEquals(1, Questionnaire::where('id', $questionnaire->id)->count());
+        $this->assertEquals(20, Question::where('questionnaire_id', $questionnaire->id)->count());
+        $this->assertEquals(200, QuestionAnswer::count());
+        $this->assertEquals(1, QuestionnaireModel::count());
+
+        $response = $this->actingAs($this->user, 'api')->delete($this->uri($questionnaire->id));
+
+        $response->assertOk();
+        $this->assertEquals(0, Questionnaire::where('id', $questionnaire->id)->count());
+        $this->assertEquals(0, QuestionAnswer::count());
+        $this->assertEquals(0, QuestionnaireModel::count());
+        $this->assertEquals(0, Question::where('questionnaire_id', $questionnaire->id)->count());
     }
 
     public function testAdminCannotDeleteMissingQuestionnaire(): void

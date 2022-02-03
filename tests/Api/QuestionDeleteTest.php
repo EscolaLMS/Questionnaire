@@ -3,6 +3,8 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Models\Question;
+use EscolaLms\Questionnaire\Models\QuestionAnswer;
+use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -22,6 +24,27 @@ class QuestionDeleteTest extends TestCase
         $question = Question::factory()->createOne();
         $response = $this->actingAs($this->user, 'api')->delete($this->uri($question->id));
         $response->assertOk();
+        $this->assertEquals(0, Question::where('id', $question->id)->count());
+    }
+
+    public function testAdminCanDeleteExistingQuestionWithAllAnswers(): void
+    {
+        $this->authenticateAsAdmin();
+        $question = Question::factory()->createOne();
+        QuestionnaireModel::factory()->createOne();
+        QuestionAnswer::factory()
+            ->count(20)
+            ->create();
+
+        $this->assertEquals(1, Question::where('id', $question->id)->count());
+        $this->assertEquals(20, QuestionAnswer::count());
+        $this->assertEquals(1, QuestionnaireModel::count());
+
+        $response = $this->actingAs($this->user, 'api')->delete($this->uri($question->id));
+
+        $response->assertOk();
+        $this->assertEquals(0, QuestionAnswer::count());
+        $this->assertEquals(1, QuestionnaireModel::count());
         $this->assertEquals(0, Question::where('id', $question->id)->count());
     }
 

@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class QuestionReadRequest extends FormRequest
 {
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         parent::prepareForValidation();
         $this->merge(['id' => $this->route('id')]);
@@ -33,7 +33,7 @@ class QuestionReadRequest extends FormRequest
         ];
     }
 
-    public function getParamId()
+    public function getParamId(): int
     {
         return $this->route('id');
     }

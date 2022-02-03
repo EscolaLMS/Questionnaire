@@ -3,26 +3,40 @@
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
-use EscolaLms\Questionnaire\Enums\ModelEnum;
-use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireAdminApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireCreateRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireDeleteRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReadRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReportRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireUpdateRequest;
+use EscolaLms\Questionnaire\Http\Resources\QuestionnaireModelTypeCollection;
+use EscolaLms\Questionnaire\Http\Resources\QuestionnaireReportCollection;
+use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Models\Questionnaire;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelTypeRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionnaireAdminApiController extends EscolaLmsBaseController implements QuestionnaireAdminApiContract
 {
     private QuestionnaireRepositoryContract $questionnaireRepository;
+    private QuestionnaireAnswerServiceContract $questionAnswerService;
+    private QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository;
+    private QuestionnaireServiceContract $questionnaireService;
 
-    public function __construct(QuestionnaireRepositoryContract $questionnaireRepository)
-    {
+    public function __construct(
+        QuestionnaireRepositoryContract $questionnaireRepository,
+        QuestionnaireAnswerServiceContract $questionAnswerService,
+        QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository,
+        QuestionnaireServiceContract $questionnaireService
+    ) {
         $this->questionnaireRepository = $questionnaireRepository;
+        $this->questionAnswerService = $questionAnswerService;
+        $this->questionnaireModelTypeRepository = $questionnaireModelTypeRepository;
+        $this->questionnaireService = $questionnaireService;
     }
 
     public function list(QuestionnaireListingRequest $request): JsonResponse
@@ -63,7 +77,7 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function delete(QuestionnaireDeleteRequest $request, int $id): JsonResponse
     {
-        $this->questionnaireRepository->deleteQuestionnaire($id);
+        $this->questionnaireService->deleteQuestionnaire($request->getQuestionnaire());
 
         return $this->sendResponse(true, __("Questionnaire delete successfully"));
     }
@@ -78,11 +92,28 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
         );
     }
 
-    public function models(QuestionnaireListingRequest $request): JsonResponse
+    public function getModelsType(QuestionnaireListingRequest $request): JsonResponse
     {
+        $models = $this->questionnaireModelTypeRepository->all();
+
         return $this->sendResponseForResource(
-            JsonResource::collection(ModelEnum::getValues()),
+            QuestionnaireModelTypeCollection::make($models),
             __("Model list retrieved successfully")
+        );
+    }
+
+    public function report(
+        QuestionnaireReportRequest $request,
+        int $id,
+        ?int $model_type_id = null,
+        ?int $model_id = null,
+        ?int $user_id = null
+    ): JsonResponse {
+        $report = $this->questionAnswerService->getReport($id, $model_type_id, $model_id, $user_id);
+
+        return $this->sendResponseForResource(
+            QuestionnaireReportCollection::make($report),
+            __("Questionnaire report fetched successfully")
         );
     }
 }

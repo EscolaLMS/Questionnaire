@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class QuestionnaireDeleteRequest extends FormRequest
 {
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         parent::prepareForValidation();
         $this->merge(['id' => $this->route('id')]);
@@ -33,7 +33,7 @@ class QuestionnaireDeleteRequest extends FormRequest
         ];
     }
 
-    public function getParamId()
+    public function getParamId(): int
     {
         return $this->route('id');
     }

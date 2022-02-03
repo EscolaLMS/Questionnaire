@@ -9,12 +9,12 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class QuestionRepository extends BaseRepository implements QuestionRepositoryContract
 {
-    public function model()
+    public function model(): string
     {
         return Question::class;
     }
 
-    public function getFieldsSearchable()
+    public function getFieldsSearchable(): array
     {
         return [];
     }

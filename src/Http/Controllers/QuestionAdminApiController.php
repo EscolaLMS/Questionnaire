@@ -12,15 +12,20 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionUpdateRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionResource;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
 use Illuminate\Http\JsonResponse;
 
 class QuestionAdminApiController extends EscolaLmsBaseController implements QuestionAdminApiContract
 {
     private QuestionRepositoryContract $questionRepository;
+    private QuestionServiceContract $questionService;
 
-    public function __construct(QuestionRepositoryContract $questionRepository)
-    {
+    public function __construct(
+        QuestionRepositoryContract $questionRepository,
+        QuestionServiceContract $questionService
+    ) {
         $this->questionRepository = $questionRepository;
+        $this->questionService = $questionService;
     }
 
     public function list(QuestionListingRequest $request): JsonResponse
@@ -64,7 +69,7 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
 
     public function delete(QuestionDeleteRequest $request, int $id): JsonResponse
     {
-        $this->questionRepository->delete($id);
+        $this->questionService->deleteQuestion($request->getQuestion());
 
         return $this->sendResponse(true, __("Question delete successfully"));
     }

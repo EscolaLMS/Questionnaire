@@ -191,7 +191,7 @@ interface QuestionAdminApiContract
      *         name="id",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
