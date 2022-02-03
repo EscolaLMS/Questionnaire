@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerRepositoryContract
 {
-    public function model()
+    public function model(): string
     {
         return QuestionAnswer::class;
     }
 
-    public function getFieldsSearchable()
+    public function getFieldsSearchable(): array
     {
         return [];
     }
@@ -55,5 +55,15 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
         }
 
         return $query->get();
+    }
+
+    public function deleteByModelId(int $modelId): bool
+    {
+        return $this->model->newQuery()->where('questionnaire_model_id', '=', $modelId)->delete();
+    }
+
+    public function deleteByQuestionId(int $questionId): bool
+    {
+        return $this->model->newQuery()->where('question_id', '=', $questionId)->delete();
     }
 }

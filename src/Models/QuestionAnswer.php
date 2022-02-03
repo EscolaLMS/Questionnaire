@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @OA\Schema(
  *     schema="QuestionAnswer",
- *     required={"rate","question_id","user_id"},
+ *     required={"rate","question_id","user_id","questionnaire_model_id"},
  *     @OA\Property(
  *          property="rate",
  *          type="integer",
@@ -26,6 +26,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *          property="user_id",
  *          type="integer",
  *          description="identifier of the user object"
+ *     ),
+ *     @OA\Property(
+ *          property="questionnaire_model_id",
+ *          type="integer",
+ *          description="identifier of the questionnaire model object"
  *     )
  * )
  *
@@ -33,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property integer $rate
  * @property integer $user_id
  * @property integer $question_id
+ * @property integer $questionnaire_model_id
  */
 class QuestionAnswer extends Model
 {
@@ -50,12 +56,14 @@ class QuestionAnswer extends Model
         'id' => 'integer',
         'user_id' => 'integer',
         'question_id' => 'integer',
+        'questionnaire_model_id' => 'integer',
         'rate' => 'integer',
     ];
 
     public $fillable = [
         'user_id',
         'question_id',
+        'questionnaire_model_id',
         'rate',
     ];
 
@@ -67,6 +75,11 @@ class QuestionAnswer extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function questionnaireModel(): BelongsTo
+    {
+        return $this->belongsTo(QuestionnaireModel::class, 'questionnaire_model_id');
     }
 
     protected static function newFactory(): QuestionAnswerFactory

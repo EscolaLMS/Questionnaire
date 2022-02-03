@@ -13,4 +13,7 @@ interface QuestionAnswerRepositoryContract extends BaseRepositoryContract
         ?int $modelId = null,
         ?int $userId = null
     ): Collection;
+
+    public function deleteByModelId(int $modelId): bool;
+    public function deleteByQuestionId(int $questionId): bool;
 }

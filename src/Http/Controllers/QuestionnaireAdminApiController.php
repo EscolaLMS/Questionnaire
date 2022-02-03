@@ -17,6 +17,7 @@ use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelTypeRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
 use Illuminate\Http\JsonResponse;
 
 class QuestionnaireAdminApiController extends EscolaLmsBaseController implements QuestionnaireAdminApiContract
@@ -24,15 +25,18 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     private QuestionnaireRepositoryContract $questionnaireRepository;
     private QuestionnaireAnswerServiceContract $questionAnswerService;
     private QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository;
+    private QuestionnaireServiceContract $questionnaireService;
 
     public function __construct(
         QuestionnaireRepositoryContract $questionnaireRepository,
         QuestionnaireAnswerServiceContract $questionAnswerService,
-        QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository
+        QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository,
+        QuestionnaireServiceContract $questionnaireService
     ) {
         $this->questionnaireRepository = $questionnaireRepository;
         $this->questionAnswerService = $questionAnswerService;
         $this->questionnaireModelTypeRepository = $questionnaireModelTypeRepository;
+        $this->questionnaireService = $questionnaireService;
     }
 
     public function list(QuestionnaireListingRequest $request): JsonResponse
@@ -73,7 +77,7 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function delete(QuestionnaireDeleteRequest $request, int $id): JsonResponse
     {
-        $this->questionnaireRepository->deleteQuestionnaire($id);
+        $this->questionnaireService->deleteQuestionnaire($request->getQuestionnaire());
 
         return $this->sendResponse(true, __("Questionnaire delete successfully"));
     }

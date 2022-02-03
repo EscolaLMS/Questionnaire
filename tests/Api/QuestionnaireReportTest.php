@@ -15,7 +15,8 @@ class QuestionnaireReportTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public Model $questionnaire;
+    public Questionnaire $questionnaire;
+    public QuestionnaireModel $questionnaireModel;
 
     protected function setUp(): void
     {
@@ -23,17 +24,14 @@ class QuestionnaireReportTest extends TestCase
         $this->authenticateAsAdmin();
 
         $this->questionnaire = Questionnaire::factory()->createOne();
-        QuestionnaireModel::factory()->createOne();
-        Questionnaire::factory()
-            ->count(2)
-            ->create();
+        $this->questionnaireModel = QuestionnaireModel::factory()->createOne();
 
         Question::factory()
             ->count(20)
             ->create();
 
         QuestionAnswer::factory()
-            ->count(20)
+            ->count(200)
             ->create();
     }
 
@@ -41,6 +39,27 @@ class QuestionnaireReportTest extends TestCase
     {
         $response = $this->actingAs($this->user, 'api')->getJson(
             sprintf('/api/admin/questionnaire/report/%d', $this->questionnaire->id)
+        );
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'success',
+            'data',
+            'message'
+        ]);
+        $response->assertJsonCount(20, 'data');
+    }
+
+    public function testCanReadQuestionnaireReportWithAllParams(): void
+    {
+        $response = $this->actingAs($this->user, 'api')->getJson(
+            sprintf(
+                '/api/admin/questionnaire/report/%d/%d/%d/%d',
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelable_type_id,
+                $this->questionnaireModel->modelable_id,
+                $this->user->id
+            )
         );
 
         $response->assertOk();
