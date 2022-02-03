@@ -47,38 +47,20 @@ class QuestionnaireListTest extends TestCase
         );
     }
 
-    public function testAnonymousCanListEmptyQuestionnaire(): void
+    public function testAnonymousCantListEmptyQuestionnaire(): void
     {
-        $this->authenticateAsAdmin();
-
         $response = $this->getJson('/api/questionnaire');
-        $response->assertOk();
-        $response->assertJsonStructure([
-            'success',
-            'data',
-            'meta',
-            'message'
-        ]);
-        $response->assertJsonCount(0, 'data');
+
+        $response->assertForbidden();
     }
 
-    public function testAnonymousCanListQuestionnaire(): void
+    public function testAnonymousCantListQuestionnaire(): void
     {
-        $this->authenticateAsAdmin();
-
-        $questionnaires = Questionnaire::factory()
+        Questionnaire::factory()
             ->count(10)
             ->create(['active' => true]);
 
-        $questionnairesArr = $questionnaires->map(function (Questionnaire $p) {
-            return $p->toArray();
-        })->values()->toArray();
-
-
         $response = $this->getJson('/api/questionnaire');
-        $response->assertOk();
-        $response->assertJsonFragment(
-            $questionnairesArr[0]
-        );
+        $response->assertForbidden();
     }
 }
