@@ -6,6 +6,7 @@ use EscolaLms\Questionnaire\Database\Factories\QuestionnaireModelFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @OA\Schema(
@@ -30,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property integer $id
  * @property integer $questionnaire_id
- * @property integer modelable_type_id
+ * @property integer $modelable_type_id
  * @property integer $modelable_id
  */
 class QuestionnaireModel extends Model
@@ -66,6 +67,11 @@ class QuestionnaireModel extends Model
     public function modelableType(): BelongsTo
     {
         return $this->belongsTo(QuestionnaireModelType::class, 'modelable_type_id');
+    }
+
+    public function questionAnswer(): HasMany
+    {
+        return $this->hasMany(QuestionAnswer::class, 'questionnaire_model_id');
     }
 
     protected static function newFactory(): QuestionnaireModelFactory

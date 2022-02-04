@@ -18,6 +18,10 @@ class QuestionnaireCreateRequest extends FormRequest
         return [
             'title' => 'string|required',
             'active' => 'boolean',
+            /*'models' => ['array'],
+            'models.*' => ['sometimes', 'array'],
+            'models.*.modelable_type_id' => ['integer'],
+            'models.*.modelable_id' => ['integer'],*/
         ];
     }
 

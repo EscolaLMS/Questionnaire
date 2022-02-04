@@ -294,11 +294,5 @@ interface QuestionnaireAdminApiContract
      *      ),
      * )
      */
-    public function report(
-        QuestionnaireReportRequest $request,
-        int $id,
-        ?int $model_type_id = null,
-        ?int $model_id = null,
-        ?int $user_id = null
-    ): JsonResponse;
+    public function report(QuestionnaireReportRequest $request): JsonResponse;
 }

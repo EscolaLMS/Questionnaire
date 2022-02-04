@@ -75,6 +75,6 @@ class QuestionUpdateRequest extends FormRequest
 
     public function getQuestion(): Question
     {
-        return Question::findOrFail($this->route('id'));
+        return Question::findOrFail($this->getParamId());
     }
 }

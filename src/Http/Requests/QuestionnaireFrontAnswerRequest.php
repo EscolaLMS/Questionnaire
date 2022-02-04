@@ -2,14 +2,13 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
-use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
-class QuestionnaireReportRequest extends FormRequest
+class QuestionnaireFrontAnswerRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
@@ -18,7 +17,6 @@ class QuestionnaireReportRequest extends FormRequest
             'id' => $this->route('id'),
             'model_type_id' => $this->route('model_type_id'),
             'model_id' => $this->route('model_id'),
-            'user_id' => $this->route('user_id'),
         ]);
     }
 
@@ -26,7 +24,7 @@ class QuestionnaireReportRequest extends FormRequest
     {
         $questionnaire = $this->getQuestionnaire();
 
-        return Gate::allows('read', $questionnaire);
+        return Gate::allows('readFront', $questionnaire);
     }
 
     public function rules(): array
@@ -48,12 +46,6 @@ class QuestionnaireReportRequest extends FormRequest
                 'sometimes',
                 'nullable',
             ],
-            'user_id' => [
-                'integer',
-                'sometimes',
-                'nullable',
-                Rule::exists(User::class, 'id'),
-            ],
         ];
     }
 
@@ -62,19 +54,14 @@ class QuestionnaireReportRequest extends FormRequest
         return $this->route('id');
     }
 
-    public function getParamModelTypeId(): int
+    public function getParamModelTypeId(): ?int
     {
         return $this->route('model_type_id');
     }
 
-    public function getParamModelId(): int
+    public function getParamModelId(): ?int
     {
         return $this->route('model_id');
-    }
-
-    public function getParamUserId(): int
-    {
-        return $this->route('user_id');
     }
 
     public function getQuestionnaire(): Questionnaire

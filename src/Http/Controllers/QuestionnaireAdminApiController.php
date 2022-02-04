@@ -77,7 +77,10 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function delete(QuestionnaireDeleteRequest $request, int $id): JsonResponse
     {
-        $this->questionnaireService->deleteQuestionnaire($request->getQuestionnaire());
+        $deleted = $this->questionnaireService->deleteQuestionnaire($request->getQuestionnaire());
+        if (!$deleted) {
+            return $this->sendError(__("Can't delete questionnaire"), 404);
+        }
 
         return $this->sendResponse(true, __("Questionnaire delete successfully"));
     }
@@ -102,14 +105,13 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
         );
     }
 
-    public function report(
-        QuestionnaireReportRequest $request,
-        int $id,
-        ?int $model_type_id = null,
-        ?int $model_id = null,
-        ?int $user_id = null
-    ): JsonResponse {
-        $report = $this->questionAnswerService->getReport($id, $model_type_id, $model_id, $user_id);
+    public function report(QuestionnaireReportRequest $request): JsonResponse {
+        $report = $this->questionAnswerService->getReport(
+            $request->getParamId(),
+            $request->getParamModelTypeId(),
+            $request->getParamModelId(),
+            $request->getParamUserId()
+        );
 
         return $this->sendResponseForResource(
             QuestionnaireReportCollection::make($report),

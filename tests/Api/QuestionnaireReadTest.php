@@ -7,6 +7,7 @@ use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -14,9 +15,9 @@ class QuestionnaireReadTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private function uri(int $id): string
+    private function uri(int $id, string $modelTypeTitle, int $modelId): string
     {
-        return sprintf('/api/questionnaire/%d', $id);
+        return sprintf('/api/questionnaire/%s/%d/%d', $modelTypeTitle, $modelId, $id);
     }
 
     public function testCanReadExistingQuestionnaire(): void
@@ -24,10 +25,7 @@ class QuestionnaireReadTest extends TestCase
         $this->authenticateAsAdmin();
 
         $questionnaire = Questionnaire::factory()->createOne();
-        QuestionnaireModel::factory()->createOne();
-        Questionnaire::factory()
-            ->count(2)
-            ->create();
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
 
         Question::factory()
             ->count(20)
@@ -35,17 +33,21 @@ class QuestionnaireReadTest extends TestCase
 
         QuestionAnswer::factory()
             ->count(20)
-            ->create();
+            ->create([
+                'user_id' => $this->user->id,
+                'questionnaire_model_id' => $questionnaireModel->id
+            ]);
 
-        $response = $this->actingAs($this->user, 'api')->getJson($this->uri($questionnaire->id));
+        $response = $this->actingAs($this->user, 'api')->getJson(
+            $this->uri($questionnaire->id, $questionnaireModel->modelableType->title, $questionnaireModel->modelable_id)
+        );
 
         $response->assertOk();
-        $response->assertJsonFragment(collect($questionnaire->getAttributes())->except('id')->toArray());
     }
 
     public function testCannotFindMissingQuestionnaire(): void
     {
-        $response = $this->getJson($this->uri(99999));
+        $response = $this->getJson($this->uri(99999, 9999, 99999));
 
         $response->assertStatus(404);
     }

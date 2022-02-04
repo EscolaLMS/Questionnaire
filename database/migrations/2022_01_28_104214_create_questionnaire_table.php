@@ -71,6 +71,7 @@ class CreateQuestionnaireTable extends Migration
                     $table->foreignIdFor(QuestionnaireModel::class, 'questionnaire_model_id');
                     $table->integer('rate');
                     $table->timestamps();
+                    $table->unique(['user_id', 'question_id', 'questionnaire_model_id']);
                 }
             );
         }

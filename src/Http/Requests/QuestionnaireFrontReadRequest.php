@@ -15,7 +15,7 @@ class QuestionnaireFrontReadRequest extends FormRequest
         parent::prepareForValidation();
         $this->merge([
             'id' => $this->route('id'),
-            'model_type_id' => $this->route('model_type_id'),
+            'model_type_title' => $this->route('model_type_title'),
             'model_id' => $this->route('model_id'),
         ]);
     }
@@ -35,16 +35,12 @@ class QuestionnaireFrontReadRequest extends FormRequest
                 'required',
                 Rule::exists(Questionnaire::class, 'id'),
             ],
-            'model_type_id' => [
-                'integer',
-                'sometimes',
-                'nullable',
-                Rule::exists(QuestionnaireModelType::class, 'id'),
+            'model_type_title' => [
+                'string',
+                Rule::exists(QuestionnaireModelType::class, 'title'),
             ],
             'model_id' => [
                 'integer',
-                'sometimes',
-                'nullable',
             ],
         ];
     }
@@ -54,9 +50,9 @@ class QuestionnaireFrontReadRequest extends FormRequest
         return $this->route('id');
     }
 
-    public function getParamModelTypeId(): int
+    public function getParamModelTypeTitle(): string
     {
-        return $this->route('model_type_id');
+        return $this->route('model_type_title');
     }
 
     public function getParamModelId(): int
@@ -66,6 +62,6 @@ class QuestionnaireFrontReadRequest extends FormRequest
 
     public function getQuestionnaire(): Questionnaire
     {
-        return Questionnaire::findOrFail($this->route('id'));
+        return Questionnaire::findOrFail($this->getParamId());
     }
 }
