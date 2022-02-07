@@ -67,8 +67,34 @@ class QuestionAnswerTest extends TestCase
 
         $this->assertEquals($data->data->id, $this->questionnaire->id);
         foreach ($data->data->questions as $question) {
-
             $this->assertEquals($question->rate, $arrayOfAnswers[$question->id]);
+        }
+
+        $response = $this->actingAs($this->user, 'api')->postJson(
+            $this->uri(
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            ),
+            [
+                'answers' => [
+                    ['question_id' => $this->questions[1]->getKey(), 'rate' => 5],
+                    ['question_id' => $this->questions[2]->getKey(), 'rate' => 5],
+                    ['question_id' => $this->questions[3]->getKey(), 'rate' => 5],
+                    ['question_id' => $this->questions[4]->getKey(), 'rate' => 5],
+                ],
+            ]
+        );
+
+        $response->assertOk();
+        $this->assertEquals(5, QuestionAnswer::count());
+
+        $data = json_decode($response->getContent());
+
+        $this->assertEquals($data->data->id, $this->questionnaire->id);
+        foreach ($data->data->questions as $question) {
+
+            $this->assertEquals($question->rate, 5);
         }
     }
 

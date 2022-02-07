@@ -57,10 +57,7 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
 
     public function delete(QuestionDeleteRequest $request, int $id): JsonResponse
     {
-        $deleted = $this->questionService->deleteQuestion($request->getQuestion());
-        if (!$deleted) {
-            return $this->sendError(__("Can't delete question"), 404);
-        }
+        $this->questionService->deleteQuestion($request->getQuestion());
 
         return $this->sendResponse(true, __("Question delete successfully"));
     }

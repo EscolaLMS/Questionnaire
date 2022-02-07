@@ -68,10 +68,7 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function delete(QuestionnaireDeleteRequest $request, int $id): JsonResponse
     {
-        $deleted = $this->questionnaireService->deleteQuestionnaire($request->getQuestionnaire());
-        if (!$deleted) {
-            return $this->sendError(__("Can't delete questionnaire"), 404);
-        }
+        $this->questionnaireService->deleteQuestionnaire($request->getQuestionnaire());
 
         return $this->sendResponse(true, __("Questionnaire delete successfully"));
     }

@@ -5,7 +5,6 @@ namespace EscolaLms\Questionnaire\Models;
 use EscolaLms\Questionnaire\Database\Factories\QuestionnaireModelTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @OA\Schema(
@@ -49,11 +48,6 @@ class QuestionnaireModelType extends Model
         'title',
         'model_class',
     ];
-
-    public function questionnaireModel(): HasMany
-    {
-        return $this->hasMany(QuestionnaireModel::class, 'model_type_id');
-    }
 
     protected static function newFactory(): QuestionnaireModelTypeFactory
     {

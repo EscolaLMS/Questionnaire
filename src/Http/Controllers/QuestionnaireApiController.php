@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
-use Error;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontAnswerRequest;
@@ -56,10 +55,6 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
             ],
             $request->user()
         );
-
-        if (!$questionnaire) {
-            throw new Error("This questionnaire does not exist!");
-        }
 
         return $this->sendResponseForResource(
             QuestionnaireFrontResource::make($questionnaire),

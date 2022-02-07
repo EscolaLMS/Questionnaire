@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
-use EscolaLms\Questionnaire\Http\Resources\QuestionnaireModelResource;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
@@ -61,5 +60,37 @@ class QuestionnaireReadTest extends TestCase
         $response = $this->actingAs($this->user, 'api')->getJson('/api/admin/questionnaire/' . $questionnaire->getKey());
         $response->assertOk();
         $response->assertJsonFragment(collect($questionnaire->getAttributes())->except('id')->toArray());
+    }
+
+    public function testCanNotReadNotActiveQuestionnaire(): void
+    {
+        $this->authenticateAsAdmin();
+
+        $questionnaire = Questionnaire::factory()->createOne(['active' => false]);
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+
+        $response = $this->actingAs($this->user, 'api')->getJson(
+            $this->uri($questionnaire->id, $questionnaireModel->modelableType->title, $questionnaireModel->model_id)
+        );
+
+        $response->assertForbidden();
+    }
+
+    public function testCanNotReadQuestionnaireWithWrongClassOfModelType(): void
+    {
+        $this->authenticateAsAdmin();
+
+        $questionnaire = Questionnaire::factory()->createOne();
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+        $questionnaireModelType = QuestionnaireModelType::factory()->createOne([
+            'model_class' => Question::class,
+            'title' => 'question',
+        ]);
+
+        $response = $this->actingAs($this->user, 'api')->getJson(
+            $this->uri($questionnaire->id, $questionnaireModelType->title, $questionnaireModel->model_id)
+        );
+
+        $response->assertStatus(422);
     }
 }
