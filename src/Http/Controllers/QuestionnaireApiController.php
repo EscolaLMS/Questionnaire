@@ -10,16 +10,22 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireFrontResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
+use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
 use Illuminate\Http\JsonResponse;
 
 class QuestionnaireApiController extends EscolaLmsBaseController implements QuestionnaireApiContract
 {
     private QuestionnaireServiceContract $questionnaireService;
+    private QuestionnaireAnswerServiceContract $questionnaireAnswerService;
 
-    public function __construct(QuestionnaireServiceContract $questionnaireService)
-    {
+    public function __construct(
+        QuestionnaireServiceContract $questionnaireService,
+        QuestionnaireAnswerServiceContract $questionnaireAnswerService
+    ) {
         $this->questionnaireService = $questionnaireService;
+        $this->questionnaireAnswerService = $questionnaireAnswerService;
     }
 
     public function list(QuestionnaireFrontListingRequest $request): JsonResponse
@@ -61,21 +67,24 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
         );
     }
 
-    /*public function answer(QuestionnaireFrontAnswerRequest $request): JsonResponse
+    public function answer(QuestionnaireFrontAnswerRequest $request): JsonResponse
     {
-        $questionnaire = $this->questionnaireService->answer(
-            [
-                'id' => $request->getParamId(),
-                'model_type_id' => $request->getParamModelTypeId(),
-                'model_id' => $request->getParamModelId(),
-                'active' => true
-            ],
+        /** @var QuestionnaireModel $questionnaireModel */
+        $questionnaireModel = QuestionnaireModel::query()->where([
+            'questionnaire_id' => $request->getParamId(),
+            'model_id' => $request->getParamModelId(),
+            'model_type_id' => $request->getQuestionnaireModelType()->id,
+        ])->firstOrFail();
+
+        $questionnaire = $this->questionnaireAnswerService->saveAnswers(
+            $questionnaireModel,
+            $request->validated(),
             $request->user()
         );
 
         return $this->sendResponseForResource(
             QuestionnaireFrontResource::make($questionnaire),
-            __("questionnaire fetched successfully")
+            __("Answers save successfully")
         );
-    }*/
+    }
 }
