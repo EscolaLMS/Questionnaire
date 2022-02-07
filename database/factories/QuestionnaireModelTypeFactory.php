@@ -13,7 +13,7 @@ class QuestionnaireModelTypeFactory extends Factory
     {
         return [
             'title' => 'Course',
-            'modelable_class' => 'EscolaLms\Courses\Models\Course',
+            'model_class' => 'EscolaLms\Courses\Models\Course',
         ];
     }
 }

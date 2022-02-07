@@ -24,9 +24,9 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
             ->model
             ->newQuery()
             ->select('questionnaire_models.*')
-            ->join('questionnaire_model_types', 'questionnaire_model_types.id', '=', 'modelable_type_id')
+            ->join('questionnaire_model_types', 'questionnaire_model_types.id', '=', 'model_type_id')
             ->where('questionnaire_model_types.title', '=', $title)
-            ->where('modelable_id', '=', $model_id)
+            ->where('model_id', '=', $model_id)
             ->firstOrFail();
     }
 }

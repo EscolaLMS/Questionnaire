@@ -4,6 +4,7 @@ namespace EscolaLms\Questionnaire\Http\Requests;
 
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
+use EscolaLms\Questionnaire\Rules\ClassExist;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -38,9 +39,11 @@ class QuestionnaireFrontReadRequest extends FormRequest
             'model_type_title' => [
                 'string',
                 Rule::exists(QuestionnaireModelType::class, 'title'),
+                new ClassExist
             ],
             'model_id' => [
                 'integer',
+                Rule::exists($this->getQuestionnaireModelType()->model_class, 'id'),
             ],
         ];
     }
@@ -63,5 +66,10 @@ class QuestionnaireFrontReadRequest extends FormRequest
     public function getQuestionnaire(): Questionnaire
     {
         return Questionnaire::findOrFail($this->getParamId());
+    }
+
+    public function getQuestionnaireModelType(): QuestionnaireModelType
+    {
+        return QuestionnaireModelType::query()->where('title', $this->getParamModelTypeTitle())->firstOrFail();
     }
 }

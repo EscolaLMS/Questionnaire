@@ -69,12 +69,11 @@ class QuestionnaireService implements QuestionnaireServiceContract
     public function findForFront(array $filters, User $user): ?array
     {
         $questionnaire = $this->questionnaireRepository->findActive($filters['id']);
-        try {
-            $questionnaireModel = $this->questionnaireModelRepository->findByModelTitleAndModelId(
-                $filters['model_type_title'],
-                $filters['model_id']
-            );
-        } catch (ModelNotFoundException $exception) {}
+
+        $questionnaireModel = $this->questionnaireModelRepository->findByModelTitleAndModelId(
+            $filters['model_type_title'],
+            $filters['model_id']
+        );
 
         if (!$questionnaire) {
             return null;
@@ -86,7 +85,7 @@ class QuestionnaireService implements QuestionnaireServiceContract
             $answer = $this->getAnswerFromQuestionForUser($question, $questionnaireModel, $user);
             $questionnaireReturn['questions'][$key]['rate'] = $answer ? $answer->rate : null;
         }
-        $questionnaireReturn['questions'] = new collection($questionnaireReturn['questions']);
+        $questionnaireReturn['questions'] = new collection($questionnaireReturn['questions'] ?? []);
 
         return $questionnaireReturn;
     }
@@ -105,5 +104,38 @@ class QuestionnaireService implements QuestionnaireServiceContract
             'user_id' => $user->id,
             'questionnaire_model_id' => $model->id
         ])->first() : null;
+    }
+
+    public function createQuestionnaire(array $data): Questionnaire
+    {
+        $questionnaire = new Questionnaire([
+            'title' => $data['title'],
+            'active' => $data['active']
+        ]);
+        $questionnaire->save();
+
+        foreach ($data['models'] ?? [] as $model) {
+            QuestionnaireModel::create([
+                'questionnaire_id' => $questionnaire->getKey(),
+                'model_type_id' => $model['model_type_id'],
+                'model_id' => $model['model_id'],
+            ]);
+        }
+
+        return $questionnaire->refresh();
+    }
+
+    public function updateQuestionnaire(Questionnaire $questionnaire, array $data): Questionnaire
+    {
+        if (isset($data['models'])) {
+            $this->questionnaireModelService->saveModelsForQuestionnaire($questionnaire->getKey(), $data['models']);
+        }
+
+        unset($data['models']);
+
+        $questionnaire->fill($data);
+        $questionnaire->save();
+
+        return $questionnaire->refresh();
     }
 }

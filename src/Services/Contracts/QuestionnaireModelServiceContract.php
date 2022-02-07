@@ -11,4 +11,5 @@ use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 interface QuestionnaireModelServiceContract
 {
     public function deleteQuestionnaireModel(QuestionnaireModel $questionnaireModel): bool;
+    public function saveModelsForQuestionnaire(int $questionnaireId, array $models): void;
 }

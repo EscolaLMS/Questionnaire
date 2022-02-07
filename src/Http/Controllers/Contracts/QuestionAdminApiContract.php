@@ -213,5 +213,5 @@ interface QuestionAdminApiContract
      *      ),
      * )
      */
-    public function read(QuestionReadRequest $request, int $id): JsonResponse;
+    public function read(QuestionReadRequest $request): JsonResponse;
 }

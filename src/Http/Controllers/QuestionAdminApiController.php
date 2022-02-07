@@ -10,7 +10,6 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionReadRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionUpdateRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionResource;
-use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
 use Illuminate\Http\JsonResponse;
@@ -30,36 +29,25 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
 
     public function list(QuestionListingRequest $request): JsonResponse
     {
-        $questions = $this->questionRepository->searchAndPaginate();
-
         return $this->sendResponseForResource(
-            QuestionResource::collection($questions),
+            QuestionResource::collection($this->questionRepository->searchAndPaginate()),
             __("Question list retrieved successfully")
         );
     }
 
     public function create(QuestionCreateRequest $request): JsonResponse
     {
-        $question = new Question([
-            'description' => $request->getParamDescription(),
-            'title' => $request->getParamTitle(),
-            'questionnaire_id' => $request->getParamQuestionnaireId(),
-            'position' => $request->getParamPosition(),
-            'active' => $request->getParamActive(),
-        ]);
-
-        $question = $this->questionRepository->insert($question);
+        $questionnaire = $this->questionService->createQuestion($request->validated());
 
         return $this->sendResponseForResource(
-            QuestionResource::make($question),
+            QuestionResource::make($questionnaire),
             __("Question created successfully")
         );
     }
 
     public function update(QuestionUpdateRequest $request, int $id): JsonResponse
     {
-        $input = $request->all();
-        $updated = $this->questionRepository->update($input, $id);
+        $updated = $this->questionService->updateQuestion($request->getQuestion(), $request->validated());
 
         return $this->sendResponseForResource(
             QuestionResource::make($updated),
@@ -77,12 +65,10 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
         return $this->sendResponse(true, __("Question delete successfully"));
     }
 
-    public function read(QuestionReadRequest $request, int $id): JsonResponse
+    public function read(QuestionReadRequest $request): JsonResponse
     {
-        $questions = $this->questionRepository->find($id);
-
         return $this->sendResponseForResource(
-            QuestionResource::make($questions),
+            QuestionResource::make($request->getQuestion()),
             __("Question fetched successfully")
         );
     }

@@ -52,7 +52,7 @@ class QuestionnaireListTest extends TestCase
     {
         $this->authenticateAsAdmin();
         $questionnaireModel = QuestionnaireModel::factory()->createOne();
-        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->modelable_id);
+        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->model_id);
         Questionnaire::factory()
             ->count(10)
             ->create(['active' => true]);
@@ -75,7 +75,7 @@ class QuestionnaireListTest extends TestCase
     public function testAnonymousCantListEmptyQuestionnaire(): void
     {
         $questionnaireModel = QuestionnaireModel::factory()->createOne();
-        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->modelable_id);
+        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->model_id);
 
         $response = $this->getJson($url);
 
@@ -85,7 +85,7 @@ class QuestionnaireListTest extends TestCase
     public function testAnonymousCantListQuestionnaire(): void
     {
         $questionnaireModel = QuestionnaireModel::factory()->createOne();
-        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->modelable_id);
+        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->model_id);
         Questionnaire::factory()
             ->count(10)
             ->create(['active' => true]);

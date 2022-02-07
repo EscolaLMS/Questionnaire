@@ -39,7 +39,7 @@ class QuestionnaireReadTest extends TestCase
             ]);
 
         $response = $this->actingAs($this->user, 'api')->getJson(
-            $this->uri($questionnaire->id, $questionnaireModel->modelableType->title, $questionnaireModel->modelable_id)
+            $this->uri($questionnaire->id, $questionnaireModel->modelableType->title, $questionnaireModel->model_id)
         );
 
         $response->assertOk();

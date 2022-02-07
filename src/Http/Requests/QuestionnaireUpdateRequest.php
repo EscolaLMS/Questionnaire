@@ -32,22 +32,16 @@ class QuestionnaireUpdateRequest extends FormRequest
             ],
             'title' => 'string',
             'active' => 'boolean',
+            'models' => ['sometimes', 'array'],
+            'models.*' => ['sometimes', 'array'],
+            'models.*.model_type_id' => ['integer'],
+            'models.*.model_id' => ['integer'],
         ];
     }
 
     public function getParamId(): int
     {
         return $this->route('id');
-    }
-
-    public function getParamTitle(): string
-    {
-        return $this->get('title');
-    }
-
-    public function getParamActive(): bool
-    {
-        return $this->get('active', true);
     }
 
     public function getQuestionnaire(): Questionnaire

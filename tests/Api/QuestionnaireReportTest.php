@@ -2,13 +2,11 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
-use EscolaLms\Questionnaire\Http\Resources\QuestionnaireModelResource;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Tests\TestCase;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class QuestionnaireReportTest extends TestCase
@@ -56,8 +54,8 @@ class QuestionnaireReportTest extends TestCase
             sprintf(
                 '/api/admin/questionnaire/report/%d/%d/%d/%d',
                 $this->questionnaire->id,
-                $this->questionnaireModel->modelable_type_id,
-                $this->questionnaireModel->modelable_id,
+                $this->questionnaireModel->model_type_id,
+                $this->questionnaireModel->model_id,
                 $this->user->id
             )
         );

@@ -30,7 +30,7 @@ class CreateQuestionnaireTable extends Migration
                 function (Blueprint $table) {
                     $table->id('id');
                     $table->string('title');
-                    $table->string('modelable_class')->unique();
+                    $table->string('model_class')->unique();
                     $table->timestamps();
                 }
             );
@@ -41,8 +41,8 @@ class CreateQuestionnaireTable extends Migration
                 function (Blueprint $table) {
                     $table->id('id');
                     $table->foreignIdFor(Questionnaire::class, 'questionnaire_id');
-                    $table->foreignIdFor(QuestionnaireModelType::class, 'modelable_type_id');
-                    $table->integer('modelable_id');
+                    $table->foreignIdFor(QuestionnaireModelType::class, 'model_type_id');
+                    $table->integer('model_id');
                     $table->timestamps();
                 }
             );
@@ -71,7 +71,6 @@ class CreateQuestionnaireTable extends Migration
                     $table->foreignIdFor(QuestionnaireModel::class, 'questionnaire_model_id');
                     $table->integer('rate');
                     $table->timestamps();
-                    $table->unique(['user_id', 'question_id', 'questionnaire_model_id'], 'unique_user_question_and_model');
                 }
             );
         }

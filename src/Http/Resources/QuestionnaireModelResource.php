@@ -14,13 +14,13 @@ class QuestionnaireModelResource extends JsonResource
 
     public function toArray($request)
     {
-        $model = new $this->modelableType->modelable_class();
+        $model = new $this->modelableType->model_class();
 
         return [
             'id' => $this->id,
-            'model_type' => $this->modelableType->modelable_class,
-            'model_id' => $this->modelable_id,
-            'model' => $model::find($this->modelable_id),
+            'model_type' => $this->modelableType->model_class,
+            'model_id' => $this->model_id,
+            'model' => $model::find($this->model_id),
         ];
     }
 }

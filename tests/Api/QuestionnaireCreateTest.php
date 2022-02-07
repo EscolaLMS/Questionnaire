@@ -3,6 +3,8 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Models\Questionnaire;
+use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -14,6 +16,7 @@ class QuestionnaireCreateTest extends TestCase
     {
         $this->authenticateAsAdmin();
         $questionnaire = Questionnaire::factory()->makeOne(['active' => false]);
+
         $response = $this->actingAs($this->user, 'api')->postJson(
             '/api/admin/questionnaire',
             $questionnaire->toArray()
@@ -21,17 +24,11 @@ class QuestionnaireCreateTest extends TestCase
 
         $response->assertStatus(201);
 
-        $response2 = $this->getJson(
-            '/api/questionnaire/' . $questionnaire->id,
-        );
-
-        $response2->assertOk();
-
-        $response3 = $this->actingAs($this->user, 'api')->getJson(
+        $response2 = $this->actingAs($this->user, 'api')->getJson(
             '/api/admin/questionnaire/' . $questionnaire->id,
         );
 
-        $response3->assertOk();
+        $response2->assertOk();
     }
 
     public function testAdminCannotCreateQuestionnaireWithoutTitle(): void
@@ -54,5 +51,69 @@ class QuestionnaireCreateTest extends TestCase
             collect($questionnaire->getAttributes())->except('id')->toArray()
         );
         $response->assertUnauthorized();
+    }
+
+    public function testAdminCanCreateQuestionnaireWithModels(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        $questionnaire = Questionnaire::factory()->makeOne();
+        $questionnaireModel = QuestionnaireModel::factory()->makeOne();
+        $model = new $questionnaireModelType->model_class();
+        $newModel = $model::factory()
+            ->count(1)
+            ->create();
+        $questionnaireModel2 = QuestionnaireModel::factory()->makeOne(['model_id' => $newModel[0]->id]);
+
+        $response = $this->actingAs($this->user, 'api')->postJson(
+            '/api/admin/questionnaire',
+            [
+                'title' => $questionnaire->title,
+                'active' => $questionnaire->active,
+                'models' => [
+                    [
+                        'model_type_id' => $questionnaireModel->model_type_id,
+                        'model_id' => $questionnaireModel->model_id,
+                    ],
+                    [
+                        'model_type_id' => $questionnaireModel2->model_type_id,
+                        'model_id' => $questionnaireModel2->model_id,
+                    ],
+                ],
+            ]
+        );
+
+        $response->assertStatus(201);
+
+        $data = json_decode($response->getContent());
+        $questionnaire = Questionnaire::find($data->data->id);
+
+        $response2 = $this->getJson(
+            sprintf(
+                '/api/questionnaire/%s/%d/%d',
+                $questionnaireModel->modelableType->title,
+                $questionnaireModel->model_id,
+                $questionnaire->id
+            )
+        );
+
+        $response2->assertOk();
+
+        $response3 = $this->getJson(
+            sprintf(
+                '/api/questionnaire/%s/%d/%d',
+                $questionnaireModel2->modelableType->title,
+                $questionnaireModel2->model_id,
+                $questionnaire->id
+            )
+        );
+
+        $response3->assertOk();
+
+        $response4 = $this->actingAs($this->user, 'api')->getJson(
+            '/api/admin/questionnaire/' . $questionnaire->id,
+        );
+
+        $response4->assertOk();
     }
 }

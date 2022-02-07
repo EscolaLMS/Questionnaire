@@ -218,7 +218,7 @@ interface QuestionnaireAdminApiContract
      *      ),
      * )
      */
-    public function read(QuestionnaireReadRequest $request, int $id): JsonResponse;
+    public function read(QuestionnaireReadRequest $request): JsonResponse;
 
     /**
      * @OA\Get(
