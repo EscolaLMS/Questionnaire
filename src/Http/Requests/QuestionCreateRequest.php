@@ -29,29 +29,4 @@ class QuestionCreateRequest extends FormRequest
             'active' => 'boolean',
         ];
     }
-
-    public function getParamTitle(): string
-    {
-        return $this->get('title');
-    }
-
-    public function getParamDescription(): string
-    {
-        return $this->get('description');
-    }
-
-    public function getParamQuestionnaireId(): int
-    {
-        return $this->get('questionnaire_id');
-    }
-
-    public function getParamPosition(): int
-    {
-        return $this->get('position', 1);
-    }
-
-    public function getParamActive(): bool
-    {
-        return $this->get('active', true);
-    }
 }

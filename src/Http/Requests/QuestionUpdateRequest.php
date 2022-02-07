@@ -48,33 +48,8 @@ class QuestionUpdateRequest extends FormRequest
         return $this->route('id');
     }
 
-    public function getParamTitle(): string
-    {
-        return $this->get('title');
-    }
-
-    public function getParamDescription(): string
-    {
-        return $this->get('description');
-    }
-
-    public function getParamQuestionnaireId(): string
-    {
-        return $this->get('questionnaire_id');
-    }
-
-    public function getParamPosition(): string
-    {
-        return $this->get('position', 1);
-    }
-
-    public function getParamActive(): bool
-    {
-        return $this->get('active', true);
-    }
-
     public function getQuestion(): Question
     {
-        return Question::findOrFail($this->route('id'));
+        return Question::findOrFail($this->getParamId());
     }
 }

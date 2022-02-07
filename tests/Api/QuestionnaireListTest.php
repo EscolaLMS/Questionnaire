@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Models\Questionnaire;
+use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -47,20 +48,50 @@ class QuestionnaireListTest extends TestCase
         );
     }
 
+    public function testListQuestionnaire(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->model_id);
+        Questionnaire::factory()
+            ->count(10)
+            ->create(['active' => true]);
+
+        $response = $this->actingAs($this->user, 'api')->getJson($url);
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'success',
+            'data' => [[
+                'id',
+                'title',
+                'active',
+            ]],
+            'meta',
+            'message'
+        ]);
+    }
+
     public function testAnonymousCantListEmptyQuestionnaire(): void
     {
-        $response = $this->getJson('/api/questionnaire');
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->model_id);
+
+        $response = $this->getJson($url);
 
         $response->assertForbidden();
     }
 
     public function testAnonymousCantListQuestionnaire(): void
     {
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+        $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->model_id);
         Questionnaire::factory()
             ->count(10)
             ->create(['active' => true]);
 
-        $response = $this->getJson('/api/questionnaire');
+        $response = $this->getJson($url);
+
         $response->assertForbidden();
     }
 }

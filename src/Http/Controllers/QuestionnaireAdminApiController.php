@@ -13,7 +13,6 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionnaireUpdateRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireModelTypeCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireReportCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
-use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelTypeRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
@@ -41,22 +40,15 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function list(QuestionnaireListingRequest $request): JsonResponse
     {
-        $questionnaires = $this->questionnaireRepository->searchAndPaginate();
-
         return $this->sendResponseForResource(
-            QuestionnaireResource::collection($questionnaires),
+            QuestionnaireResource::collection($this->questionnaireRepository->searchAndPaginate()),
             __("Questionnaire list retrieved successfully")
         );
     }
 
     public function create(QuestionnaireCreateRequest $request): JsonResponse
     {
-        $questionnaire = new Questionnaire([
-            'title' => $request->getParamTitle(),
-            'active' => $request->getParamActive(),
-        ]);
-
-        $questionnaire = $this->questionnaireRepository->insert($questionnaire);
+        $questionnaire = $this->questionnaireService->createQuestionnaire($request->validated());
 
         return $this->sendResponseForResource(
             QuestionnaireResource::make($questionnaire),
@@ -66,8 +58,7 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function update(QuestionnaireUpdateRequest $request, int $id): JsonResponse
     {
-        $input = $request->all();
-        $updated = $this->questionnaireRepository->update($input, $id);
+        $updated = $this->questionnaireService->updateQuestionnaire($request->getQuestionnaire(), $request->validated());
 
         return $this->sendResponseForResource(
             QuestionnaireResource::make($updated),
@@ -82,12 +73,10 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
         return $this->sendResponse(true, __("Questionnaire delete successfully"));
     }
 
-    public function read(QuestionnaireReadRequest $request, int $id): JsonResponse
+    public function read(QuestionnaireReadRequest $request): JsonResponse
     {
-        $questionnaire = $this->questionnaireRepository->find($id);
-
         return $this->sendResponseForResource(
-            QuestionnaireResource::make($questionnaire),
+            QuestionnaireResource::make($request->getQuestionnaire()),
             __("Questionnaire fetched successfully")
         );
     }
@@ -102,14 +91,13 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
         );
     }
 
-    public function report(
-        QuestionnaireReportRequest $request,
-        int $id,
-        ?int $model_type_id = null,
-        ?int $model_id = null,
-        ?int $user_id = null
-    ): JsonResponse {
-        $report = $this->questionAnswerService->getReport($id, $model_type_id, $model_id, $user_id);
+    public function report(QuestionnaireReportRequest $request): JsonResponse {
+        $report = $this->questionAnswerService->getReport(
+            $request->getParamId(),
+            $request->getParamModelTypeId(),
+            $request->getParamModelId(),
+            $request->getParamUserId()
+        );
 
         return $this->sendResponseForResource(
             QuestionnaireReportCollection::make($report),

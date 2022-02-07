@@ -31,7 +31,7 @@ class QuestionnaireModelFactory extends Factory
             $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
         }
 
-        $model = new $questionnaireModelType->modelable_class();
+        $model = new $questionnaireModelType->model_class();
         $newModel = $model::query()->inRandomOrder()->first();
         if (empty($newModel)) {
             $model::factory()
@@ -42,8 +42,8 @@ class QuestionnaireModelFactory extends Factory
 
         return [
             'questionnaire_id' => $questionnaire->id,
-            'modelable_type_id' => $questionnaireModelType->id,
-            'modelable_id' => $newModel->id,
+            'model_type_id' => $questionnaireModelType->id,
+            'model_id' => $newModel->id,
         ];
     }
 }

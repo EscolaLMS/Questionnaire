@@ -2,7 +2,9 @@
 
 namespace EscolaLms\Questionnaire\Services\Contracts;
 
+use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\Questionnaire;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Interface QuestionnaireServiceContract
@@ -11,4 +13,14 @@ use EscolaLms\Questionnaire\Models\Questionnaire;
 interface QuestionnaireServiceContract
 {
     public function deleteQuestionnaire(Questionnaire $questionnaire): bool;
+
+    public function searchForFront(array $filters, User $user): LengthAwarePaginator;
+
+    public function findForFront(array $filters, User $user): ?array;
+
+    public function answer(array $params, User $user): bool;
+
+    public function createQuestionnaire(array $data): Questionnaire;
+
+    public function updateQuestionnaire(Questionnaire $questionnaire, array $data): Questionnaire;
 }

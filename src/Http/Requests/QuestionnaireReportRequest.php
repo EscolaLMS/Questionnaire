@@ -62,23 +62,23 @@ class QuestionnaireReportRequest extends FormRequest
         return $this->route('id');
     }
 
-    public function getParamModelTypeId(): int
+    public function getParamModelTypeId(): ?int
     {
         return $this->route('model_type_id');
     }
 
-    public function getParamModelId(): int
+    public function getParamModelId(): ?int
     {
         return $this->route('model_id');
     }
 
-    public function getParamUserId(): int
+    public function getParamUserId(): ?int
     {
         return $this->route('user_id');
     }
 
     public function getQuestionnaire(): Questionnaire
     {
-        return Questionnaire::findOrFail($this->route('id'));
+        return Questionnaire::findOrFail($this->getParamId());
     }
 }

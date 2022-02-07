@@ -5,27 +5,26 @@ namespace EscolaLms\Questionnaire\Models;
 use EscolaLms\Questionnaire\Database\Factories\QuestionnaireModelTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @OA\Schema(
  *     schema="QuestionnaireModelType",
- *     required={"title","modelable_class"},
+ *     required={"title","model_class"},
  *     @OA\Property(
  *         property="title",
  *         type="string",
  *         description="title"
  *     ),
  *     @OA\Property(
- *          property="modelable_class",
+ *          property="model_class",
  *          type="string",
- *          description="modelable_class"
+ *          description="model_class"
  *     ),
  * )
  *
  * @property integer $id
  * @property string $title
- * @property string $modelable_class
+ * @property string $model_class
  */
 class QuestionnaireModelType extends Model
 {
@@ -42,18 +41,13 @@ class QuestionnaireModelType extends Model
     protected $casts = [
         'id' => 'integer',
         'title' => 'string',
-        'modelable_class' => 'string',
+        'model_class' => 'string',
     ];
 
     public $fillable = [
         'title',
-        'modelable_class',
+        'model_class',
     ];
-
-    public function questionnaireModel(): HasMany
-    {
-        return $this->hasMany(QuestionnaireModel::class, 'modelable_type_id');
-    }
 
     protected static function newFactory(): QuestionnaireModelTypeFactory
     {

@@ -10,28 +10,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @OA\Schema(
  *     schema="QuestionnaireModel",
- *     required={"questionnaire_id","modelable_type_id","modelable_id"},
+ *     required={"questionnaire_id","model_type_id","model_id"},
  *     @OA\Property(
  *         property="questionnaire_id",
  *         type="integer",
  *         description="identifier of the questionnaire object"
  *     ),
  *     @OA\Property(
- *         property="modelable_id",
+ *         property="model_id",
  *         type="integer",
  *         description="identifier of the model object who is asigne to questionnaire"
  *     ),
  *     @OA\Property(
- *          property="modelable_type_id",
+ *          property="model_type_id",
  *          type="integer",
- *          description="modelable_type_id"
+ *          description="model_type_id"
  *     ),
  * )
  *
  * @property integer $id
  * @property integer $questionnaire_id
- * @property integer modelable_type_id
- * @property integer $modelable_id
+ * @property integer $model_type_id
+ * @property integer $model_id
  */
 class QuestionnaireModel extends Model
 {
@@ -48,14 +48,14 @@ class QuestionnaireModel extends Model
     protected $casts = [
         'id' => 'integer',
         'questionnaire_id' => 'integer',
-        'modelable_type_id' => 'integer',
-        'modelable_id' => 'integer',
+        'model_type_id' => 'integer',
+        'model_id' => 'integer',
     ];
 
     public $fillable = [
         'questionnaire_id',
-        'modelable_type_id',
-        'modelable_id',
+        'model_type_id',
+        'model_id',
     ];
 
     public function questionnaire(): BelongsTo
@@ -65,7 +65,7 @@ class QuestionnaireModel extends Model
 
     public function modelableType(): BelongsTo
     {
-        return $this->belongsTo(QuestionnaireModelType::class, 'modelable_type_id');
+        return $this->belongsTo(QuestionnaireModelType::class, 'model_type_id');
     }
 
     protected static function newFactory(): QuestionnaireModelFactory

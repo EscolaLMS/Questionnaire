@@ -44,10 +44,10 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             ->where('questions.questionnaire_id', '=', $questionnaireId)
             ->groupBy('question_id', 'questions.title');
         if ($modelTypeId) {
-            $query->join('questionnaire_models', 'question_id', '=', 'questionnaire_model_id')
-                ->where('questionnaire_models.modelable_type_id', '=', $modelTypeId);
+            $query->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
+                ->where('questionnaire_models.model_type_id', '=', $modelTypeId);
             if ($modelId) {
-                $query->where('questionnaire_models.modelable_id', '=', $modelId);
+                $query->where('questionnaire_models.model_id', '=', $modelId);
             }
         }
         if ($userId) {

@@ -11,4 +11,8 @@ use EscolaLms\Questionnaire\Models\Question;
 interface QuestionServiceContract
 {
     public function deleteQuestion(Question $question): bool;
+
+    public function createQuestion(array $data): Question;
+
+    public function updateQuestion(Question $question, array $data): Question;
 }

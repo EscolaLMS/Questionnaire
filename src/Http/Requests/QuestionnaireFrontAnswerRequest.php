@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
-class QuestionnaireFrontReadRequest extends FormRequest
+class QuestionnaireFrontAnswerRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
@@ -17,7 +17,7 @@ class QuestionnaireFrontReadRequest extends FormRequest
         $this->merge([
             'id' => $this->route('id'),
             'model_type_title' => $this->route('model_type_title'),
-            'model_id' => $this->route('model_id'),
+            'model_id' => $this->route('model_id')
         ]);
     }
 
@@ -45,6 +45,10 @@ class QuestionnaireFrontReadRequest extends FormRequest
                 'integer',
                 Rule::exists($this->getQuestionnaireModelType()->model_class, 'id'),
             ],
+            'answers' => ['sometimes', 'array'],
+            'answers.*' => ['sometimes', 'array'],
+            'answers.*.question_id' => ['integer'],
+            'answers.*.rate' => ['integer'],
         ];
     }
 

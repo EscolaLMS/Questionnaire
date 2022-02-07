@@ -18,16 +18,10 @@ class QuestionnaireCreateRequest extends FormRequest
         return [
             'title' => 'string|required',
             'active' => 'boolean',
+            'models' => ['sometimes', 'array'],
+            'models.*' => ['sometimes', 'array'],
+            'models.*.model_type_id' => ['integer'],
+            'models.*.model_id' => ['integer'],
         ];
-    }
-
-    public function getParamTitle(): string
-    {
-        return $this->get('title');
-    }
-
-    public function getParamActive(): bool
-    {
-        return $this->get('active', true);
     }
 }

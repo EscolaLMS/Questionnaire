@@ -40,6 +40,6 @@ class QuestionnaireDeleteRequest extends FormRequest
 
     public function getQuestionnaire(): Questionnaire
     {
-        return Questionnaire::findOrFail($this->route('id'));
+        return Questionnaire::findOrFail($this->getParamId());
     }
 }
