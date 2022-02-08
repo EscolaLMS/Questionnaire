@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
 
 jobs:
   swagger-gh-pages:
@@ -22,7 +23,7 @@ jobs:
         run: php -r "file_put_contents('src/EscolaLmsQuestionnaireServiceProvider.php', str_replace('SWAGGER_VERSION', '@OA\Info(title=\"EscolaLMS\", version=\"0.0.1\")', file_get_contents('src/EscolaLmsQuestionnaireServiceProvider.php')));"
 
       - name: Update composer
-        run: COMPOSER_ROOT_VERSION=0.9.9 composer update
+        run: composer update
 
       - name: Require composer swagger package
         run: composer require darkaonline/l5-swagger:8.1.0
