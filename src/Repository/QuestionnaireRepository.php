@@ -44,7 +44,7 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
         return $questionnaire->save();
     }
 
-    public function findActive(int $id): ?Questionnaire
+    public function findActive(int $id): Questionnaire
     {
         return $this->model->newQuery()->where('active', '=', true)->findOrFail($id);
     }
