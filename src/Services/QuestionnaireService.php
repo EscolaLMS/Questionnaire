@@ -56,7 +56,11 @@ class QuestionnaireService implements QuestionnaireServiceContract
 
     public function searchForFront(array $filters, User $user): LengthAwarePaginator
     {
-
+        $questionnaireModel = $this->questionnaireModelRepository->findByModelTitleAndModelId(
+            $filters['model_type_title'],
+            $filters['model_id']
+        );
+        $filters['model_type_id'] = $questionnaireModel->model_type_id;
 
         return $this->questionnaireRepository->searchAndPaginate($filters);
     }

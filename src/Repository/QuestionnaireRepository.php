@@ -16,12 +16,24 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
 
     public function getFieldsSearchable(): array
     {
-        return [];
+        return ['active', 'id', 'title'];
     }
 
-    public function searchAndPaginate(array $search = [], ?int $perPage = null, string $orderDirection = 'asc', string $orderColumn = 'id'): LengthAwarePaginator
-    {
-        return $this->allQuery($search)->orderBy($orderColumn, $orderDirection)->paginate($perPage);
+    public function searchAndPaginate(
+        array $search = [],
+        ?int $perPage = null,
+        string $orderDirection = 'asc',
+        string $orderColumn = 'id'
+    ): LengthAwarePaginator {
+        $query = $this->allQuery($search);
+        if (isset($search['model_type_id'])) {
+            $query->select('questionnaires.*')
+                ->join('questionnaire_models', 'questionnaire_models.questionnaire_id', '=', 'questionnaires.id')
+                ->where('questionnaire_models.model_type_id', '=', $search['model_type_id'])
+                ->where('questionnaire_models.model_id', '=', $search['model_id']);
+        }
+
+        return $query->orderBy($orderColumn, $orderDirection)->paginate($perPage);
     }
 
     public function insert(Questionnaire $questionnaire): Questionnaire

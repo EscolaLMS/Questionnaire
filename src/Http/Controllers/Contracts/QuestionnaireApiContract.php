@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Http\Controllers\Contracts;
 
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontAnswerRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
 use Illuminate\Http\JsonResponse;
@@ -77,4 +78,6 @@ interface QuestionnaireApiContract
      * )
      */
     public function read(QuestionnaireFrontReadRequest $request): JsonResponse;
+
+    public function answer(QuestionnaireFrontAnswerRequest $request): JsonResponse;
 }
