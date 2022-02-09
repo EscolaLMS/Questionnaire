@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
+use EscolaLms\Questionnaire\Exceptions\QuestionCanNotDeleteException;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionAdminApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionCreateRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionDeleteRequest;
@@ -12,6 +13,7 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionUpdateRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionResource;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
+use Exception;
 use Illuminate\Http\JsonResponse;
 
 class QuestionAdminApiController extends EscolaLmsBaseController implements QuestionAdminApiContract
@@ -55,9 +57,16 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
         );
     }
 
+    /**
+     * @throws QuestionCanNotDeleteException
+     */
     public function delete(QuestionDeleteRequest $request, int $id): JsonResponse
     {
-        $this->questionService->deleteQuestion($request->getQuestion());
+        try {
+            $this->questionService->deleteQuestion($request->getQuestion());
+        } catch (Exception $err) {
+            throw new QuestionCanNotDeleteException($id);
+        }
 
         return $this->sendResponse(true, __("Question delete successfully"));
     }

@@ -9,6 +9,29 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
+/**
+ * @OA\Schema(
+ *     schema="QuestionnaireAnswerRequest",
+ *     @OA\Property(
+ *          property="answers",
+ *          type="array",
+ *          description="answers for questionnaire"
+ *          @OA\Items(
+ *              type="object",
+ *              @OA\Property(
+ *                  property="question_id",
+ *                  type="integer",
+ *                  description="question identified by id",
+ *               ),
+ *              @OA\Property(
+ *                  property="rate",
+ *                  type="integer",
+ *                  description="rate from 1 to 5",
+ *               ),
+ *          )
+ *     ),
+ * )
+ */
 class QuestionnaireFrontAnswerRequest extends FormRequest
 {
     protected function prepareForValidation(): void

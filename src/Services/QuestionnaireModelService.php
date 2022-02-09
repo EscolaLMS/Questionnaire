@@ -24,16 +24,12 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
 
     public function deleteQuestionnaireModel(QuestionnaireModel $questionnaireModel): bool
     {
-        try {
-            DB::transaction(function () use ($questionnaireModel) {
-                $this->questionAnswerRepository->deleteByModelId($questionnaireModel->id);
-                $this->questionnaireModelRepository->delete($questionnaireModel->id);
-            });
+        DB::transaction(function () use ($questionnaireModel) {
+            $this->questionAnswerRepository->deleteByModelId($questionnaireModel->id);
+            $this->questionnaireModelRepository->delete($questionnaireModel->id);
+        });
 
-            return true;
-        } catch (\Exception $err) {
-            return false;
-        }
+        return true;
     }
 
     public function saveModelsForQuestionnaire(int $questionnaireId, array $models): void

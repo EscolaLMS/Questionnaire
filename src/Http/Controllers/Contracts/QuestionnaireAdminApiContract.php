@@ -53,7 +53,7 @@ interface QuestionnaireAdminApiContract
     /**
      * @OA\Post(
      *     path="/api/admin/questionnaire",
-     *     summary="Create a new questionnaire identified by id",
+     *     summary="Create a new questionnaire",
      *     tags={"Questionnaire"},
      *     security={
      *         {"passport": {}},

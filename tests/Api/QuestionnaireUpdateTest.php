@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
+use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
@@ -11,6 +12,12 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class QuestionnaireUpdateTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(QuestionnairePermissionsSeeder::class);
+    }
 
     private function uri(int $id): string
     {

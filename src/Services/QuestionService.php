@@ -23,16 +23,12 @@ class QuestionService implements QuestionServiceContract
 
     public function deleteQuestion(Question $question): bool
     {
-        try {
-            DB::transaction(function () use ($question) {
-                $this->questionAnswerRepository->deleteByQuestionId($question->id);
-                $this->questionRepository->delete($question->id);
-            });
+        DB::transaction(function () use ($question) {
+            $this->questionAnswerRepository->deleteByQuestionId($question->id);
+            $this->questionRepository->delete($question->id);
+        });
 
-            return true;
-        } catch (\Exception $err) {
-            return false;
-        }
+        return true;
     }
 
     public function createQuestion(array $data): Question

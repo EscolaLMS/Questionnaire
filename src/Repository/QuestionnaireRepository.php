@@ -6,6 +6,7 @@ use EscolaLms\Core\Repositories\BaseRepository;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 
 class QuestionnaireRepository extends BaseRepository implements QuestionnaireRepositoryContract
 {
@@ -16,12 +17,26 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
 
     public function getFieldsSearchable(): array
     {
-        return [];
+        return ['active', 'id', 'title'];
     }
 
-    public function searchAndPaginate(array $search = [], ?int $perPage = null, string $orderDirection = 'asc', string $orderColumn = 'id'): LengthAwarePaginator
-    {
-        return $this->allQuery($search)->orderBy($orderColumn, $orderDirection)->paginate($perPage);
+    public function searchAndPaginate(
+        array $search = [],
+        ?int $perPage = null,
+        string $orderDirection = 'asc',
+        string $orderColumn = 'id'
+    ): LengthAwarePaginator {
+        $query = $this->allQuery($search);
+        if (isset($search['model_type_id'])) {
+            $query->whereHas(
+                'questionnaireModels',
+                fn(Builder $query) => $query
+                    ->where('model_type_id', $search['model_type_id'])
+                    ->where('model_id', $search['model_id'])
+            );
+        }
+
+        return $query->orderBy($orderColumn, $orderDirection)->paginate($perPage);
     }
 
     public function insert(Questionnaire $questionnaire): Questionnaire

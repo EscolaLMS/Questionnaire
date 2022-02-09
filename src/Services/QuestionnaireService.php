@@ -37,26 +37,26 @@ class QuestionnaireService implements QuestionnaireServiceContract
 
     public function deleteQuestionnaire(Questionnaire $questionnaire): bool
     {
-        try {
-            DB::transaction(function () use ($questionnaire) {
-                foreach ($questionnaire->questions as $question) {
-                    $this->questionService->deleteQuestion($question);
-                }
-                foreach ($questionnaire->questionnaireModels as $questionnaireModels) {
-                    $this->questionnaireModelService->deleteQuestionnaireModel($questionnaireModels);
-                }
-                $this->questionnaireRepository->delete($questionnaire->id);
-            });
+        DB::transaction(function () use ($questionnaire) {
+            foreach ($questionnaire->questions as $question) {
+                $this->questionService->deleteQuestion($question);
+            }
+            foreach ($questionnaire->questionnaireModels as $questionnaireModels) {
+                $this->questionnaireModelService->deleteQuestionnaireModel($questionnaireModels);
+            }
+            $this->questionnaireRepository->delete($questionnaire->id);
+        });
 
-            return true;
-        } catch (\Exception $err) {
-            return false;
-        }
+        return true;
     }
 
     public function searchForFront(array $filters, User $user): LengthAwarePaginator
     {
-
+        $questionnaireModel = $this->questionnaireModelRepository->findByModelTitleAndModelId(
+            $filters['model_type_title'],
+            $filters['model_id']
+        );
+        $filters['model_type_id'] = $questionnaireModel->model_type_id;
 
         return $this->questionnaireRepository->searchAndPaginate($filters);
     }

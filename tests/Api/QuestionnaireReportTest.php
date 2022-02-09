@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
+use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
@@ -19,6 +20,7 @@ class QuestionnaireReportTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(QuestionnairePermissionsSeeder::class);
         $this->authenticateAsAdmin();
 
         $this->questionnaire = Questionnaire::factory()->createOne();
