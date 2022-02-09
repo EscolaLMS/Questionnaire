@@ -6,6 +6,7 @@ use EscolaLms\Core\Repositories\BaseRepository;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 
 class QuestionnaireRepository extends BaseRepository implements QuestionnaireRepositoryContract
 {
@@ -27,7 +28,12 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
     ): LengthAwarePaginator {
         $query = $this->allQuery($search);
         if (isset($search['model_type_id'])) {
-            $query->whereHas('questionnaire_models', fn(Builder $query) => $query->where('model_type_id', $search['model_type_id'])->where('model_id', $search['model_id']));
+            $query->whereHas(
+                'questionnaireModels',
+                fn(Builder $query) => $query
+                    ->where('model_type_id', $search['model_type_id'])
+                    ->where('model_id', $search['model_id'])
+            );
         }
 
         return $query->orderBy($orderColumn, $orderDirection)->paginate($perPage);
