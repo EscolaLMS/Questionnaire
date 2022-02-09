@@ -12,9 +12,11 @@ use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireModelServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class QuestionnaireService implements QuestionnaireServiceContract
 {
@@ -49,8 +51,8 @@ class QuestionnaireService implements QuestionnaireServiceContract
             });
 
             return true;
-        } catch (\Exception $err) {
-            return false;
+        } catch (Exception $err) {
+            throw new UnprocessableEntityHttpException(__('Questionnaire deleted failed'));
         }
     }
 
