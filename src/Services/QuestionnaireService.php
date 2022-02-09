@@ -12,11 +12,9 @@ use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireModelServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
-use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class QuestionnaireService implements QuestionnaireServiceContract
 {
@@ -39,21 +37,17 @@ class QuestionnaireService implements QuestionnaireServiceContract
 
     public function deleteQuestionnaire(Questionnaire $questionnaire): bool
     {
-        try {
-            DB::transaction(function () use ($questionnaire) {
-                foreach ($questionnaire->questions as $question) {
-                    $this->questionService->deleteQuestion($question);
-                }
-                foreach ($questionnaire->questionnaireModels as $questionnaireModels) {
-                    $this->questionnaireModelService->deleteQuestionnaireModel($questionnaireModels);
-                }
-                $this->questionnaireRepository->delete($questionnaire->id);
-            });
+        DB::transaction(function () use ($questionnaire) {
+            foreach ($questionnaire->questions as $question) {
+                $this->questionService->deleteQuestion($question);
+            }
+            foreach ($questionnaire->questionnaireModels as $questionnaireModels) {
+                $this->questionnaireModelService->deleteQuestionnaireModel($questionnaireModels);
+            }
+            $this->questionnaireRepository->delete($questionnaire->id);
+        });
 
-            return true;
-        } catch (Exception $err) {
-            throw new UnprocessableEntityHttpException(__('Questionnaire deleted failed'));
-        }
+        return true;
     }
 
     public function searchForFront(array $filters, User $user): LengthAwarePaginator

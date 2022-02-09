@@ -6,9 +6,7 @@ use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
-use Exception;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class QuestionService implements QuestionServiceContract
 {
@@ -25,16 +23,12 @@ class QuestionService implements QuestionServiceContract
 
     public function deleteQuestion(Question $question): bool
     {
-        try {
-            DB::transaction(function () use ($question) {
-                $this->questionAnswerRepository->deleteByQuestionId($question->id);
-                $this->questionRepository->delete($question->id);
-            });
+        DB::transaction(function () use ($question) {
+            $this->questionAnswerRepository->deleteByQuestionId($question->id);
+            $this->questionRepository->delete($question->id);
+        });
 
-            return true;
-        } catch (Exception $err) {
-            throw new UnprocessableEntityHttpException(__('Question deleted failed'));
-        }
+        return true;
     }
 
     public function createQuestion(array $data): Question

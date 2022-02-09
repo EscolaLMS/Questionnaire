@@ -6,10 +6,8 @@ use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireModelServiceContract;
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class QuestionnaireModelService implements QuestionnaireModelServiceContract
 {
@@ -26,16 +24,12 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
 
     public function deleteQuestionnaireModel(QuestionnaireModel $questionnaireModel): bool
     {
-        try {
-            DB::transaction(function () use ($questionnaireModel) {
-                $this->questionAnswerRepository->deleteByModelId($questionnaireModel->id);
-                $this->questionnaireModelRepository->delete($questionnaireModel->id);
-            });
+        DB::transaction(function () use ($questionnaireModel) {
+            $this->questionAnswerRepository->deleteByModelId($questionnaireModel->id);
+            $this->questionnaireModelRepository->delete($questionnaireModel->id);
+        });
 
-            return true;
-        } catch (Exception $err) {
-            throw new UnprocessableEntityHttpException(__('Questionnaire Model deleted failed'));
-        }
+        return true;
     }
 
     public function saveModelsForQuestionnaire(int $questionnaireId, array $models): void
