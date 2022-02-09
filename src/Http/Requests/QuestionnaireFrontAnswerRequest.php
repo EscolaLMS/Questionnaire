@@ -14,19 +14,24 @@ use Illuminate\Validation\Rule;
  *     schema="QuestionnaireAnswerRequest",
  *     @OA\Property(
  *          property="answers",
- *          type="array",
  *          description="answers for questionnaire"
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="object",
+ *                  @OA\Property(
+ *                      property="question_id",
+ *                      type="integer",
+ *                      description="question identified by id",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="rate",
+ *                      type="integer",
+ *                      description="rate from 1 to 5",
+ *                  ),
+ *              )
+ *          )
  *     ),
- *     @OA\Property(
- *         property="answers.*.question_id",
- *         type="integer",
- *         description="question identified by id"
- *     ),
- *     @OA\Property(
- *          property="answers.*.rate",
- *          type="integer",
- *          description="rate from 1 to 5"
- *     )
  * )
  */
 class QuestionnaireFrontAnswerRequest extends FormRequest
