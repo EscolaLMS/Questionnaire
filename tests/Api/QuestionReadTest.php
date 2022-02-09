@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
+use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -10,16 +11,11 @@ class QuestionReadTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private function uri(int $id): string
+    protected function setUp(): void
     {
-        return sprintf('/api/admin/question/%d', $id);
+        parent::setUp();
+        $this->seed(QuestionnairePermissionsSeeder::class);
     }
-
-    /*public function testCannotFindMissingQuestion(): void
-    {
-        $response = $this->getJson($this->uri(99999));
-        $response->assertNotFound();
-    }*/
 
     public function testAdminCanReadExistingQuestionById(): void
     {

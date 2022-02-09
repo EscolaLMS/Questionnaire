@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
+use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -9,6 +10,12 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class QuestionnaireModelTypeTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(QuestionnairePermissionsSeeder::class);
+    }
 
     public function testAdminCanListEmptyQuestionnaireModels(): void
     {

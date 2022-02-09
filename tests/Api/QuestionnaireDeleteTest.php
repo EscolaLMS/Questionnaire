@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
+use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
@@ -12,6 +13,12 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class QuestionnaireDeleteTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(QuestionnairePermissionsSeeder::class);
+    }
 
     private function uri(int $id): string
     {

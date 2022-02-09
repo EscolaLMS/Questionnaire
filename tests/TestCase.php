@@ -11,12 +11,6 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
 {
     use DatabaseTransactions;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(QuestionnairePermissionsSeeder::class);
-    }
-
     protected function getPackageProviders($app): array
     {
         return [
