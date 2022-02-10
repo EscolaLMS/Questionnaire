@@ -3,7 +3,6 @@
 namespace EscolaLms\Questionnaire\Tests;
 
 use EscolaLms\Core\Models\User;
-use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 

@@ -15,7 +15,7 @@ use Illuminate\Validation\Rule;
  *     @OA\Property(
  *          property="answers",
  *          type="array",
- *          description="answers for questionnaire"
+ *          description="answers for questionnaire",
  *          @OA\Items(
  *              type="object",
  *              @OA\Property(
