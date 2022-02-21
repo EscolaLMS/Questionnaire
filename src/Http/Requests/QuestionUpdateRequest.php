@@ -40,6 +40,7 @@ class QuestionUpdateRequest extends FormRequest
             ],
             'position' => 'integer',
             'active' => 'boolean',
+            'is_text' => 'boolean',
         ];
     }
 

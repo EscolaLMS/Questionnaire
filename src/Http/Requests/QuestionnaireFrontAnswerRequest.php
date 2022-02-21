@@ -22,12 +22,17 @@ use Illuminate\Validation\Rule;
  *                  property="question_id",
  *                  type="integer",
  *                  description="question identified by id",
- *               ),
+ *              ),
  *              @OA\Property(
  *                  property="rate",
  *                  type="integer",
  *                  description="rate from 1 to 5",
- *               ),
+ *              ),
+ *              @OA\Property(
+ *                  property="note",
+ *                  type="string",
+ *                  description="anser of text type",
+ *              ),
  *          )
  *     ),
  * )
@@ -71,7 +76,8 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
             'answers' => ['sometimes', 'array'],
             'answers.*' => ['sometimes', 'array'],
             'answers.*.question_id' => ['integer'],
-            'answers.*.rate' => ['integer'],
+            'answers.*.rate' => ['sometimes', 'integer'],
+            'answers.*.note' => ['sometimes', 'string', 'max:500'],
         ];
     }
 

@@ -27,6 +27,7 @@ class QuestionCreateRequest extends FormRequest
             ],
             'position' => 'integer',
             'active' => 'boolean',
+            'is_text' => 'boolean',
         ];
     }
 }

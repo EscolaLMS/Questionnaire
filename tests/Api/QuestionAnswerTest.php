@@ -18,6 +18,7 @@ class QuestionAnswerTest extends TestCase
     public Questionnaire $questionnaire;
     public QuestionnaireModel $questionnaireModel;
     public Collection $questions;
+    public Collection $questionsText;
 
     protected function setUp(): void
     {
@@ -31,6 +32,10 @@ class QuestionAnswerTest extends TestCase
         $this->questions = Question::factory()
             ->count(5)
             ->create();
+
+        $this->questionsText = Question::factory()
+            ->count(2)
+            ->create(['is_text' => true]);
     }
 
     private function uri(int $id, string $modelTypeTitle, int $modelId): string
@@ -44,6 +49,8 @@ class QuestionAnswerTest extends TestCase
         foreach ($this->questions as $key => $question) {
             $arrayOfAnswers[$question->getKey()] = 5 - $key;
         }
+        $arrayOfAnswers[$this->questionsText[0]->getKey()] = null;
+        $arrayOfAnswers[$this->questionsText[1]->getKey()] = null;
 
         $response = $this->actingAs($this->user, 'api')->postJson(
             $this->uri(
@@ -58,18 +65,25 @@ class QuestionAnswerTest extends TestCase
                     ['question_id' => $this->questions[2]->getKey(), 'rate' => 3],
                     ['question_id' => $this->questions[3]->getKey(), 'rate' => 2],
                     ['question_id' => $this->questions[4]->getKey(), 'rate' => 1],
+                    ['question_id' => $this->questionsText[0]->getKey(), 'note' => "test_1"],
+                    ['question_id' => $this->questionsText[1]->getKey(), 'note' => "test_2"],
                 ],
             ]
         );
 
         $response->assertOk();
-        $this->assertEquals(5, QuestionAnswer::count());
+        $this->assertEquals(7, QuestionAnswer::count());
 
         $data = json_decode($response->getContent());
 
         $this->assertEquals($data->data->id, $this->questionnaire->id);
         foreach ($data->data->questions as $question) {
             $this->assertEquals($question->rate, $arrayOfAnswers[$question->id]);
+            if ($question->id === $this->questionsText[0]->getKey()) {
+                $this->assertEquals($question->note, 'test_1');
+            } elseif ($question->id === $this->questionsText[1]->getKey()) {
+                $this->assertEquals($question->note, 'test_2');
+            }
         }
 
         $response = $this->actingAs($this->user, 'api')->postJson(
@@ -84,19 +98,27 @@ class QuestionAnswerTest extends TestCase
                     ['question_id' => $this->questions[2]->getKey(), 'rate' => 5],
                     ['question_id' => $this->questions[3]->getKey(), 'rate' => 5],
                     ['question_id' => $this->questions[4]->getKey(), 'rate' => 5],
+                    ['question_id' => $this->questionsText[1]->getKey(), 'note' => 'coś innego'],
                 ],
             ]
         );
 
         $response->assertOk();
-        $this->assertEquals(5, QuestionAnswer::count());
+        $this->assertEquals(7, QuestionAnswer::count());
 
         $data = json_decode($response->getContent());
 
         $this->assertEquals($data->data->id, $this->questionnaire->id);
         foreach ($data->data->questions as $question) {
-
-            $this->assertEquals($question->rate, 5);
+            if ($question->rate) {
+                $this->assertEquals($question->rate, 5);
+            } else {
+                if ($question->id === $this->questionsText[0]->getKey()) {
+                    $this->assertEquals($question->note, 'test_1');
+                } else {
+                    $this->assertEquals($question->note, 'coś innego');
+                }
+            }
         }
     }
 

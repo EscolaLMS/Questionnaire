@@ -37,6 +37,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *          type="boolean",
  *          description="question is active"
  *     ),
+ *     @OA\Property(
+ *          property="is_text",
+ *          type="boolean",
+ *          description="answer is text field"
+ *     ),
  * )
  *
  * @property integer $id
@@ -45,6 +50,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property integer $questionnaire_id
  * @property integer $position
  * @property boolean $active
+ * @property boolean $is_text
  */
 class Question extends Model
 {
@@ -65,6 +71,7 @@ class Question extends Model
         'questionnaire_id' => 'integer',
         'position' => 'integer',
         'active' => 'boolean',
+        'is_text' => 'boolean',
     ];
 
     public $fillable = [
@@ -73,6 +80,7 @@ class Question extends Model
         'questionnaire_id',
         'position',
         'active',
+        'is_text',
     ];
 
     public function questionnaire(): BelongsTo
