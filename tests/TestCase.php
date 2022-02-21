@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Tests;
 
 use EscolaLms\Core\Models\User;
+use EscolaLms\Courses\EscolaLmsCourseServiceProvider;
 use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -15,6 +16,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
         return [
             ...parent::getPackageProviders($app),
             EscolaLmsQuestionnaireServiceProvider::class,
+            EscolaLmsCourseServiceProvider::class,
         ];
     }
 
