@@ -7,7 +7,10 @@ use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontAnswerRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReportFrontRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReportRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireFrontResource;
+use EscolaLms\Questionnaire\Http\Resources\QuestionnaireReportCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
@@ -80,6 +83,19 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
         return $this->sendResponseForResource(
             QuestionnaireFrontResource::make($questionnaire),
             __("Answers save successfully")
+        );
+    }
+
+    public function report(QuestionnaireReportFrontRequest $request): JsonResponse {
+        $report = $this->questionnaireAnswerService->getReport(
+            $request->getParamId(),
+            $request->getParamModelTypeId(),
+            $request->getParamModelId()
+        );
+
+        return $this->sendResponseForResource(
+            QuestionnaireReportCollection::make($report),
+            __("Questionnaire report fetched successfully")
         );
     }
 }

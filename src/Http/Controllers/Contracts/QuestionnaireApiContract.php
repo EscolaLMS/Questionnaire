@@ -5,6 +5,7 @@ namespace EscolaLms\Questionnaire\Http\Controllers\Contracts;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontAnswerRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReportFrontRequest;
 use Illuminate\Http\JsonResponse;
 
 interface QuestionnaireApiContract
@@ -181,4 +182,39 @@ interface QuestionnaireApiContract
      * )
      */
     public function answer(QuestionnaireFrontAnswerRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
+     *     path="/api/questionnaire/report/{id}/{model_type_id}/{model_id}",
+     *     summary="Read a questionnaire report identified by a given id identifier",
+     *     tags={"QuestionnaireReport"},
+     *     @OA\Parameter(
+     *         description="Unique human-readable questionnaire identifier",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/QuestionnaireReportResource")
+     *      ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="endpoint requires authentication",
+     *     ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    public function report(QuestionnaireReportFrontRequest $request): JsonResponse;
 }
