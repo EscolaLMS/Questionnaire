@@ -35,7 +35,7 @@ class QuestionnaireStarsFrontTest extends TestCase
             ->create();
     }
 
-    public function testCanReadQuestionnaireReport(): void
+    public function testCanReadQuestionnaireStars(): void
     {
         $response = $this->actingAs($this->user, 'api')->getJson(
             sprintf('/api/questionnaire/stars/%d', $this->questionnaire->id)
@@ -50,7 +50,7 @@ class QuestionnaireStarsFrontTest extends TestCase
         $response->assertJsonCount(20, 'data');
     }
 
-    public function testCanReadQuestionnaireReportWithAllParams(): void
+    public function testCanReadQuestionnaireStarsWithAllParams(): void
     {
         $response = $this->actingAs($this->user, 'api')->getJson(
             sprintf(
