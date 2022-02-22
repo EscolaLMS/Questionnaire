@@ -102,7 +102,7 @@ class QuestionnaireUpdateTest extends TestCase
         $this->authenticateAsAdmin();
         $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
         if (empty($questionnaireModelType)) {
-            QuestionnaireModelType::factory()->createOne();
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
         }
         $questionnaire = Questionnaire::factory()->createOne();
         $questionnaireNew = Questionnaire::factory()->makeOne();
