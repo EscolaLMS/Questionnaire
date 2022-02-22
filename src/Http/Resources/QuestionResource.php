@@ -21,7 +21,7 @@ class QuestionResource extends JsonResource
             'questionnaire_id' => $this->questionnaire_id,
             'position' => $this->position,
             'active' => $this->active,
-            'is_text' => $this->is_text,
+            'type' => $this->type,
         ];
     }
 }

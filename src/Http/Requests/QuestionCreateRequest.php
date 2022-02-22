@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,7 +28,7 @@ class QuestionCreateRequest extends FormRequest
             ],
             'position' => 'integer',
             'active' => 'boolean',
-            'is_text' => 'boolean',
+            'type' => ['string', Rule::in(QuestionTypeEnum::getValues())],
         ];
     }
 }

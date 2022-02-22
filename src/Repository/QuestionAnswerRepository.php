@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Repository;
 
 use EscolaLms\Core\Repositories\BaseRepository;
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
@@ -42,7 +43,7 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate, question_id, questions.title')
             ->join('questions', 'question_id', '=', 'questions.id')
             ->where('questions.questionnaire_id', '=', $questionnaireId)
-            ->where('questions.is_text', '=', false)
+            ->where('questions.type', '=', QuestionTypeEnum::RATE)
             ->groupBy('question_id', 'questions.title');
         if ($modelTypeId) {
             $query->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')

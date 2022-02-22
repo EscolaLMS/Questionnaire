@@ -79,7 +79,7 @@ class QuestionnaireService implements QuestionnaireServiceContract
             $questionnaireReturn['questions'][$key] = $question->toArray();
             $answer = $this->getAnswerFromQuestionForUser($question, $questionnaireModel, $user);
             $questionnaireReturn['questions'][$key]['rate'] = $answer ? $answer->rate : null;
-            $questionnaireReturn['questions'][$key]['is_text'] = $question->is_text;
+            $questionnaireReturn['questions'][$key]['type'] = $question->type;
             $questionnaireReturn['questions'][$key]['note'] = $answer ? $answer->note : null;
         }
         $questionnaireReturn['questions'] = new collection($questionnaireReturn['questions'] ?? []);

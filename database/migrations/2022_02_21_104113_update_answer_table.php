@@ -9,7 +9,7 @@ class UpdateAnswerTable extends Migration
     public function up(): void
     {
         Schema::table('questions', function (Blueprint $table) {
-            $table->boolean('is_text')->default(false);
+            $table->string('type')->default('rate');
         });
 
         Schema::table('question_answers', function (Blueprint $table) {
@@ -21,7 +21,7 @@ class UpdateAnswerTable extends Migration
     public function down(): void
     {
         Schema::table('questions', function (Blueprint $table) {
-            $table->dropColumn('is_text');
+            $table->dropColumn('type');
         });
 
         Schema::table('question_answers', function (Blueprint $table) {

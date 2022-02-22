@@ -13,7 +13,7 @@ class QuestionFrontResource extends JsonResource
             'title' => $this['title'],
             'description' => $this['description'],
             'rate' => $this['rate'],
-            'is_text' => $this['is_text'],
+            'type' => $this['type'],
             'note' => $this['note'],
         ];
     }
