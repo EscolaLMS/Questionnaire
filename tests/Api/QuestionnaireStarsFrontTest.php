@@ -10,7 +10,7 @@ use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class QuestionnaireReportFrontTest extends TestCase
+class QuestionnaireStarsFrontTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -38,7 +38,7 @@ class QuestionnaireReportFrontTest extends TestCase
     public function testCanReadQuestionnaireReport(): void
     {
         $response = $this->actingAs($this->user, 'api')->getJson(
-            sprintf('/api/questionnaire/report/%d', $this->questionnaire->id)
+            sprintf('/api/questionnaire/stars/%d', $this->questionnaire->id)
         );
 
         $response->assertOk();
@@ -54,7 +54,7 @@ class QuestionnaireReportFrontTest extends TestCase
     {
         $response = $this->actingAs($this->user, 'api')->getJson(
             sprintf(
-                '/api/questionnaire/report/%d/%d/%d',
+                '/api/questionnaire/stars/%d/%d/%d',
                 $this->questionnaire->id,
                 $this->questionnaireModel->model_type_id,
                 $this->questionnaireModel->model_id

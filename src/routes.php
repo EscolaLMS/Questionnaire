@@ -34,9 +34,9 @@ Route::group(['prefix' => 'api/questionnaire'], function () {
     Route::get('/{model_type_title}/{model_id}', [QuestionnaireApiController::class, 'list']);
     Route::get('/{model_type_title}/{model_id}/{id}', [QuestionnaireApiController::class, 'read']);
     Route::post('/{model_type_title}/{model_id}/{id}', [QuestionnaireApiController::class, 'answer']);
-    Route::group(['prefix' => 'report'], function () {
-        Route::get('/{id}', [QuestionnaireApiController::class, 'report']);
-        Route::get('/{id}/{model_type_id}', [QuestionnaireApiController::class, 'report']);
-        Route::get('/{id}/{model_type_id}/{model_id}', [QuestionnaireApiController::class, 'report']);
+    Route::group(['prefix' => 'stars'], function () {
+        Route::get('/{id}', [QuestionnaireApiController::class, 'stars']);
+        Route::get('/{id}/{model_type_id}', [QuestionnaireApiController::class, 'stars']);
+        Route::get('/{id}/{model_type_id}/{model_id}', [QuestionnaireApiController::class, 'stars']);
     });
 });

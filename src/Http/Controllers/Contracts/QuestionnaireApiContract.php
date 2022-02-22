@@ -5,7 +5,7 @@ namespace EscolaLms\Questionnaire\Http\Controllers\Contracts;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontAnswerRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
-use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReportFrontRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireStarsFrontRequest;
 use Illuminate\Http\JsonResponse;
 
 interface QuestionnaireApiContract
@@ -185,9 +185,9 @@ interface QuestionnaireApiContract
 
     /**
      * @OA\Get(
-     *     path="/api/questionnaire/report/{id}/{model_type_id}/{model_id}",
-     *     summary="Read a questionnaire report identified by a given id identifier",
-     *     tags={"QuestionnaireReport"},
+     *     path="/api/questionnaire/stars/{id}/{model_type_id}/{model_id}",
+     *     summary="Read a questionnaire stars identified by a given id identifier",
+     *     tags={"QuestionnaireStars"},
      *     @OA\Parameter(
      *         description="Unique human-readable questionnaire identifier",
      *         in="path",
@@ -200,7 +200,7 @@ interface QuestionnaireApiContract
      *     @OA\Response(
      *         response=200,
      *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/QuestionnaireReportResource")
+     *         @OA\JsonContent(ref="#/components/schemas/QuestionnaireStarsResource")
      *      ),
      *     @OA\Response(
      *          response=401,
@@ -216,5 +216,5 @@ interface QuestionnaireApiContract
      *      ),
      * )
      */
-    public function report(QuestionnaireReportFrontRequest $request): JsonResponse;
+    public function stars(QuestionnaireStarsFrontRequest $request): JsonResponse;
 }
