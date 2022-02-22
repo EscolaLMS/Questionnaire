@@ -100,7 +100,10 @@ class QuestionnaireUpdateTest extends TestCase
     public function testAdminCanUpdateQuestionnaireWithModels(): void
     {
         $this->authenticateAsAdmin();
-        $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
         $questionnaire = Questionnaire::factory()->createOne();
         $questionnaireNew = Questionnaire::factory()->makeOne();
         $questionnaireModel = QuestionnaireModel::factory()->createOne();

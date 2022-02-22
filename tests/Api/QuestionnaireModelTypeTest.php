@@ -17,26 +17,14 @@ class QuestionnaireModelTypeTest extends TestCase
         $this->seed(QuestionnairePermissionsSeeder::class);
     }
 
-    public function testAdminCanListEmptyQuestionnaireModels(): void
-    {
-        $this->authenticateAsAdmin();
-
-        $response = $this->actingAs($this->user, 'api')->getJson('/api/admin/questionnaire-models');
-
-        $response->assertOk();
-        $response->assertJsonStructure([
-            'success',
-            'data',
-            'message'
-        ]);
-        $response->assertJsonCount(0, 'data');
-    }
-
     public function testCanReadQuestionnaireModels(): void
     {
         $this->authenticateAsAdmin();
 
-        QuestionnaireModelType::factory()->createOne();
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            QuestionnaireModelType::factory()->createOne();
+        }
 
         $response = $this->actingAs($this->user, 'api')->getJson('/api/admin/questionnaire-models');
         $response->assertOk();

@@ -63,7 +63,10 @@ class QuestionnaireCreateTest extends TestCase
     public function testAdminCanCreateQuestionnaireWithModels(): void
     {
         $this->authenticateAsAdmin();
-        $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
         $questionnaire = Questionnaire::factory()->makeOne();
         $questionnaireModel = QuestionnaireModel::factory()->makeOne();
         $model = new $questionnaireModelType->model_class();
