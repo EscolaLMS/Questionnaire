@@ -37,6 +37,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *          type="boolean",
  *          description="question is active"
  *     ),
+ *     @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          description="type: rate, text",
+ *     ),
  * )
  *
  * @property integer $id
@@ -45,6 +50,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property integer $questionnaire_id
  * @property integer $position
  * @property boolean $active
+ * @property string $type
  */
 class Question extends Model
 {
@@ -65,6 +71,7 @@ class Question extends Model
         'questionnaire_id' => 'integer',
         'position' => 'integer',
         'active' => 'boolean',
+        'type' => 'string',
     ];
 
     public $fillable = [
@@ -73,6 +80,7 @@ class Question extends Model
         'questionnaire_id',
         'position',
         'active',
+        'type',
     ];
 
     public function questionnaire(): BelongsTo

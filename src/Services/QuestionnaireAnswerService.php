@@ -42,10 +42,14 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
                     'user_id' => $user->getKey(),
                     'question_id' => $answer['question_id'],
                     'questionnaire_model_id' => $questionnaireModel->getKey(),
-                    'rate' => $answer['rate'],
+                    'rate' => $answer['rate'] ?? null,
+                    'note' => $answer['note'] ?? null,
                 ]);
             } else {
-                $oldAnswers[$answer['question_id']]->fill(['rate' => $answer['rate']])->save();
+                $oldAnswers[$answer['question_id']]->fill([
+                    'rate' => $answer['rate'] ?? null,
+                    'note' => $answer['note'] ?? null,
+                ])->save();
             }
         }
 

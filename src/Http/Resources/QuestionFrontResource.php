@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire\Http\Resources;
 
-use EscolaLms\Questionnaire\Models\Question;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionFrontResource extends JsonResource
@@ -14,6 +13,8 @@ class QuestionFrontResource extends JsonResource
             'title' => $this['title'],
             'description' => $this['description'],
             'rate' => $this['rate'],
+            'type' => $this['type'],
+            'note' => $this['note'],
         ];
     }
 }

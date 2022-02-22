@@ -32,6 +32,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *          type="integer",
  *          description="identifier of the questionnaire model object"
  *     )
+ *     @OA\Property(
+ *          property="note",
+ *          type="string",
+ *          description="text answer"
+ *     )
  * )
  *
  * @property integer $id
@@ -39,6 +44,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property integer $user_id
  * @property integer $question_id
  * @property integer $questionnaire_model_id
+ * @property string $note
  */
 class QuestionAnswer extends Model
 {
@@ -58,6 +64,7 @@ class QuestionAnswer extends Model
         'question_id' => 'integer',
         'questionnaire_model_id' => 'integer',
         'rate' => 'integer',
+        'note' => 'string',
     ];
 
     public $fillable = [
@@ -65,6 +72,7 @@ class QuestionAnswer extends Model
         'question_id',
         'questionnaire_model_id',
         'rate',
+        'note',
     ];
 
     public function question(): BelongsTo

@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Database\Factories;
 
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -26,7 +27,8 @@ class QuestionFactory extends Factory
             'title' => $this->faker->realText . ' ?',
             'questionnaire_id' => $questionnaire->id,
             'position' => $this->faker->randomNumber(),
-            'active' => true
+            'active' => true,
+            'type' => QuestionTypeEnum::RATE,
         ];
     }
 }
