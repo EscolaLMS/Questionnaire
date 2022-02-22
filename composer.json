@@ -4,7 +4,7 @@
     "type": "package",
     "require": {
         "php": ">=7.4|>=8",
-        "darkaonline/l5-swagger" : "8.1.0",
+        "darkaonline/l5-swagger": "8.1.0",
         "escolalms/core": "^1",
         "laravel/framework": ">=8.0"
     },
