@@ -40,7 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *     @OA\Property(
  *          property="type",
  *          type="string",
- *          description="type: rate, text",
+ *          description="type: rate, text"
  *     ),
  * )
  *

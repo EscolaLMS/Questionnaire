@@ -7,6 +7,7 @@ use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerRepositoryContract
@@ -37,24 +38,24 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
         ?int $modelId = null,
         ?int $userId = null
     ): Collection {
-        $query = $this
-            ->model
-            ->newQuery()
+        $query = $this->getQueryReport($questionnaireId, $modelTypeId, $modelId)
             ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate, question_id, questions.title')
-            ->join('questions', 'question_id', '=', 'questions.id')
-            ->where('questions.questionnaire_id', '=', $questionnaireId)
-            ->where('questions.type', '=', QuestionTypeEnum::RATE)
             ->groupBy('question_id', 'questions.title');
-        if ($modelTypeId) {
-            $query->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
-                ->where('questionnaire_models.model_type_id', '=', $modelTypeId);
-            if ($modelId) {
-                $query->where('questionnaire_models.model_id', '=', $modelId);
-            }
-        }
         if ($userId) {
             $query->where('user_id', '=', $userId);
         }
+
+        return $query->get();
+    }
+
+    public function getStars(
+        int $questionnaireId,
+        ?int $modelTypeId = null,
+        ?int $modelId = null
+    ): Collection {
+        $query = $this->getQueryReport($questionnaireId, $modelTypeId, $modelId)
+            ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate')
+            ->groupBy('questions.questionnaire_id');
 
         return $query->get();
     }
@@ -67,5 +68,28 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     public function deleteByQuestionId(int $questionId): bool
     {
         return $this->model->newQuery()->where('question_id', '=', $questionId)->delete();
+    }
+
+    private function getQueryReport(
+        int $questionnaireId,
+        ?int $modelTypeId = null,
+        ?int $modelId = null
+    ): Builder
+    {
+        $query = $this
+            ->model
+            ->newQuery()
+            ->join('questions', 'question_id', '=', 'questions.id')
+            ->where('questions.questionnaire_id', '=', $questionnaireId)
+            ->where('questions.type', '=', QuestionTypeEnum::RATE);
+        if ($modelTypeId) {
+            $query->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
+                ->where('questionnaire_models.model_type_id', '=', $modelTypeId);
+            if ($modelId) {
+                $query->where('questionnaire_models.model_id', '=', $modelId);
+            }
+        }
+
+        return $query;
     }
 }

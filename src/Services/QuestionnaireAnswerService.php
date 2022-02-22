@@ -30,6 +30,13 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         return new collection($report);
     }
 
+    public function getStars(int $id, ?int $model_type_id = null, ?int $model_id = null): Collection
+    {
+        $report = $this->questionAnswerRepository->getStars($id, $model_type_id, $model_id)->toArray();
+
+        return new collection($report);
+    }
+
     public function saveAnswers(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array
     {
         $oldAnswers = $this->questionAnswerRepository->makeModel()->newQuery()->where([
