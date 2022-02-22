@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *          property="questionnaire_model_id",
  *          type="integer",
  *          description="identifier of the questionnaire model object"
- *     )
+ *     ),
  *     @OA\Property(
  *          property="note",
  *          type="string",
