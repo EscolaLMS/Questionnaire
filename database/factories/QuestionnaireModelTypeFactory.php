@@ -12,7 +12,7 @@ class QuestionnaireModelTypeFactory extends Factory
     public function definition()
     {
         return [
-            'title' => 'Course',
+            'title' => 'course',
             'model_class' => 'EscolaLms\Courses\Models\Course',
         ];
     }
