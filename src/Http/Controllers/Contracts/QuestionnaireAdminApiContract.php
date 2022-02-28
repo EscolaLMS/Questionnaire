@@ -222,7 +222,7 @@ interface QuestionnaireAdminApiContract
 
     /**
      * @OA\Get(
-     *     path="/api/admin/questionnaire/model",
+     *     path="/api/admin/questionnaire-model",
      *     summary="Lists available questionnaire model type",
      *     tags={"QuestionnaireModelType"},
      *     security={
