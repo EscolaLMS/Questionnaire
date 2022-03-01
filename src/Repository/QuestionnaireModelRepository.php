@@ -15,7 +15,12 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
 
     public function getFieldsSearchable(): array
     {
-        return [];
+        return [
+            'id',
+            'questionnaire_id',
+            'model_type_id',
+            'model_id',
+        ];
     }
 
     public function findByModelTitleAndModelId(string $title, int $model_id): QuestionnaireModel

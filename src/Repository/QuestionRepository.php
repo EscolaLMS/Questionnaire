@@ -16,7 +16,14 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
 
     public function getFieldsSearchable(): array
     {
-        return [];
+        return [
+            'id',
+            'description',
+            'title',
+            'questionnaire_id',
+            'active',
+            'type',
+        ];
     }
 
     public function searchAndPaginate(array $search = [], ?int $perPage = null, string $orderDirection = 'asc', string $orderColumn = 'id'): LengthAwarePaginator

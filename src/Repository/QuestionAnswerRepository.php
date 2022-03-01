@@ -19,7 +19,14 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
 
     public function getFieldsSearchable(): array
     {
-        return [];
+        return [
+            'id',
+            'user_id',
+            'question_id',
+            'questionnaire_model_id',
+            'rate',
+            'note',
+        ];
     }
 
     public function insert(Question $question): Question
