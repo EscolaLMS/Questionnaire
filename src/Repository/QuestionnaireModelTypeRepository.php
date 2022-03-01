@@ -15,6 +15,10 @@ class QuestionnaireModelTypeRepository extends BaseRepository implements Questio
 
     public function getFieldsSearchable(): array
     {
-        return [];
+        return [
+            'id',
+            'title',
+            'model_class',
+        ];
     }
 }
