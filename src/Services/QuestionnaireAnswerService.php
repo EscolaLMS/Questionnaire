@@ -30,9 +30,9 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         return new collection($report);
     }
 
-    public function getStars(int $id, ?int $model_type_id = null, ?int $model_id = null): Collection
+    public function getStars(int $model_type_id, int $model_id): Collection
     {
-        $report = $this->questionAnswerRepository->getStars($id, $model_type_id, $model_id)->toArray();
+        $report = $this->questionAnswerRepository->getStars($model_type_id, $model_id)->toArray();
 
         return new collection($report);
     }

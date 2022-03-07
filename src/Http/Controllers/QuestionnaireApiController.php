@@ -86,9 +86,8 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
     }
 
     public function stars(QuestionnaireStarsFrontRequest $request): JsonResponse {
-        $report = $this->questionnaireAnswerService->getReport(
-            $request->getParamId(),
-            $request->getParamModelTypeId(),
+        $report = $this->questionnaireAnswerService->getStars(
+            $request->getQuestionnaireModelType()->id,
             $request->getParamModelId()
         );
 

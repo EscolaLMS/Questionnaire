@@ -2,8 +2,8 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
-use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
+use EscolaLms\Questionnaire\Rules\ClassExist;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -13,8 +13,7 @@ class QuestionnaireStarsFrontRequest extends FormRequest
     {
         parent::prepareForValidation();
         $this->merge([
-            'id' => $this->route('id'),
-            'model_type_id' => $this->route('model_type_id'),
+            'model_type_title' => $this->route('model_type_title'),
             'model_id' => $this->route('model_id'),
         ]);
     }
@@ -27,33 +26,21 @@ class QuestionnaireStarsFrontRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => [
-                'integer',
-                'required',
-                Rule::exists(Questionnaire::class, 'id'),
-            ],
-            'model_type_id' => [
-                'integer',
-                'sometimes',
-                'nullable',
-                Rule::exists(QuestionnaireModelType::class, 'id'),
+            'model_type_title' => [
+                'string',
+                Rule::exists(QuestionnaireModelType::class, 'title'),
+                new ClassExist
             ],
             'model_id' => [
                 'integer',
-                'sometimes',
-                'nullable',
+                Rule::exists($this->getQuestionnaireModelType()->model_class, 'id'),
             ],
         ];
     }
 
-    public function getParamId(): int
+    public function getParamModelTypeTitle(): string
     {
-        return $this->route('id');
-    }
-
-    public function getParamModelTypeId(): ?int
-    {
-        return $this->route('model_type_id');
+        return $this->route('model_type_title');
     }
 
     public function getParamModelId(): ?int
@@ -61,8 +48,8 @@ class QuestionnaireStarsFrontRequest extends FormRequest
         return $this->route('model_id');
     }
 
-    public function getQuestionnaire(): Questionnaire
+    public function getQuestionnaireModelType(): QuestionnaireModelType
     {
-        return Questionnaire::findOrFail($this->getParamId());
+        return QuestionnaireModelType::query()->where('title', $this->getParamModelTypeTitle())->firstOrFail();
     }
 }
