@@ -82,22 +82,16 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
         ?int $modelId = null
     ): Builder
     {
-        $query = $this
+        return $this
             ->model
             ->newQuery()
             ->join('questions', 'question_id', '=', 'questions.id')
-            ->where('questions.type', '=', QuestionTypeEnum::RATE);
-        if ($questionnaireId) {
-            $query->where('questions.questionnaire_id', '=', $questionnaireId);
-        }
-        if ($modelTypeId) {
-            $query->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
-                ->where('questionnaire_models.model_type_id', '=', $modelTypeId);
-            if ($modelId) {
-                $query->where('questionnaire_models.model_id', '=', $modelId);
-            }
-        }
-
-        return $query;
+            ->where('questions.type', '=', QuestionTypeEnum::RATE)
+            ->when($questionnaireId, fn ($q) => $q->where('questions.questionnaire_id', '=', $questionnaireId))
+            ->when($modelTypeId, fn ($q) => $q
+                    ->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
+                    ->where('questionnaire_models.model_type_id', '=', $modelTypeId)
+                    ->when($modelId, fn ($q) => $q->where('questionnaire_models.model_id', '=', $modelId))
+            );
     }
 }

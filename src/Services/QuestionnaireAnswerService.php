@@ -23,16 +23,16 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $this->questionnaireService = $questionnaireService;
     }
 
-    public function getReport(int $id, ?int $model_type_id = null, ?int $model_id = null, ?int $user_id = null): Collection
+    public function getReport(int $id, ?int $modelTypeId = null, ?int $modelId = null, ?int $userId = null): Collection
     {
-        $report = $this->questionAnswerRepository->getReport($id, $model_type_id, $model_id, $user_id)->toArray();
+        $report = $this->questionAnswerRepository->getReport($id, $modelTypeId, $modelId, $userId)->toArray();
 
         return new collection($report);
     }
 
-    public function getStars(int $model_type_id, int $model_id): Collection
+    public function getStars(int $modelTypeId, int $modelId): Collection
     {
-        $report = $this->questionAnswerRepository->getStars($model_type_id, $model_id)->toArray();
+        $report = $this->questionAnswerRepository->getStars($modelTypeId, $modelId)->toArray();
 
         return new collection($report);
     }
