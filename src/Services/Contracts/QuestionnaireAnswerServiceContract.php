@@ -12,9 +12,9 @@ use Illuminate\Support\Collection;
  */
 interface QuestionnaireAnswerServiceContract
 {
-    public function getReport(int $id, ?int $model_type_id = null, ?int $model_id = null, ?int $user_id = null): Collection;
+    public function getReport(int $id, ?int $modelTypeId = null, ?int $modelId = null, ?int $userId = null): Collection;
 
-    public function getStars(int $id, ?int $model_type_id = null, ?int $model_id = null): Collection;
+    public function getStars(int $modelTypeId, int $modelId): Collection;
 
     public function saveAnswers(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array;
 }

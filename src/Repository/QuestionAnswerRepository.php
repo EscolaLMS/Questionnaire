@@ -56,11 +56,10 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     }
 
     public function getStars(
-        int $questionnaireId,
-        ?int $modelTypeId = null,
-        ?int $modelId = null
+        int $modelTypeId,
+        int $modelId
     ): Collection {
-        $query = $this->getQueryReport($questionnaireId, $modelTypeId, $modelId)
+        $query = $this->getQueryReport(null, $modelTypeId, $modelId)
             ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate')
             ->groupBy('questions.questionnaire_id');
 
@@ -78,25 +77,21 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     }
 
     private function getQueryReport(
-        int $questionnaireId,
+        ?int $questionnaireId = null,
         ?int $modelTypeId = null,
         ?int $modelId = null
     ): Builder
     {
-        $query = $this
+        return $this
             ->model
             ->newQuery()
             ->join('questions', 'question_id', '=', 'questions.id')
-            ->where('questions.questionnaire_id', '=', $questionnaireId)
-            ->where('questions.type', '=', QuestionTypeEnum::RATE);
-        if ($modelTypeId) {
-            $query->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
-                ->where('questionnaire_models.model_type_id', '=', $modelTypeId);
-            if ($modelId) {
-                $query->where('questionnaire_models.model_id', '=', $modelId);
-            }
-        }
-
-        return $query;
+            ->where('questions.type', '=', QuestionTypeEnum::RATE)
+            ->when($questionnaireId, fn ($q) => $q->where('questions.questionnaire_id', '=', $questionnaireId))
+            ->when($modelTypeId, fn ($q) => $q
+                    ->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
+                    ->where('questionnaire_models.model_type_id', '=', $modelTypeId)
+                    ->when($modelId, fn ($q) => $q->where('questionnaire_models.model_id', '=', $modelId))
+            );
     }
 }

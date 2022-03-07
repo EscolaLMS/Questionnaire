@@ -185,17 +185,26 @@ interface QuestionnaireApiContract
 
     /**
      * @OA\Get(
-     *     path="/api/questionnaire/stars/{id}/{model_type_id}/{model_id}",
-     *     summary="Read a questionnaire stars identified by a given id identifier",
+     *     path="/api/questionnaire/stars/{model_type_title}/{model_id}",
+     *     summary="Read a questionnaire stars identified by a given model title and model id identifier",
      *     tags={"QuestionnaireStars"},
      *     @OA\Parameter(
-     *         description="Unique human-readable questionnaire identifier",
-     *         in="path",
-     *         name="id",
-     *         required=true,
+     *         name="model_type_title",
+     *         description="Name of Model (Course, Webinar etd.)",
      *         @OA\Schema(
-     *             type="integer"
-     *         )
+     *            type="string",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="model_id",
+     *         description="id of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
      *     ),
      *     @OA\Response(
      *         response=200,

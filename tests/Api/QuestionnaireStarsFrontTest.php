@@ -38,7 +38,11 @@ class QuestionnaireStarsFrontTest extends TestCase
     public function testCanReadQuestionnaireStars(): void
     {
         $response = $this->actingAs($this->user, 'api')->getJson(
-            sprintf('/api/questionnaire/stars/%d', $this->questionnaire->id)
+            sprintf(
+                '/api/questionnaire/stars/%s/%d',
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            )
         );
 
         $response->assertOk();
@@ -47,20 +51,11 @@ class QuestionnaireStarsFrontTest extends TestCase
             'data',
             'message'
         ]);
-        $response->assertJsonCount(20, 'data');
-    }
 
-    public function testCanReadQuestionnaireStarsWithAllParams(): void
-    {
-        $response = $this->actingAs($this->user, 'api')->getJson(
-            sprintf(
-                '/api/questionnaire/stars/%d/%d/%d',
-                $this->questionnaire->id,
-                $this->questionnaireModel->model_type_id,
-                $this->questionnaireModel->model_id
-            )
-        );
+        $response->assertJsonCount(1, 'data');
 
-        $response->assertOk();
+        $data = json_decode($response->getContent());
+
+        $this->assertEquals($data->data[0]->avg_rate, ($data->data[0]->sum_rate / $data->data[0]->count_answers));
     }
 }
