@@ -21,6 +21,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *          type="boolean",
  *          description="Questionnaire is active"
  *     ),
+ *     @OA\Property(
+ *          property="questions",
+ *          type="array",
+ *          @OA\Items(ref="#/components/schemas/Question")
+ *     ),
  * )
  *
  * @property integer $id

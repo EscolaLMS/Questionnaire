@@ -63,8 +63,21 @@ class QuestionnaireReadTest extends TestCase
         $this->authenticateAsAdmin();
 
         $questionnaire = Questionnaire::factory()->createOne();
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+
+        Question::factory()
+            ->count(20)
+            ->create();
+
+        QuestionAnswer::factory()
+            ->count(20)
+            ->create([
+                'user_id' => $this->user->id,
+                'questionnaire_model_id' => $questionnaireModel->id
+            ]);
 
         $response = $this->actingAs($this->user, 'api')->getJson('/api/admin/questionnaire/' . $questionnaire->getKey());
+
         $response->assertOk();
         $response->assertJsonFragment(collect($questionnaire->getAttributes())->except('id')->toArray());
     }
