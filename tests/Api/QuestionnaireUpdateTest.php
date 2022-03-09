@@ -186,4 +186,153 @@ class QuestionnaireUpdateTest extends TestCase
 
         $this->assertEquals($questionnaireNew->title, $questionnaire->title);
     }
+
+    public function testAdminCanAssignQuestionnaireModel(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
+        $questionnaireModel = QuestionnaireModel::factory()->makeOne();
+        $model = new $questionnaireModelType->model_class();
+        $newModel = $model::factory()
+            ->count(1)
+            ->create();
+        $questionnaire = Questionnaire::factory()->createOne();
+
+        $this->assertEquals(0, count($questionnaire->questionnaireModels));
+
+        $response = $this->actingAs($this->user, 'api')->patchJson(
+            sprintf(
+                '/api/admin/questionnaire/assign/%s/%d/%d',
+                $questionnaireModel->modelableType->title,
+                $newModel[0]->getKey(),
+                $questionnaire->getKey()
+            ),
+            []
+        );
+
+        $response->assertOk();
+
+        $questionnaire->refresh();
+
+        $this->assertEquals(1, count($questionnaire->questionnaireModels));
+        $this->assertEquals($newModel[0]->getKey(), $questionnaire->questionnaireModels[0]->model_id);
+    }
+
+    public function testGuestCannotAssignQuestionnaireModel(): void
+    {
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
+        $questionnaireModel = QuestionnaireModel::factory()->makeOne();
+        $model = new $questionnaireModelType->model_class();
+        $newModel = $model::factory()
+            ->count(1)
+            ->create();
+        $questionnaire = Questionnaire::factory()->createOne();
+
+        $response = $this->patchJson(
+            sprintf(
+                '/api/admin/questionnaire/assign/%s/%d/%d',
+                $questionnaireModel->modelableType->title,
+                $newModel[0]->getKey(),
+                $questionnaire->getKey()
+            ),
+            []
+        );
+        $response->assertUnauthorized();
+    }
+
+    public function testAdminAssignTheSameQuestionnaireModel(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
+        $model = new $questionnaireModelType->model_class();
+        $newModel = $model::factory()
+            ->count(1)
+            ->create();
+        $questionnaire = Questionnaire::factory()->createOne();
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+
+        $this->assertEquals(1, count($questionnaire->questionnaireModels));
+
+        $response = $this->actingAs($this->user, 'api')->patchJson(
+            sprintf(
+                '/api/admin/questionnaire/assign/%s/%d/%d',
+                $questionnaireModel->modelableType->title,
+                $newModel[0]->getKey(),
+                $questionnaire->getKey()
+            ),
+            []
+        );
+
+        $response->assertOk();
+
+        $questionnaire->refresh();
+
+        $this->assertEquals(1, count($questionnaire->questionnaireModels));
+        $this->assertEquals($newModel[0]->getKey(), $questionnaire->questionnaireModels[0]->model_id);
+    }
+
+    public function testAdminCanUnassignQuestionnaireModel(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
+        $model = new $questionnaireModelType->model_class();
+        $newModel = $model::factory()
+            ->count(2)
+            ->create();
+        $questionnaire = Questionnaire::factory()->createOne();
+        QuestionnaireModel::factory()->createOne([
+            'model_id' => $newModel[1]->id
+        ]);
+        $questionnaireModel = QuestionnaireModel::factory()->createOne([
+            'model_id' => $newModel[0]->id
+        ]);
+
+        $this->assertEquals(2, count($questionnaire->questionnaireModels));
+
+        $response = $this->actingAs($this->user, 'api')->delete(
+            sprintf(
+                '/api/admin/questionnaire/unassign/%s/%d/%d',
+                $questionnaireModel->modelableType->title,
+                $newModel[0]->getKey(),
+                $questionnaire->getKey()
+            )
+        );
+
+        $response->assertOk();
+
+        $questionnaire->refresh();
+
+        $this->assertEquals(1, count($questionnaire->questionnaireModels));
+    }
+
+    public function testGuestCannotUnassignQuestionnaireModel(): void
+    {
+        $questionnaireModelType = QuestionnaireModelType::query()->inRandomOrder()->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
+        $questionnaireModel = QuestionnaireModel::factory()->makeOne();
+        $questionnaire = Questionnaire::factory()->createOne();
+
+        $response = $this->json('delete', sprintf(
+            '/api/admin/questionnaire/unassign/%s/%d/%d',
+            $questionnaireModel->modelableType->title,
+            $questionnaireModel->model_id,
+            $questionnaire->getKey()
+        ));
+
+        $response->assertUnauthorized();
+    }
 }
