@@ -5,6 +5,7 @@ namespace EscolaLms\Questionnaire\Http\Controllers;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use EscolaLms\Questionnaire\Exceptions\QuestionnaireCanNotDeleteException;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireAdminApiContract;
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireAssignUnassignRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireCreateRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireDeleteRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireListingRequest;
@@ -14,6 +15,7 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionnaireUpdateRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireModelTypeCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireReportCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelTypeRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
@@ -26,17 +28,20 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     private QuestionnaireRepositoryContract $questionnaireRepository;
     private QuestionnaireAnswerServiceContract $questionAnswerService;
     private QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository;
+    private QuestionnaireModelRepositoryContract $questionnaireModelRepository;
     private QuestionnaireServiceContract $questionnaireService;
 
     public function __construct(
         QuestionnaireRepositoryContract $questionnaireRepository,
         QuestionnaireAnswerServiceContract $questionAnswerService,
         QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository,
+        QuestionnaireModelRepositoryContract $questionnaireModelRepository,
         QuestionnaireServiceContract $questionnaireService
     ) {
         $this->questionnaireRepository = $questionnaireRepository;
         $this->questionAnswerService = $questionAnswerService;
         $this->questionnaireModelTypeRepository = $questionnaireModelTypeRepository;
+        $this->questionnaireModelRepository = $questionnaireModelRepository;
         $this->questionnaireService = $questionnaireService;
     }
 
@@ -112,5 +117,27 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
             QuestionnaireReportCollection::make($report),
             __("Questionnaire report fetched successfully")
         );
+    }
+
+    public function assign(QuestionnaireAssignUnassignRequest $request): JsonResponse
+    {
+        $this->questionnaireModelRepository->assignQuestionnaireModel(
+            $request->getQuestionnaire(),
+            $request->getQuestionnaireModelType()->getKey(),
+            $request->getModelId()
+        );
+
+        return $this->sendResponse(true, __("Questionnaire model assign successfully"));
+    }
+
+    public function unassign(QuestionnaireAssignUnassignRequest $request): JsonResponse
+    {
+        $this->questionnaireModelRepository->unassignQuestionnaireModel(
+            $request->getQuestionnaire(),
+            $request->getQuestionnaireModelType()->getKey(),
+            $request->getModelId()
+        );
+
+        return $this->sendResponse(true, __("Questionnaire model unassign successfully"));
     }
 }

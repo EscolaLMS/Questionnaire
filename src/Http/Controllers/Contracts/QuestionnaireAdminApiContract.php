@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Http\Controllers\Contracts;
 
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireAssignUnassignRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireCreateRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireDeleteRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireListingRequest;
@@ -295,4 +296,122 @@ interface QuestionnaireAdminApiContract
      * )
      */
     public function report(QuestionnaireReportRequest $request): JsonResponse;
+
+    /**
+     * @OA\Patch(
+     *     path="/api/admin/questionnaire/assign/{model_type_title}/{model_id}/{id}",
+     *     summary="assign a questionnaire model",
+     *     tags={"Questionnaire"},
+     *     security={
+     *         {"passport": {}},
+     *     },
+     *    @OA\Parameter(
+     *         name="model_type_title",
+     *         description="Name of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="model_id",
+     *         description="id of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="id of questionnaire",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Questionnaire model assign successfully",
+     *      ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="endpoint requires authentication",
+     *      ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=400,
+     *          description="cannot find a questionnaire",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    public function assign(QuestionnaireAssignUnassignRequest $request): JsonResponse;
+
+    /**
+     * @OA\Delete(
+     *     path="/api/admin/questionnaire/unassign/{model_type_title}/{model_id}/{id}",
+     *     summary="unassign a questionnaire model",
+     *     tags={"Questionnaire"},
+     *     security={
+     *         {"passport": {}},
+     *     },
+     *    @OA\Parameter(
+     *         name="model_type_title",
+     *         description="Name of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="model_id",
+     *         description="id of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="id of questionnaire",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Questionnaire model unassign successfully",
+     *      ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="endpoint requires authentication",
+     *      ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=400,
+     *          description="cannot find a questionnaire",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    public function unassign(QuestionnaireAssignUnassignRequest $request): JsonResponse;
 }
