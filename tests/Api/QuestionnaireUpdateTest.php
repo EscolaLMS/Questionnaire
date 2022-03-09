@@ -326,14 +326,13 @@ class QuestionnaireUpdateTest extends TestCase
         $questionnaireModel = QuestionnaireModel::factory()->makeOne();
         $questionnaire = Questionnaire::factory()->createOne();
 
-        $response = $this->delete(
-            sprintf(
-                '/api/admin/questionnaire/unassign/%s/%d/%d',
-                $questionnaireModel->modelableType->title,
-                $questionnaireModel->model_id,
-                $questionnaire->getKey()
-            )
-        );
+        $response = $this->json('delete', sprintf(
+            '/api/admin/questionnaire/unassign/%s/%d/%d',
+            $questionnaireModel->modelableType->title,
+            $questionnaireModel->model_id,
+            $questionnaire->getKey()
+        ));
+
         $response->assertUnauthorized();
     }
 }
