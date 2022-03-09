@@ -261,17 +261,44 @@ interface QuestionnaireAdminApiContract
 
     /**
      * @OA\Get(
-     *     path="/api/admin/questionnaire/report/{id}",
+     *     path="/api/admin/questionnaire/report/{id}/{model_type_id}/{model_id}/{user_id}",
      *     summary="Read a questionnaire report identified by a given id identifier",
      *     tags={"QuestionnaireReport"},
      *     security={
      *         {"passport": {}},
      *     },
      *     @OA\Parameter(
-     *         description="Unique human-readable questionnaire identifier",
+     *         description="questionnaire identifier",
      *         in="path",
      *         name="id",
      *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="questionnaire model type identifier",
+     *         in="path",
+     *         name="model_type_id",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="model identifier",
+     *         in="path",
+     *         name="model_id",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="user identifier",
+     *         in="path",
+     *         name="user_id",
+     *         required=false,
      *         @OA\Schema(
      *             type="integer"
      *         )
