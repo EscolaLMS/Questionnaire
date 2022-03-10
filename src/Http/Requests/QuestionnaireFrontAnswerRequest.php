@@ -8,6 +8,7 @@ use EscolaLms\Questionnaire\Rules\ClassExist;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Exists;
 
 /**
  * @OA\Schema(
@@ -71,7 +72,7 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
             ],
             'model_id' => [
                 'integer',
-                Rule::exists($this->getQuestionnaireModelType()->model_class, 'id'),
+                new Exists($this->getQuestionnaireModelType()->model_class, 'id'),
             ],
             'answers' => ['sometimes', 'array'],
             'answers.*' => ['sometimes', 'array'],
