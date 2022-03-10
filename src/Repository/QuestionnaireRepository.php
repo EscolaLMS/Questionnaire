@@ -65,7 +65,6 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
             ->model
             ->newQuery()
             ->where('active', '=', true)
-            ->orderBy('position')
             ->findOrFail($id);
     }
 }
