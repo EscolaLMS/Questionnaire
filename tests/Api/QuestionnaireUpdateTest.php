@@ -258,7 +258,10 @@ class QuestionnaireUpdateTest extends TestCase
             ->count(1)
             ->create();
         $questionnaire = Questionnaire::factory()->createOne();
-        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+        $questionnaireModel = QuestionnaireModel::factory()->createOne([
+            'model_id' => $newModel[0]->getKey(),
+            'model_type_id' => $questionnaireModelType->getKey()
+        ]);
 
         $this->assertEquals(1, count($questionnaire->questionnaireModels));
 
