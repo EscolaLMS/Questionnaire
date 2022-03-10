@@ -8,6 +8,7 @@ use EscolaLms\Questionnaire\Rules\ClassExist;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Exists;
 
 class QuestionnaireAssignUnassignRequest extends FormRequest
 {
@@ -43,7 +44,7 @@ class QuestionnaireAssignUnassignRequest extends FormRequest
             ],
             'model_id' => [
                 'integer',
-                Rule::exists($this->getQuestionnaireModelType()->model_class, 'id'),
+                new Exists($this->getQuestionnaireModelType()->model_class, 'id'),
             ],
         ];
     }
