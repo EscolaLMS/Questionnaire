@@ -30,6 +30,7 @@ interface QuestionAnswerAdminApiContract
      *         @OA\Schema(
      *            type="integer",
      *         ),
+     *         in="query",
      *         required=false
      *     ),
      *     @OA\Parameter(
@@ -38,6 +39,7 @@ interface QuestionAnswerAdminApiContract
      *         @OA\Schema(
      *            type="integer",
      *         ),
+     *         in="query",
      *         required=false
      *     ),
      *     @OA\Response(
