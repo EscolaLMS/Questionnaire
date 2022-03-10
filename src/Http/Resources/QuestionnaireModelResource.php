@@ -20,6 +20,7 @@ class QuestionnaireModelResource extends JsonResource
             'model_type_class' => $this->modelableType->model_class ?? '',
             'model_type_id' => $this->model_type_id,
             'model_id' => $this->model_id,
+            'model_title' => $this->foreignModel->title ?? $this->foreignModel->name ?? $this->model_id,
         ];
     }
 }

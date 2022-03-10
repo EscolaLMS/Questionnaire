@@ -7,6 +7,7 @@ use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -42,17 +43,11 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     public function getReport(
         int $questionnaireId,
         ?int $modelTypeId = null,
-        ?int $modelId = null,
-        ?int $userId = null
+        ?int $modelId = null
     ): Collection {
-        $query = $this->getQueryReport($questionnaireId, $modelTypeId, $modelId)
+        return $this->getQueryReport($questionnaireId, $modelTypeId, $modelId)
             ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate, question_id, questions.title')
-            ->groupBy('question_id', 'questions.title');
-        if ($userId) {
-            $query->where('user_id', '=', $userId);
-        }
-
-        return $query->get();
+            ->groupBy('question_id', 'questions.title')->get();
     }
 
     public function getStars(
@@ -74,6 +69,16 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     public function deleteByQuestionId(int $questionId): bool
     {
         return $this->model->newQuery()->where('question_id', '=', $questionId)->delete();
+    }
+
+    public function searchAndPaginate(array $search = [], ?int $perPage = null, string $orderDirection = 'asc', string $orderColumn = 'id'): LengthAwarePaginator
+    {
+        return $this
+            ->allQuery($search)
+            ->orderBy($this->model->table.'.'.$orderColumn, $orderDirection)
+            ->join('questions', 'question_id', '=', 'questions.id')
+            ->where('questions.questionnaire_id', '=', $search['questionnaire_id'])
+            ->paginate($perPage);
     }
 
     private function getQueryReport(

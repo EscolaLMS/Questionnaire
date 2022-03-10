@@ -261,7 +261,7 @@ interface QuestionnaireAdminApiContract
 
     /**
      * @OA\Get(
-     *     path="/api/admin/questionnaire/report/{id}/{model_type_id}/{model_id}/{user_id}",
+     *     path="/api/admin/questionnaire/report/{id}",
      *     summary="Read a questionnaire report identified by a given id identifier",
      *     tags={"QuestionnaireReport"},
      *     security={
@@ -276,11 +276,92 @@ interface QuestionnaireAdminApiContract
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/QuestionnaireReportResource")
+     *      ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="endpoint requires authentication",
+     *     ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    /**
+     * @OA\Get(
+     *     path="/api/admin/questionnaire/report/{id}/{model_type_id}",
+     *     summary="Read a questionnaire report identified by a given id identifier and model type",
+     *     tags={"QuestionnaireReportForModelType"},
+     *     security={
+     *         {"passport": {}},
+     *     },
      *     @OA\Parameter(
-     *         description="questionnaire model type identifier",
+     *         description="questionnaire identifier",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="questionnaire model type identified",
      *         in="path",
      *         name="model_type_id",
-     *         required=false,
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/QuestionnaireReportResource")
+     *      ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="endpoint requires authentication",
+     *     ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    /**
+     * @OA\Get(
+     *     path="/api/admin/questionnaire/report/{id}/{model_type_id}/{model_id}",
+     *     summary="Read a questionnaire report identified by a given id identifier and model type and model identified",
+     *     tags={"QuestionnaireReportForModel"},
+     *     security={
+     *         {"passport": {}},
+     *     },
+     *     @OA\Parameter(
+     *         description="questionnaire identifier",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="questionnaire model type identified",
+     *         in="path",
+     *         name="model_type_id",
+     *         required=true,
      *         @OA\Schema(
      *             type="integer"
      *         )
@@ -289,16 +370,7 @@ interface QuestionnaireAdminApiContract
      *         description="model identifier",
      *         in="path",
      *         name="model_id",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         description="user identifier",
-     *         in="path",
-     *         name="user_id",
-     *         required=false,
+     *         required=true,
      *         @OA\Schema(
      *             type="integer"
      *         )

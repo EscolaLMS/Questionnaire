@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
-use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use Illuminate\Foundation\Http\FormRequest;
@@ -18,7 +17,6 @@ class QuestionnaireReportRequest extends FormRequest
             'id' => $this->route('id'),
             'model_type_id' => $this->route('model_type_id'),
             'model_id' => $this->route('model_id'),
-            'user_id' => $this->route('user_id'),
         ]);
     }
 
@@ -47,12 +45,6 @@ class QuestionnaireReportRequest extends FormRequest
                 'integer',
                 'sometimes',
                 'nullable',
-            ],
-            'user_id' => [
-                'integer',
-                'sometimes',
-                'nullable',
-                Rule::exists(User::class, 'id'),
             ],
         ];
     }

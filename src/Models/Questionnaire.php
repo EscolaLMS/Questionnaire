@@ -22,9 +22,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *          description="Questionnaire is active"
  *     ),
  *     @OA\Property(
- *          property="questions",
+ *          property="models",
  *          type="array",
- *          @OA\Items(ref="#/components/schemas/Question")
+ *          @OA\Items(ref="#/components/schemas/QuestionnaireModel")
  *     ),
  * )
  *
@@ -57,7 +57,7 @@ class Questionnaire extends Model
 
     public function questions(): HasMany
     {
-        return $this->hasMany(Question::class, 'questionnaire_id');
+        return $this->hasMany(Question::class, 'questionnaire_id')->orderBy('position');
     }
 
     public function questionnaireModels(): HasMany
