@@ -23,9 +23,9 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $this->questionnaireService = $questionnaireService;
     }
 
-    public function getReport(int $id, ?int $modelTypeId = null, ?int $modelId = null, ?int $userId = null): Collection
+    public function getReport(int $id, ?int $modelTypeId = null, ?int $modelId = null): Collection
     {
-        $report = $this->questionAnswerRepository->getReport($id, $modelTypeId, $modelId, $userId)->toArray();
+        $report = $this->questionAnswerRepository->getReport($id, $modelTypeId, $modelId)->toArray();
 
         return new collection($report);
     }

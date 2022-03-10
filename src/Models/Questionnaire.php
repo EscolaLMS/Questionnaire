@@ -22,9 +22,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *          description="Questionnaire is active"
  *     ),
  *     @OA\Property(
- *          property="questions",
+ *          property="models",
  *          type="array",
- *          @OA\Items(ref="#/components/schemas/Question")
+ *          @OA\Items(ref="#/components/schemas/QuestionnaireModel")
  *     ),
  * )
  *

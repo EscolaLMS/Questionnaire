@@ -109,8 +109,7 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
         $report = $this->questionAnswerService->getReport(
             $request->getParamId(),
             $request->getParamModelTypeId(),
-            $request->getParamModelId(),
-            $request->getParamUserId()
+            $request->getParamModelId()
         );
 
         return $this->sendResponseForResource(

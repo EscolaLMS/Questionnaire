@@ -168,4 +168,65 @@ class QuestionAnswerTest extends TestCase
         $response->assertForbidden();
         $this->assertEquals(0, QuestionAnswer::count());
     }
+
+    public function testAdminCanGetAnswerList(): void
+    {
+        QuestionAnswer::factory()
+            ->count(20)
+            ->create();
+
+        $response = $this->actingAs($this->user, 'api')->getJson(
+            '/api/admin/question-answers/' . $this->questionnaire->id
+        );
+
+        $response->assertOk();
+
+        $data = json_decode($response->getContent());
+
+        $this->assertEquals(20, $data->meta->total);
+    }
+
+    public function testAdminCanGetAnswerListWithFilters(): void
+    {
+        QuestionAnswer::factory()
+            ->count(20)
+            ->create();
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+        QuestionAnswer::factory()
+            ->count(10)
+            ->create([
+                'questionnaire_model_id' => $questionnaireModel->id
+            ]);
+
+        $response = $this->actingAs($this->user, 'api')->getJson(
+            '/api/admin/question-answers/' .
+            $this->questionnaire->id .
+            '?questionnaire_model_id=' . $questionnaireModel->id
+        );
+
+        $response->assertOk();
+
+        $data = json_decode($response->getContent());
+
+        $this->assertEquals(10, $data->meta->total);
+    }
+
+    public function testAdminCanGetAnswerListWithWrongFilters(): void
+    {
+        QuestionAnswer::factory()
+            ->count(20)
+            ->create();
+
+        $response = $this->actingAs($this->user, 'api')->getJson(
+            '/api/admin/question-answers/' .
+            $this->questionnaire->id . '?question_id=' . 999999 .
+            '&questionnaire_model_id=' . 9999999
+        );
+
+        $response->assertOk();
+
+        $data = json_decode($response->getContent());
+
+        $this->assertEquals(0, $data->meta->total);
+    }
 }

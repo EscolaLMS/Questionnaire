@@ -26,6 +26,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *          type="integer",
  *          description="model_type_id"
  *     ),
+ *     @OA\Property(
+ *          property="model_title",
+ *          type="integer",
+ *          description="model_title"
+ *     ),
  * )
  *
  * @property integer $id
@@ -66,6 +71,11 @@ class QuestionnaireModel extends Model
     public function modelableType(): BelongsTo
     {
         return $this->belongsTo(QuestionnaireModelType::class, 'model_type_id');
+    }
+
+    public function foreignModel(): BelongsTo
+    {
+        return $this->belongsTo($this->modelableType->model_class, 'model_id');
     }
 
     protected static function newFactory(): QuestionnaireModelFactory

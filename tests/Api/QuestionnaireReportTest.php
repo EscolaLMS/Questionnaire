@@ -54,11 +54,10 @@ class QuestionnaireReportTest extends TestCase
     {
         $response = $this->actingAs($this->user, 'api')->getJson(
             sprintf(
-                '/api/admin/questionnaire/report/%d/%d/%d/%d',
+                '/api/admin/questionnaire/report/%d/%d/%d',
                 $this->questionnaire->id,
                 $this->questionnaireModel->model_type_id,
-                $this->questionnaireModel->model_id,
-                $this->user->id
+                $this->questionnaireModel->model_id
             )
         );
 
