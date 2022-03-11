@@ -22,7 +22,6 @@ class QuestionResource extends JsonResource
             'position' => $this->position,
             'active' => $this->active,
             'type' => $this->type,
-            'answers' => QuestionAnswerResource::collection($this->answers),
         ];
     }
 }
