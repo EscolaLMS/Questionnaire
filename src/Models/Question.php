@@ -42,11 +42,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *          type="string",
  *          description="type: rate, text"
  *     ),
- *     @OA\Property(
- *          property="questions",
- *          type="array",
- *          @OA\Items(ref="#/components/schemas/QuestionAnswer")
- *     ),
  * )
  *
  * @property integer $id
