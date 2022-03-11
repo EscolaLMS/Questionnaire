@@ -5,10 +5,10 @@ namespace EscolaLms\Questionnaire\Http\Requests;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Rules\ClassExist;
+use EscolaLms\Questionnaire\Rules\ModelExist;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Exists;
 
 /**
  * @OA\Schema(
@@ -72,7 +72,7 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
             ],
             'model_id' => [
                 'integer',
-                new Exists($this->getQuestionnaireModelType()->model_class, 'id'),
+                new ModelExist($this->getQuestionnaireModelType()->model_class, 'id'),
             ],
             'answers' => ['sometimes', 'array'],
             'answers.*' => ['sometimes', 'array'],
