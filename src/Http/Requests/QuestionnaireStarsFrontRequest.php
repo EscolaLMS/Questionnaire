@@ -4,9 +4,9 @@ namespace EscolaLms\Questionnaire\Http\Requests;
 
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Rules\ClassExist;
+use EscolaLms\Questionnaire\Rules\ModelExist;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Exists;
 
 class QuestionnaireStarsFrontRequest extends FormRequest
 {
@@ -34,7 +34,7 @@ class QuestionnaireStarsFrontRequest extends FormRequest
             ],
             'model_id' => [
                 'integer',
-                new Exists($this->getQuestionnaireModelType()->model_class, 'id'),
+                new ModelExist($this->input('model_type_title'), 'id'),
             ],
         ];
     }
