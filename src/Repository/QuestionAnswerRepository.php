@@ -75,6 +75,7 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     {
         return $this
             ->allQuery($search)
+            ->select($this->model->table.'.*')
             ->orderBy($this->model->table.'.'.$orderColumn, $orderDirection)
             ->join('questions', 'question_id', '=', 'questions.id')
             ->where('questions.questionnaire_id', '=', $search['questionnaire_id'])
