@@ -72,7 +72,7 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
             ],
             'model_id' => [
                 'integer',
-                new ModelExist($this->getQuestionnaireModelType()->model_class, 'id'),
+                new ModelExist($this->input('model_type_title'), 'id'),
             ],
             'answers' => ['sometimes', 'array'],
             'answers.*' => ['sometimes', 'array'],

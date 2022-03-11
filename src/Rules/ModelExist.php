@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Rules;
 
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,9 +11,9 @@ class ModelExist implements Rule
     private string $model;
     private string $column;
 
-    public function __construct(string $model, ?string $column = 'id')
+    public function __construct(string $modelTypeTitle, ?string $column = 'id')
     {
-        $this->model = $model;
+        $this->model = $this->getQuestionnaireModelType($modelTypeTitle)->model_class;
         $this->column = $column;
     }
 
@@ -31,5 +32,10 @@ class ModelExist implements Rule
     public function message(): string
     {
         return 'The :attribute do not exist';
+    }
+
+    public function getQuestionnaireModelType(string $modelTypeTitle): QuestionnaireModelType
+    {
+        return QuestionnaireModelType::query()->where('title', $modelTypeTitle)->firstOrFail();
     }
 }
