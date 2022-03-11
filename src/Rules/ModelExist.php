@@ -11,15 +11,16 @@ class ModelExist implements Rule
     private string $model;
     private string $column;
 
-    public function __construct(string $modelTypeTitle, ?string $column = 'id')
+    public function __construct(?string $modelTypeTitle, ?string $column = 'id')
     {
+        if (is_null($modelTypeTitle)) { return null; }
         $this->model = $this->getQuestionnaireModelType($modelTypeTitle)->model_class;
         $this->column = $column;
     }
 
     public function passes($attribute, $value): bool
     {
-        if (is_subclass_of($this->model, Model::class)) {
+        if ($this->model && is_subclass_of($this->model, Model::class)) {
             $model = new $this->model();
             if ($model::find($value, $this->column)) {
                 return true;
