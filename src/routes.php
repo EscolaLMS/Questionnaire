@@ -17,8 +17,8 @@ Route::group(['prefix' => 'api/admin', 'middleware' => ['auth:api']], function (
         Route::patch('/{id}', [QuestionnaireAdminApiController::class, 'update']);
         Route::group(['prefix' => 'report'], function () {
             Route::get('/{id}', [QuestionnaireAdminApiController::class, 'report']);
-            Route::get('/{id}/{model_type_title}', [QuestionnaireAdminApiController::class, 'report']);
-            Route::get('/{id}/{model_type_title}/{model_id}', [QuestionnaireAdminApiController::class, 'report']);
+            Route::get('/{id}/{model_type_id}', [QuestionnaireAdminApiController::class, 'report']);
+            Route::get('/{id}/{model_type_id}/{model_id}', [QuestionnaireAdminApiController::class, 'report']);
         });
     });
     Route::get('/questionnaire-models', [QuestionnaireAdminApiController::class, 'getModelsType']);
