@@ -26,9 +26,11 @@ class QuestionnaireModelTypeTest extends TestCase
             QuestionnaireModelType::factory()->createOne();
         }
 
+        $count = QuestionnaireModelType::query()->count();
+
         $response = $this->actingAs($this->user, 'api')->getJson('/api/admin/questionnaire-models');
         $response->assertOk();
-        $response->assertJsonCount(1, 'data');
+        $response->assertJsonCount($count, 'data');
     }
 
     public function testAnonymousCantListEmptyQuestionnaire(): void

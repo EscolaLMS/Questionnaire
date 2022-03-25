@@ -111,8 +111,14 @@ class QuestionnaireUpdateTest extends TestCase
         $newModel = $model::factory()
             ->count(2)
             ->create();
-        $questionnaireModel2 = QuestionnaireModel::factory()->createOne(['model_id' => $newModel[0]->id]);
-        $questionnaireModel3 = QuestionnaireModel::factory()->makeOne(['model_id' => $newModel[1]->id]);
+        $questionnaireModel2 = QuestionnaireModel::factory()->createOne([
+            'model_id' => $newModel[0]->id,
+            'model_type_id' => $questionnaireModelType->getKey(),
+        ]);
+        $questionnaireModel3 = QuestionnaireModel::factory()->makeOne([
+            'model_id' => $newModel[1]->id,
+            'model_type_id' => $questionnaireModelType->getKey(),
+        ]);
 
         $responseModel2Exist = $this->actingAs($this->user, 'api')->getJson(
             sprintf(
@@ -194,7 +200,9 @@ class QuestionnaireUpdateTest extends TestCase
         if (empty($questionnaireModelType)) {
             $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
         }
-        $questionnaireModel = QuestionnaireModel::factory()->makeOne();
+        $questionnaireModel = QuestionnaireModel::factory()->makeOne([
+            'model_type_id' => $questionnaireModelType->getKey()
+        ]);
         $model = new $questionnaireModelType->model_class();
         $newModel = $model::factory()
             ->count(1)
@@ -260,7 +268,7 @@ class QuestionnaireUpdateTest extends TestCase
         $questionnaire = Questionnaire::factory()->createOne();
         $questionnaireModel = QuestionnaireModel::factory()->createOne([
             'model_id' => $newModel[0]->getKey(),
-            'model_type_id' => $questionnaireModelType->getKey()
+            'model_type_id' => $questionnaireModelType->getKey(),
         ]);
 
         $this->assertEquals(1, count($questionnaire->questionnaireModels));
@@ -296,10 +304,12 @@ class QuestionnaireUpdateTest extends TestCase
             ->create();
         $questionnaire = Questionnaire::factory()->createOne();
         QuestionnaireModel::factory()->createOne([
-            'model_id' => $newModel[1]->id
+            'model_id' => $newModel[1]->id,
+            'model_type_id' => $questionnaireModelType->getKey()
         ]);
         $questionnaireModel = QuestionnaireModel::factory()->createOne([
-            'model_id' => $newModel[0]->id
+            'model_id' => $newModel[0]->id,
+            'model_type_id' => $questionnaireModelType->getKey()
         ]);
 
         $this->assertEquals(2, count($questionnaire->questionnaireModels));
