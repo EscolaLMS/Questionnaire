@@ -73,7 +73,10 @@ class QuestionnaireCreateTest extends TestCase
         $newModel = $model::factory()
             ->count(1)
             ->create();
-        $questionnaireModel2 = QuestionnaireModel::factory()->makeOne(['model_id' => $newModel[0]->id]);
+        $questionnaireModel2 = QuestionnaireModel::factory()->makeOne([
+            'model_id' => $newModel[0]->id,
+            'model_type_id' => $questionnaireModelType->getKey(),
+        ]);
 
         $response = $this->actingAs($this->user, 'api')->postJson(
             '/api/admin/questionnaire',
