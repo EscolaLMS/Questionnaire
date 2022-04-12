@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Tests;
 
+use EscolaLms\Categories\EscolaLmsCategoriesServiceProvider;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Courses\EscolaLmsCourseServiceProvider;
 use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
@@ -17,6 +18,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             ...parent::getPackageProviders($app),
             EscolaLmsQuestionnaireServiceProvider::class,
             EscolaLmsCourseServiceProvider::class,
+            EscolaLmsCategoriesServiceProvider::class,
         ];
     }
 

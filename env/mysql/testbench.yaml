@@ -13,3 +13,4 @@ providers:
   - EscolaLms\Core\EscolaLmsServiceProvider
   - EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider
   - EscolaLms\Courses\EscolaLmsCourseServiceProvider
+  - EscolaLms\Categories\EscolaLmsCategoriesServiceProvider
