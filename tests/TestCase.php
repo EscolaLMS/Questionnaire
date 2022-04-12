@@ -6,6 +6,7 @@ use EscolaLms\Categories\EscolaLmsCategoriesServiceProvider;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Courses\EscolaLmsCourseServiceProvider;
 use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
+use EscolaLms\Scorm\EscolaLmsScormServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class TestCase extends \EscolaLms\Core\Tests\TestCase
@@ -19,6 +20,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             EscolaLmsQuestionnaireServiceProvider::class,
             EscolaLmsCourseServiceProvider::class,
             EscolaLmsCategoriesServiceProvider::class,
+            EscolaLmsScormServiceProvider::class,
         ];
     }
 
