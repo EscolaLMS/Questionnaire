@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Tests;
 
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Categories\EscolaLmsCategoriesServiceProvider;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Courses\EscolaLmsCourseServiceProvider;
@@ -21,6 +22,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             EscolaLmsCourseServiceProvider::class,
             EscolaLmsCategoriesServiceProvider::class,
             EscolaLmsScormServiceProvider::class,
+            EscolaLmsAuthServiceProvider::class,
         ];
     }
 
