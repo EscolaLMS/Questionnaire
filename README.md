@@ -9,17 +9,50 @@ Questionnaire package
 [![downloads](https://img.shields.io/packagist/v/escolalms/questionnaire)](https://packagist.org/packages/escolalms/questionnaire)
 [![downloads](https://img.shields.io/packagist/l/escolalms/questionnaire)](https://packagist.org/packages/escolalms/questionnaire)
 
-###
+## What does it do
 
 This package is used for creating Questionnaire for EscolaLms.
 
-## Installation
+## Installing
 
-## Config
+- `composer require escolalms/questionnaire`
+- `php artisan migrate`
+- `php artisan db:seed --class="EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder"`
 
-## Test
+## Example or Tutorial
 
-To run use `./vendor/bin/phpunit`
+
+## Endpoints
+
+[![swagger](https://img.shields.io/badge/documentation-swagger-green)](https://escolalms.github.io/questionnaire/)
+
+## Tests
+
+Run `./vendor/bin/phpunit` to run tests. See [tests](tests) folder as it's quite good staring point as documentation appendix.
+
+Test details [![codecov](https://codecov.io/gh/EscolaLMS/questionnaire/branch/main/graph/badge.svg?token=gBzpyNK8DQ)](https://codecov.io/gh/EscolaLMS/questionnaire) [![phpunit](https://github.com/EscolaLMS/questionnaire/actions/workflows/test.yml/badge.svg)](https://github.com/EscolaLMS/questionnaire/actions/workflows/test.yml)
+
+## Events
+
+This package does not dispatch any events.
+
+## Listeners
+
+This package does not listen for any events
+
+## How to use this on frontend.
+
+### Admin panel
+
+...
+
+### Front Application
+
+...
+
+## Permissions
+
+Permissions are defined in [seeder](packages/questionnaire/database/seeders/QuestionnairePermissionsSeeder.php)
 
 ## Database relation
 
