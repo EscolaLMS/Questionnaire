@@ -11,4 +11,35 @@ Questionnaire package
 
 ###
 
-This package is used for creating Questionnaire.
+This package is used for creating Questionnaire for EscolaLms.
+
+## Installation
+
+## Config
+
+## Test
+
+To run use `./vendor/bin/phpunit`
+
+## Database relation
+
+1. `Questionnaires` general Questionnaire (Title) is related to Questionnaire_models
+2. `Questionnaire_models` Questionnaire model belong to model type and model id
+3. `Questionnaire_model_types` Model Type (Curse, Webinar etc.)
+4. `Questions` Question belong to Questionnaire
+5. `Question_answers` Question answer is related to Question and Questionnaire_models
+
+```
+Questionnaires 1 -> n Questionnaire_models
+Questionnaires 1 -> n Questions
+Questionnaire_models 1 -> n Questionnaire_model_types
+Question_answers 1 -> n Questions
+Question_answers 1 -> n Questionnaire_models
+```
+
+To add new model type you need to insert new record to `Questionnaire_model_types`
+
+```
+title -> Title of model (example - 'Course')
+model_class => Model class name (example 'EscolaLms\Courses\Models\Course')
+```
