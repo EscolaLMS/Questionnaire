@@ -19,12 +19,9 @@ This package is used for creating Questionnaire for EscolaLms.
 - `php artisan migrate`
 - `php artisan db:seed --class="EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder"`
 
-## Example or Tutorial
-
-
 ## Endpoints
 
-[![swagger](https://img.shields.io/badge/documentation-swagger-green)](https://escolalms.github.io/questionnaire/)
+All the endpoints are defined in [![swagger](https://img.shields.io/badge/documentation-swagger-green)](https://escolalms.github.io/questionnaire/)
 
 ## Tests
 
@@ -44,7 +41,33 @@ This package does not listen for any events
 
 ### Admin panel
 
-...
+**Left menu**
+
+![Menu](docs/menu.png "Menu")
+
+**List of questionnaire**
+
+![List of questionnaire](docs/list.png "List of questionnaire")
+
+**Creating/editing questionnaire**
+
+![Creating/editing questionnaire](docs/new_questionnairy.png "Creating/editing questionnaire")
+
+**Creating/editing question**
+
+![Creating/editing question](docs/add_question.png "Creating/editing question")
+
+**Assign questionnaire to Course**
+
+![Assign questionnaire to Course](docs/assign_course.png "Assign questionnaire to Course")
+
+**List of Answers**
+
+![List of Answers](docs/answers.png "List of Answers")
+
+**Report**
+
+![Report](docs/report.png "Report")
 
 ### Front Application
 
