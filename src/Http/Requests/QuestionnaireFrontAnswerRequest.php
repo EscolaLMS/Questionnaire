@@ -12,30 +12,22 @@ use Illuminate\Validation\Rule;
 
 /**
  * @OA\Schema(
- *     schema="QuestionnaireAnswerRequest",
- *     @OA\Property(
- *          property="answers",
- *          type="array",
- *          description="answers for questionnaire",
- *          @OA\Items(
- *              type="object",
- *              @OA\Property(
- *                  property="question_id",
- *                  type="integer",
- *                  description="question identified by id",
- *              ),
- *              @OA\Property(
- *                  property="rate",
- *                  type="integer",
- *                  description="rate from 1 to 5",
- *              ),
- *              @OA\Property(
- *                  property="note",
- *                  type="string",
- *                  description="anser of text type",
- *              ),
- *          )
- *     ),
+ *  schema="QuestionnaireAnswerRequest",
+ *  @OA\Property(
+ *      property="question_id",
+ *      type="integer",
+ *      description="question identified by id",
+ *  ),
+ *  @OA\Property(
+ *      property="rate",
+ *      type="integer",
+ *      description="rate from 1 to 5",
+ *  ),
+ *  @OA\Property(
+ *      property="note",
+ *      type="string",
+ *      description="anser of text type",
+ *  ),
  * )
  */
 class QuestionnaireFrontAnswerRequest extends FormRequest
@@ -74,11 +66,9 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
                 'integer',
                 new ModelExist($this->input('model_type_title'), 'id'),
             ],
-            'answers' => ['sometimes', 'array'],
-            'answers.*' => ['sometimes', 'array'],
-            'answers.*.question_id' => ['integer'],
-            'answers.*.rate' => ['sometimes', 'integer'],
-            'answers.*.note' => ['sometimes', 'string', 'max:500'],
+            'question_id' => ['integer'],
+            'rate' => ['nullable', 'integer'],
+            'note' => ['nullable', 'string', 'max:500'],
         ];
     }
 
