@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
+use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Rules\ClassExist;
@@ -66,7 +67,7 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
                 'integer',
                 new ModelExist($this->input('model_type_title'), 'id'),
             ],
-            'question_id' => ['integer'],
+            'question_id' => ['integer', 'required', Rule::exists(Question::class, 'id')],
             'rate' => ['nullable', 'integer'],
             'note' => ['nullable', 'string', 'max:500'],
         ];
