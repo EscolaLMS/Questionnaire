@@ -1083,26 +1083,17 @@
         "schemas": {
             "QuestionnaireAnswerRequest": {
                 "properties": {
-                    "answers": {
-                        "description": "answers for questionnaire",
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "question_id": {
-                                    "description": "question identified by id",
-                                    "type": "integer"
-                                },
-                                "rate": {
-                                    "description": "rate from 1 to 5",
-                                    "type": "integer"
-                                },
-                                "note": {
-                                    "description": "anser of text type",
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
-                        }
+                    "question_id": {
+                        "description": "question identified by id",
+                        "type": "integer"
+                    },
+                    "rate": {
+                        "description": "rate from 1 to 5",
+                        "type": "integer"
+                    },
+                    "note": {
+                        "description": "anser of text type",
+                        "type": "string"
                     }
                 },
                 "type": "object"
