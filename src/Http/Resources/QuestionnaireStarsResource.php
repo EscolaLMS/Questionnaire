@@ -29,9 +29,10 @@ class QuestionnaireStarsResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'sum_rate' => $this['sum_rate'],
+            'sum_rates' => $this['sum_rates'],
             'count_answers' => $this['count_answers'],
             'avg_rate' => $this['avg_rate'],
+            'rates' => $this['rates']
         ];
     }
 }

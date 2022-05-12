@@ -11,6 +11,7 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionnaireStarsFrontRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireFrontResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireStarsCollection;
+use EscolaLms\Questionnaire\Http\Resources\QuestionnaireStarsResource;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
@@ -92,7 +93,7 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
         );
 
         return $this->sendResponseForResource(
-            QuestionnaireStarsCollection::make($report),
+            QuestionnaireStarsResource::make($report),
             __("Questionnaire report fetched successfully")
         );
     }

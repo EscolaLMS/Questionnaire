@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Services;
 
 use EscolaLms\Core\Models\User;
+use EscolaLms\Questionnaire\Enums\QuestionnaireRateMap;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
@@ -30,11 +31,25 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         return new collection($report);
     }
 
-    public function getStars(int $modelTypeId, int $modelId): Collection
+    public function getStars(int $modelTypeId, int $modelId): array
     {
-        $report = $this->questionAnswerRepository->getStars($modelTypeId, $modelId)->toArray();
-
-        return new collection($report);
+        $report = $this->questionAnswerRepository->getStars($modelTypeId, $modelId);
+        $countRates = 0;
+        $sumRates = 0;
+        $rateMap = QuestionnaireRateMap::RATE_MAP;
+        foreach ($report as $rates) {
+            if (isset($rateMap[$rates->rate])) {
+                $rateMap[$rates->rate] = $rates->count_rate ?? 0;
+                $sumRates += ($rates->rate * $rates->count_rate);
+                $countRates += $rates->count_rate;
+            }
+        }
+        return [
+            'avg_rate' => $sumRates/max(1, $countRates),
+            'count_answers' => $countRates,
+            'sum_rates' => $sumRates,
+            'rates' => $rateMap
+        ];
     }
 
     public function saveAnswer(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array

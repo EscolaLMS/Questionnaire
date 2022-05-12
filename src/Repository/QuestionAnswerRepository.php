@@ -55,9 +55,8 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
         int $modelId
     ): Collection {
         $query = $this->getQueryReport(null, $modelTypeId, $modelId)
-            ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate')
-            ->groupBy('questions.questionnaire_id');
-
+            ->selectRaw('rate, COUNT(rate) as count_rate')
+            ->groupBy('question_answers.rate', 'questions.questionnaire_id');
         return $query->get();
     }
 
