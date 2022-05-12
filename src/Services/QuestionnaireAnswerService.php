@@ -52,28 +52,19 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         ];
     }
 
-    public function saveAnswers(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array
+    public function saveAnswer(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array
     {
-        $oldAnswers = $this->questionAnswerRepository->makeModel()->newQuery()->where([
+        $this->questionAnswerRepository->updateOrCreate(
+            [
+                'user_id' => $user->getKey(),
+                'question_id' => $data['question_id'],
                 'questionnaire_model_id' => $questionnaireModel->getKey(),
-                'user_id' => $user->getKey()
-            ])->get()->keyBy('question_id');
-        foreach ($data['answers'] ?? [] as $answer) {
-            if (!isset($oldAnswers[$answer['question_id']])) {
-                QuestionAnswer::create([
-                    'user_id' => $user->getKey(),
-                    'question_id' => $answer['question_id'],
-                    'questionnaire_model_id' => $questionnaireModel->getKey(),
-                    'rate' => $answer['rate'] ?? null,
-                    'note' => $answer['note'] ?? null,
-                ]);
-            } else {
-                $oldAnswers[$answer['question_id']]->fill([
-                    'rate' => $answer['rate'] ?? null,
-                    'note' => $answer['note'] ?? null,
-                ])->save();
-            }
-        }
+            ],
+            [
+                'rate' => $data['rate'] ?? null,
+                'note' => $data['note'] ?? null,
+            ]
+        );
 
         return $this->questionnaireService->findForFront(
             [
