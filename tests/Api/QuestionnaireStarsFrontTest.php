@@ -3,12 +3,14 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
+use EscolaLms\Questionnaire\Enums\QuestionnaireRateMap;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Testing\Fluent\AssertableJson;
 
 class QuestionnaireStarsFrontTest extends TestCase
 {
@@ -44,18 +46,20 @@ class QuestionnaireStarsFrontTest extends TestCase
                 $this->questionnaireModel->model_id
             )
         );
-
         $response->assertOk();
         $response->assertJsonStructure([
             'success',
             'data',
             'message'
         ]);
-
-        $response->assertJsonCount(1, 'data');
-
-        $data = json_decode($response->getContent());
-
-        $this->assertEquals($data->data[0]->avg_rate, ($data->data[0]->sum_rate / $data->data[0]->count_answers));
+        $response->assertJson(fn (AssertableJson $json) =>
+            $json->has('data', fn (AssertableJson $json) =>
+                $json
+                    ->has('sum_rates')
+                    ->has('count_answers')
+                    ->has('avg_rate')
+                    ->has('rates')->etc()
+            )->etc()
+        );
     }
 }

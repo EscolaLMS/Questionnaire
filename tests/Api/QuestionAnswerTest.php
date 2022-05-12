@@ -71,7 +71,6 @@ class QuestionAnswerTest extends TestCase
                 ],
             ]
         );
-
         $response->assertOk();
         $this->assertEquals(7, QuestionAnswer::count());
 

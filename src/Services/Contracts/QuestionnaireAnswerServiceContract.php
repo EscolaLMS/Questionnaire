@@ -14,7 +14,7 @@ interface QuestionnaireAnswerServiceContract
 {
     public function getReport(int $id, ?int $modelTypeId = null, ?int $modelId = null): Collection;
 
-    public function getStars(int $modelTypeId, int $modelId): Collection;
+    public function getStars(int $modelTypeId, int $modelId): array;
 
     public function saveAnswers(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array;
 }
