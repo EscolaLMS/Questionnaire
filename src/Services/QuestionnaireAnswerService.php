@@ -37,13 +37,13 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $countRates = 0;
         $sumRates = 0;
         $rateMap = QuestionnaireRateMap::RATE_MAP;
-        foreach ($report as $rates) {
+        $report->each(function ($rates) use(&$rateMap, &$sumRates, &$countRates) {
             if (isset($rateMap[$rates->rate])) {
-                $rateMap[$rates->rate] = $rates->count_rate ?? 0;
+                $rateMap[$rates->rate] += $rates->count_rate ?? 0;
                 $sumRates += ($rates->rate * $rates->count_rate);
                 $countRates += $rates->count_rate;
             }
-        }
+        });
         return [
             'avg_rate' => $sumRates/max(1, $countRates),
             'count_answers' => $countRates,
