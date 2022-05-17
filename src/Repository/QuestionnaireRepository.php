@@ -27,13 +27,12 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
         string $orderColumn = 'id'
     ): LengthAwarePaginator {
         $query = $this->allQuery($search);
-        if (isset($search['model_type_id'])) {
-            $query->whereHas(
-                'questionnaireModels',
-                fn(Builder $query) => $query
-                    ->where('model_type_id', $search['model_type_id'])
-                    ->where('model_id', $search['model_id'])
-            );
+        if (isset($search['model_type_title']) && isset($search['model_id'])) {
+            $query->whereRelation('questionnaireModels', function (Builder $query) use ($search) {
+                $query->whereRelation('modelableType', function (Builder $query) use ($search) {
+                    $query->where('title', '=', $search['model_type_title']);
+                })->where('model_id', '=', $search['model_id']);
+            });
         }
 
         return $query->orderBy($orderColumn, $orderDirection)->paginate($perPage);

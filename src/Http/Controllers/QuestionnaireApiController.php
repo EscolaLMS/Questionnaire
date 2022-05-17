@@ -74,7 +74,7 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
             'model_type_id' => $request->getQuestionnaireModelType()->id,
         ])->firstOrFail();
 
-        $questionnaire = $this->questionnaireAnswerService->saveAnswers(
+        $questionnaire = $this->questionnaireAnswerService->saveAnswer(
             $questionnaireModel,
             $request->validated(),
             $request->user()

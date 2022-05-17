@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Services;
 
 use EscolaLms\Core\Models\User;
+use EscolaLms\Core\Repositories\Criteria\Primitives\HasCriterion;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
@@ -52,12 +53,6 @@ class QuestionnaireService implements QuestionnaireServiceContract
 
     public function searchForFront(array $filters, User $user): LengthAwarePaginator
     {
-        $questionnaireModel = $this->questionnaireModelRepository->findByModelTitleAndModelId(
-            $filters['model_type_title'],
-            $filters['model_id']
-        );
-        $filters['model_type_id'] = $questionnaireModel->model_type_id;
-
         return $this->questionnaireRepository->searchAndPaginate($filters);
     }
 

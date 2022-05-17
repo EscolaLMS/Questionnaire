@@ -81,6 +81,11 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             ->paginate($perPage);
     }
 
+    public function updateOrCreate(array $attributes, array $values): QuestionAnswer
+    {
+        return $this->model->updateOrCreate($attributes, $values);
+    }
+
     private function getQueryReport(
         ?int $questionnaireId = null,
         ?int $modelTypeId = null,
