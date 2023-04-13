@@ -79,6 +79,71 @@ class QuestionnaireListTest extends TestCase
         ]);
     }
 
+    public function testAdminCanListQuestionnaireWithFiltersAndSorts(): void
+    {
+        $this->authenticateAsAdmin();
+
+        $questionnaireOne = Questionnaire::factory()->create([
+            'title' => 'one',
+            'active' => true,
+        ]);
+
+        $questionnaireTwo = Questionnaire::factory()->create([
+            'title' => 'two',
+            'active' => true,
+        ]);
+
+        $this
+            ->actingAs($this->user, 'api')
+            ->json('GET', '/api/admin/questionnaire', [
+                'title' => 'on',
+            ])
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'id' => $questionnaireOne->id,
+            ]);
+
+        $response = $this
+            ->actingAs($this->user, 'api')
+            ->json('GET', '/api/admin/questionnaire', [
+                'order_by' => 'title',
+                'order' => 'ASC',
+            ]);
+
+        $this->assertTrue($response->json('data.0.id') === $questionnaireOne->getKey());
+        $this->assertTrue($response->json('data.1.id') === $questionnaireTwo->getKey());
+
+        $response = $this
+            ->actingAs($this->user, 'api')
+            ->json('GET', '/api/admin/questionnaire', [
+                'order_by' => 'title',
+                'order' => 'DESC',
+            ]);
+
+        $this->assertTrue($response->json('data.0.id') === $questionnaireTwo->getKey());
+        $this->assertTrue($response->json('data.1.id') === $questionnaireOne->getKey());
+
+        $response = $this
+            ->actingAs($this->user, 'api')
+            ->json('GET', '/api/admin/questionnaire', [
+                'order_by' => 'id',
+                'order' => 'ASC',
+            ]);
+
+        $this->assertTrue($response->json('data.0.id') === $questionnaireOne->getKey());
+        $this->assertTrue($response->json('data.1.id') === $questionnaireTwo->getKey());
+
+        $response = $this
+            ->actingAs($this->user, 'api')
+            ->json('GET', '/api/admin/questionnaire', [
+                'order_by' => 'id',
+                'order' => 'DESC',
+            ]);
+
+        $this->assertTrue($response->json('data.0.id') === $questionnaireTwo->getKey());
+        $this->assertTrue($response->json('data.1.id') === $questionnaireOne->getKey());
+    }
+
     public function testAnonymousCantListEmptyQuestionnaire(): void
     {
         $questionnaireModel = QuestionnaireModel::factory()->createOne();

@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Services;
 
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Core\Repositories\Criteria\Primitives\HasCriterion;
 use EscolaLms\Questionnaire\Models\Question;
@@ -54,6 +55,16 @@ class QuestionnaireService implements QuestionnaireServiceContract
     public function searchForFront(array $filters, User $user): LengthAwarePaginator
     {
         return $this->questionnaireRepository->searchAndPaginate($filters);
+    }
+
+    public function list(array $criteria, OrderDto $orderDto): LengthAwarePaginator
+    {
+        $query = $this->questionnaireRepository->queryWithAppliedCriteria($criteria);
+        if ($orderDto->getOrderBy()) {
+            $query->orderBy($orderDto->getOrderBy(), $orderDto->getOrder() ?? 'asc');
+        }
+
+        return $query->paginate();
     }
 
     public function findForFront(array $filters, User $user): ?array
