@@ -2,7 +2,9 @@
 
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
+use EscolaLms\Questionnaire\Dtos\QuestionnairesFilterCriteriaDto;
 use EscolaLms\Questionnaire\Exceptions\QuestionnaireCanNotDeleteException;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireAdminApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireAssignUnassignRequest;
@@ -17,7 +19,6 @@ use EscolaLms\Questionnaire\Http\Resources\QuestionnaireReportCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelTypeRepositoryContract;
-use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
 use Exception;
@@ -25,20 +26,18 @@ use Illuminate\Http\JsonResponse;
 
 class QuestionnaireAdminApiController extends EscolaLmsBaseController implements QuestionnaireAdminApiContract
 {
-    private QuestionnaireRepositoryContract $questionnaireRepository;
     private QuestionnaireAnswerServiceContract $questionAnswerService;
     private QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository;
     private QuestionnaireModelRepositoryContract $questionnaireModelRepository;
     private QuestionnaireServiceContract $questionnaireService;
 
     public function __construct(
-        QuestionnaireRepositoryContract $questionnaireRepository,
-        QuestionnaireAnswerServiceContract $questionAnswerService,
+        QuestionnaireAnswerServiceContract       $questionAnswerService,
         QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository,
-        QuestionnaireModelRepositoryContract $questionnaireModelRepository,
-        QuestionnaireServiceContract $questionnaireService
-    ) {
-        $this->questionnaireRepository = $questionnaireRepository;
+        QuestionnaireModelRepositoryContract     $questionnaireModelRepository,
+        QuestionnaireServiceContract             $questionnaireService
+    )
+    {
         $this->questionAnswerService = $questionAnswerService;
         $this->questionnaireModelTypeRepository = $questionnaireModelTypeRepository;
         $this->questionnaireModelRepository = $questionnaireModelRepository;
@@ -47,8 +46,12 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function list(QuestionnaireListingRequest $request): JsonResponse
     {
+
         return $this->sendResponseForResource(
-            QuestionnaireResource::collection($this->questionnaireRepository->searchAndPaginate()),
+            QuestionnaireResource::collection(
+                $this->questionnaireService->list(QuestionnairesFilterCriteriaDto::instantiateFromRequest($request)->toArray(),
+                    OrderDto::instantiateFromRequest($request)
+                )),
             __("Questionnaire list retrieved successfully")
         );
     }
@@ -105,7 +108,8 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
         );
     }
 
-    public function report(QuestionnaireReportRequest $request): JsonResponse {
+    public function report(QuestionnaireReportRequest $request): JsonResponse
+    {
         $report = $this->questionAnswerService->getReport(
             $request->getParamId(),
             $request->getParamModelTypeId(),

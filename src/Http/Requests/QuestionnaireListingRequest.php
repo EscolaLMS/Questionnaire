@@ -15,6 +15,10 @@ class QuestionnaireListingRequest extends FormRequest
 
     public function rules(): array
     {
-        return [];
+        return [
+            'title' => ['sometimes', 'string'],
+            'order_by' => ['sometimes', 'string', 'in:id,title'],
+            'order' => ['sometimes', 'string', 'in:ASC,DESC'],
+        ];
     }
 }
