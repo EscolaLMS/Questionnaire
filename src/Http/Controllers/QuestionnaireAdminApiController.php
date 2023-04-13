@@ -49,7 +49,8 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
         return $this->sendResponseForResource(
             QuestionnaireResource::collection(
-                $this->questionnaireService->list(QuestionnairesFilterCriteriaDto::instantiateFromRequest($request)->toArray(),
+                $this->questionnaireService->list(
+                    QuestionnairesFilterCriteriaDto::instantiateFromRequest($request)->toArray(),
                     OrderDto::instantiateFromRequest($request)
                 )),
             __("Questionnaire list retrieved successfully")
