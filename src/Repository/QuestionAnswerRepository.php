@@ -4,6 +4,7 @@ namespace EscolaLms\Questionnaire\Repository;
 
 use EscolaLms\Core\Repositories\BaseRepository;
 use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
+use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
@@ -103,5 +104,27 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
                     ->where('questionnaire_models.model_type_id', '=', $modelTypeId)
                     ->when($modelId, fn ($q) => $q->where('questionnaire_models.model_id', '=', $modelId))
             );
+    }
+
+    public function findAnswer(int $userId, int $questionId, int $questionnaireModelId): ?QuestionAnswer
+    {
+        return $this
+            ->model
+            ->newQuery()
+            ->where('user_id', '=', $userId)
+            ->where('question_id', '=', $questionId)
+            ->where('questionnaire_model_id', '=', $questionnaireModelId)
+            ->first();
+    }
+
+    public function searchByCriteriaWithPagination(array $criteria): LengthAwarePaginator
+    {
+        $query = $this
+            ->model
+            ->newQuery();
+
+        return $this
+            ->applyCriteria($query, $criteria)
+            ->paginate(config(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.per_page', 15));
     }
 }

@@ -4,6 +4,7 @@ namespace EscolaLms\Questionnaire\Services\Contracts;
 
 use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 /**
@@ -17,4 +18,5 @@ interface QuestionnaireAnswerServiceContract
     public function getStars(int $modelTypeId, int $modelId): array;
 
     public function saveAnswer(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array;
+    public function publicQuestionAnswers(array $criteria): LengthAwarePaginator;
 }

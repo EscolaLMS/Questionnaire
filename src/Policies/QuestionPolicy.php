@@ -35,4 +35,9 @@ class QuestionPolicy
     {
         return $user->can(QuestionnairePermissionsEnum::QUESTION_UPDATE);
     }
+
+    public function readAnswers(User $user, Question $question): bool
+    {
+        return $question->public_answers;
+    }
 }

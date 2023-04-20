@@ -34,6 +34,7 @@ class QuestionnaireFrontListingRequest extends FormRequest
             'model_id' => [
                 'integer',
             ],
+            'public_answers' => ['boolean'],
         ];
     }
 

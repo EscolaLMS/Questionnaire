@@ -21,12 +21,15 @@ use EscolaLms\Questionnaire\Services\QuestionnaireModelService;
 use EscolaLms\Questionnaire\Services\QuestionnaireService;
 use EscolaLms\Questionnaire\Services\QuestionService;
 use Illuminate\Support\ServiceProvider;
+use EscolaLms\Questionnaire\Providers\SettingsServiceProvider;
 
 /**
  * SWAGGER_VERSION
  */
 class EscolaLmsQuestionnaireServiceProvider extends ServiceProvider
 {
+    public const CONFIG_KEY = 'escola_questionnaires';
+
     public $bindings = [
         QuestionnaireAnswerServiceContract::class => QuestionnaireAnswerService::class,
         QuestionnaireModelServiceContract::class => QuestionnaireModelService::class,
@@ -54,10 +57,14 @@ class EscolaLmsQuestionnaireServiceProvider extends ServiceProvider
         parent::register();
 
         $this->app->register(AuthServiceProvider::class);
+        $this->app->register(SettingsServiceProvider::class);
     }
 
     protected function bootForConsole(): void
     {
+        $this->publishes([
+            __DIR__ . '/config.php' => config_path(self::CONFIG_KEY . '.php'),
+        ], self::CONFIG_KEY . '.config');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 }

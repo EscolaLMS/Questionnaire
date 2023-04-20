@@ -22,6 +22,7 @@ class QuestionAnswerResource extends JsonResource
             'questionnaire_model_id' => $this->questionnaire_model_id,
             'rate' => $this->rate,
             'note' => $this->note,
+            'visible_on_front' => $this->visible_on_front,
         ];
     }
 }

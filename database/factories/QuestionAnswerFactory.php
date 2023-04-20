@@ -46,6 +46,7 @@ class QuestionAnswerFactory extends Factory
             'question_id' => $question->id,
             'user_id' => $user->id,
             'rate' => $this->faker->numberBetween(1, 5),
+            'visible_on_front' => $this->faker->boolean,
         ];
     }
 }

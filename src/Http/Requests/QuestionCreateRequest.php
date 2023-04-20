@@ -29,6 +29,7 @@ class QuestionCreateRequest extends FormRequest
             'position' => 'integer',
             'active' => 'boolean',
             'type' => ['string', Rule::in(QuestionTypeEnum::getValues())],
+            'public_answers' => 'boolean',
         ];
     }
 }
