@@ -33,25 +33,11 @@ class QuestionService implements QuestionServiceContract
 
     public function createQuestion(array $data): Question
     {
-        $question = new Question([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'questionnaire_id' => $data['questionnaire_id'],
-            'position' => $data['position'],
-            'active' => $data['active'],
-        ]);
-        $question->save();
-
-        return $question->refresh();
+        return $this->questionRepository->create($data);
     }
 
     public function updateQuestion(Question $question, array $data): Question
     {
-        unset($data['id']);
-
-        $question->fill($data);
-        $question->save();
-
-        return $question->refresh();
+        return $this->questionRepository->update($data, $question->getKey());
     }
 }

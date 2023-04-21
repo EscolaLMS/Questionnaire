@@ -42,6 +42,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *          type="string",
  *          description="type: rate, text"
  *     ),
+ *     @OA\Property(
+ *          property="public_answers",
+ *          type="boolean",
+ *          description="whether answers to questions are public"
+ *     ),
  * )
  *
  * @property integer $id
@@ -51,6 +56,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property integer $position
  * @property boolean $active
  * @property string $type
+ * @property boolean $public_answers
  */
 class Question extends Model
 {
@@ -72,6 +78,7 @@ class Question extends Model
         'position' => 'integer',
         'active' => 'boolean',
         'type' => 'string',
+        'public_answers' => 'boolean',
     ];
 
     public $fillable = [
@@ -81,6 +88,7 @@ class Question extends Model
         'position',
         'active',
         'type',
+        'public_answers',
     ];
 
     public function questionnaire(): BelongsTo

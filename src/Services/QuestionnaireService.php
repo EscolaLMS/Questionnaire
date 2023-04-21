@@ -4,7 +4,7 @@ namespace EscolaLms\Questionnaire\Services;
 
 use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Models\User;
-use EscolaLms\Core\Repositories\Criteria\Primitives\HasCriterion;
+use EscolaLms\Core\Repositories\Criteria\Primitives\WhereCriterion;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
@@ -15,6 +15,7 @@ use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireModelServiceContract
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -52,9 +53,20 @@ class QuestionnaireService implements QuestionnaireServiceContract
         return true;
     }
 
-    public function searchForFront(array $filters, User $user): LengthAwarePaginator
+    public function searchForFront(array $filters, ?bool $publicAnswers = null): LengthAwarePaginator
     {
-        return $this->questionnaireRepository->searchAndPaginate($filters);
+        $with = [];
+        if (!is_null($publicAnswers)) {
+            $with = [
+                'questions' => fn (HasMany $q) => $q->where('public_answers', '=', $publicAnswers),
+            ];
+        }
+        return $this
+            ->questionnaireRepository
+            ->searchByCriteriaAndPaginate(
+                array_merge($filters, [new WhereCriterion('active', '=', true)]),
+                $with
+            );
     }
 
     public function list(array $criteria, OrderDto $orderDto): LengthAwarePaginator
@@ -69,11 +81,12 @@ class QuestionnaireService implements QuestionnaireServiceContract
 
     public function findForFront(array $filters, User $user): ?array
     {
-        $questionnaire = $this->questionnaireRepository->findActive($filters['id']);
+        $questionnaire = $this->questionnaireRepository->findActive($filters['questionnaire_id']);
 
         $questionnaireModel = $this->questionnaireModelRepository->findByModelTitleAndModelId(
             $filters['model_type_title'],
-            $filters['model_id']
+            $filters['model_id'],
+            $filters['questionnaire_id']
         );
 
         if (!$questionnaire) {

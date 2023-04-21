@@ -22,6 +22,7 @@ class QuestionResource extends JsonResource
             'position' => $this->position,
             'active' => $this->active,
             'type' => $this->type,
+            'public_answers' => $this->public_answers,
         ];
     }
 }

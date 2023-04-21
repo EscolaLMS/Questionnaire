@@ -24,7 +24,7 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
         ];
     }
 
-    public function findByModelTitleAndModelId(string $title, int $model_id): QuestionnaireModel
+    public function findByModelTitleAndModelId(string $title, int $model_id, int $questionnaireId): QuestionnaireModel
     {
         return $this
             ->model
@@ -33,6 +33,7 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
             ->join('questionnaire_model_types', 'questionnaire_model_types.id', '=', 'model_type_id')
             ->where('questionnaire_model_types.title', '=', $title)
             ->where('model_id', '=', $model_id)
+            ->where('questionnaire_id', '=', $questionnaireId)
             ->firstOrFail();
     }
 

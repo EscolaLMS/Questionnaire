@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Repository;
 
 use EscolaLms\Core\Repositories\BaseRepository;
+use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -65,5 +66,14 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
             ->newQuery()
             ->where('active', '=', true)
             ->findOrFail($id);
+    }
+
+    public function searchByCriteriaAndPaginate(array $criteria, array $with = []): LengthAwarePaginator
+    {
+        $query = $this->model->newQuery();
+        return $this
+            ->applyCriteria($query, $criteria)
+            ->with($with)
+            ->paginate(config(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.per_page', 15));
     }
 }
