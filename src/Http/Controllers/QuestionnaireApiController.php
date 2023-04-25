@@ -7,10 +7,12 @@ use EscolaLms\Questionnaire\Dtos\QuestionAnswersCriteriaDto;
 use EscolaLms\Questionnaire\Dtos\QuestionnaireFrontFilterCriteriaDto;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionAnswersFrontReadRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionAnswersFrontStarsRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontAnswerRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireStarsFrontRequest;
+use EscolaLms\Questionnaire\Http\Resources\ModelStarsResponse;
 use EscolaLms\Questionnaire\Http\Resources\QuestionAnswerResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireFrontResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
@@ -105,6 +107,15 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
         return $this->sendResponseForResource(
             QuestionAnswerResource::collection($answers),
             __('Question answers fetched successfully')
+        );
+    }
+
+    public function modelStars(QuestionAnswersFrontStarsRequest $request): JsonResponse
+    {
+        $result = $this->questionnaireAnswerService->getReviewStars(QuestionAnswersCriteriaDto::instantiateFromRequest($request)->toArray());
+        return $this->sendResponseForResource(
+            ModelStarsResponse::make($result),
+            __('Model stars fetched successfully'),
         );
     }
 }

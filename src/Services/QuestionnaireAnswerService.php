@@ -5,10 +5,12 @@ namespace EscolaLms\Questionnaire\Services;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Core\Repositories\Criteria\Primitives\WhereCriterion;
 use EscolaLms\Questionnaire\Enums\QuestionnaireRateMap;
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
+use EscolaLms\Questionnaire\Repository\Criteria\AnswerQuestionReviewCriterion;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -102,5 +104,11 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
     {
         $criteria[] = new WhereCriterion('visible_on_front', true, '=');
         return $this->questionAnswerRepository->searchByCriteriaWithPagination($criteria);
+    }
+
+    public function getReviewStars(array $criteria): array
+    {
+        $criteria[] = new AnswerQuestionReviewCriterion(null, QuestionTypeEnum::REVIEW);
+        return $this->questionAnswerRepository->getReviewReport($criteria)->toArray();
     }
 }

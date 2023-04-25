@@ -57,7 +57,6 @@ class QuestionAnswer extends Model
     use HasFactory;
 
     public $table = 'question_answers';
-    public $timestamps = false;
 
     /**
      * The attributes that should be casted to native types.

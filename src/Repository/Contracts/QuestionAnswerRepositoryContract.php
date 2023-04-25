@@ -23,4 +23,5 @@ interface QuestionAnswerRepositoryContract extends BaseRepositoryContract
     public function updateOrCreate(array $attributes, array $values): QuestionAnswer;
     public function findAnswer(int $userId, int $questionId, int $questionnaireModelId): ?QuestionAnswer;
     public function searchByCriteriaWithPagination(array $criteria): LengthAwarePaginator;
+    public function getReviewReport(array $criteria): QuestionAnswer;
 }

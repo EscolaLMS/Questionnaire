@@ -2,13 +2,12 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
-use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Rules\ClassExist;
 use EscolaLms\Questionnaire\Rules\ModelExist;
-use Illuminate\Contracts\Validation\Validator;
+use EscolaLms\Questionnaire\Rules\QuestionAnswerRateRequired;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -70,14 +69,9 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
                 new ModelExist($this->input('model_type_title'), 'id'),
             ],
             'question_id' => ['integer', 'required', Rule::exists(Question::class, 'id')],
-            'rate' => ['sometimes', 'integer'],
+            'rate' => ['sometimes', 'integer', new QuestionAnswerRateRequired($this->getQuestionId())],
             'note' => ['nullable', 'string', 'max:500'],
         ];
-    }
-
-    public function withValidator(Validator $validator): void
-    {
-        $validator->sometimes('rate', ['required'], fn ($input) => $input->type === QuestionTypeEnum::RATE);
     }
 
     public function getParamId(): int
@@ -93,6 +87,11 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
     public function getParamModelId(): int
     {
         return $this->route('model_id');
+    }
+
+    public function getQuestionId(): int
+    {
+        return $this->input('question_id');
     }
 
     public function getQuestionnaire(): Questionnaire

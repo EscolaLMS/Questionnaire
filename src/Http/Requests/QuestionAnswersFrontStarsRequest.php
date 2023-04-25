@@ -2,7 +2,6 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
-use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Rules\ClassExist;
@@ -11,7 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
-class QuestionAnswersFrontReadRequest extends FormRequest
+class QuestionAnswersFrontStarsRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
@@ -47,9 +46,6 @@ class QuestionAnswersFrontReadRequest extends FormRequest
                 'integer',
                 new ModelExist($this->input('model_type_title'), 'id'),
             ],
-            'type' => ['sometimes', 'string', Rule::in(QuestionTypeEnum::getValues())],
-            'order_by' => ['sometimes', 'string', 'in:rate,created_at,updated_at'],
-            'order' => ['sometimes', 'string', 'in:ASC,DESC'],
         ];
     }
 

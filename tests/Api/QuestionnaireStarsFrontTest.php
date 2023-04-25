@@ -4,6 +4,7 @@ namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Enums\QuestionnaireRateMap;
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
@@ -61,5 +62,48 @@ class QuestionnaireStarsFrontTest extends TestCase
                     ->has('rates')->etc()
             )->etc()
         );
+    }
+
+    public function testReadModelReviewStars(): void
+    {
+        $questionnaire = Questionnaire::factory()->createOne();
+        $questionnaireModel = QuestionnaireModel::factory([
+            'questionnaire_id' => $questionnaire->getKey(),
+        ])->createOne();
+        $question = Question::factory([
+            'questionnaire_id' => $questionnaire->getKey(),
+            'public_answers' => true,
+            'type' => QuestionTypeEnum::REVIEW,
+        ])->createOne();
+        QuestionAnswer::factory([
+            'questionnaire_model_id' => $questionnaireModel->getKey(),
+            'question_id' => $question->getKey(),
+            'visible_on_front' => true,
+        ])
+            ->count(5)
+            ->sequence(fn ($sequence) => ['rate' => $sequence->index])
+            ->create();
+        QuestionAnswer::factory([
+            'questionnaire_model_id' => $questionnaireModel->getKey(),
+            'question_id' => $question->getKey(),
+            'visible_on_front' => false,
+        ])
+            ->count(5)
+            ->sequence(fn ($sequence) => ['rate' => $sequence->index])
+            ->create();
+
+        $this
+            ->actingAs($this->user)
+            ->json(
+                'GET',
+                '/api/questionnaire/' . $questionnaireModel->modelableType->title . '/' . $questionnaireModel->model_id . '/questions/' . $question->getKey() . '/stars',
+            )
+            ->assertOk()
+            ->assertJson(['data' => [
+                'avg_rate' => 2.0,
+                'count_answers' => 10,
+                'question_id' => $question->getKey(),
+                'count_public_answers' => 5,
+            ]]);
     }
 }

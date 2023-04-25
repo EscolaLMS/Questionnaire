@@ -21,6 +21,7 @@ class QuestionAnswerTest extends TestCase
     public QuestionnaireModel $questionnaireModel;
     public Question $question;
     public Question $questionText;
+    public Question $questionReview;
 
     protected function setUp(): void
     {
@@ -35,11 +36,17 @@ class QuestionAnswerTest extends TestCase
 
         $this->question = Question::factory([
             'questionnaire_id' => $this->questionnaire->getKey(),
+            'type' => QuestionTypeEnum::RATE,
         ])->createOne();
 
         $this->questionText = Question::factory([
                 'questionnaire_id' => $this->questionnaire->getKey(),
-                'type' => QuestionTypeEnum::TEXT
+                'type' => QuestionTypeEnum::TEXT,
+        ])->createOne();
+
+        $this->questionReview = Question::factory([
+            'questionnaire_id' => $this->questionnaire->getKey(),
+            'type' => QuestionTypeEnum::REVIEW,
         ])->createOne();
     }
 
@@ -83,6 +90,26 @@ class QuestionAnswerTest extends TestCase
             ->assertOk()
             ->assertJsonFragment([
                 'note' => 'test_1',
+            ]);
+        $data = json_decode($response->getContent());
+        $this->assertEquals($data->data->id, $this->questionnaire->id);
+
+        $response = $this->actingAs($this->user, 'api')->postJson(
+            $this->uri(
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            ),
+            [
+                'question_id' => $this->questionReview->getKey(),
+                'note' => 'test_2',
+                'rate' => 5,
+            ]
+        )
+            ->assertOk()
+            ->assertJsonFragment([
+                'note' => 'test_2',
+                'rate' => 5,
             ]);
         $data = json_decode($response->getContent());
         $this->assertEquals($data->data->id, $this->questionnaire->id);
@@ -187,9 +214,6 @@ class QuestionAnswerTest extends TestCase
 
         $this->assertEquals(0, $data->meta->total);
     }
-
-    // TODO test dodawania odpowiedzi, żeby sprawdzić czy się prawidłowo ustawia visible_on_front
-
     public function testQuestionAnswersNotPublic(): void
     {
         $this->question->public_answers = false;
@@ -308,5 +332,42 @@ class QuestionAnswerTest extends TestCase
             'note' => 'Another opinion',
             'visible_on_front' => $public,
         ]);
+    }
+
+    public function testAnswerQuestionsValidateRate(): void
+    {
+        $this->actingAs($this->user, 'api')->postJson(
+            $this->uri(
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            ),
+            [
+                'question_id' => $this->question->getKey(),
+                'note' => 'test',
+                'rate' => null,
+            ]
+        )
+            ->assertUnprocessable()
+            ->assertJsonFragment([
+                'The rate is required in this type of question'
+            ]);
+
+        $this->actingAs($this->user, 'api')->postJson(
+            $this->uri(
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            ),
+            [
+                'question_id' => $this->questionReview->getKey(),
+                'note' => 'test_2',
+                'rate' => null,
+            ]
+        )
+            ->assertUnprocessable()
+            ->assertJsonFragment([
+                'The rate is required in this type of question'
+            ]);
     }
 }
