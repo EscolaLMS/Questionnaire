@@ -91,7 +91,7 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
 
     public function getQuestionId(): int
     {
-        return $this->input('question_id');
+        return $this->input('question_id') || -1;
     }
 
     public function getQuestionnaire(): Questionnaire
