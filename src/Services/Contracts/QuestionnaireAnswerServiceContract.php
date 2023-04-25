@@ -19,4 +19,5 @@ interface QuestionnaireAnswerServiceContract
 
     public function saveAnswer(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array;
     public function publicQuestionAnswers(array $criteria): LengthAwarePaginator;
+    public function getReviewStars(array $criteria): array;
 }

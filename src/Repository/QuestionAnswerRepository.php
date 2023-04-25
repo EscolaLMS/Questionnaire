@@ -127,4 +127,14 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             ->applyCriteria($query, $criteria)
             ->paginate(config(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.per_page', 15));
     }
+
+    public function getReviewReport(array $criteria): QuestionAnswer
+    {
+        $query = $this->model->newQuery();
+        return $this
+            ->applyCriteria($query, $criteria)
+            ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate, question_id, COUNT(CASE WHEN visible_on_front = true THEN 1 END) as count_public_answers')
+            ->groupBy('question_id')
+            ->firstOrFail();
+    }
 }
