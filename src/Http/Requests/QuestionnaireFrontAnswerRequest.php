@@ -89,7 +89,7 @@ class QuestionnaireFrontAnswerRequest extends FormRequest
         return $this->route('model_id');
     }
 
-    public function getQuestionId(): int
+    public function getQuestionId(): int | null
     {
         return $this->input('question_id');
     }
