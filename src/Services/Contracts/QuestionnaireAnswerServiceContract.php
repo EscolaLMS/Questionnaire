@@ -3,7 +3,6 @@
 namespace EscolaLms\Questionnaire\Services\Contracts;
 
 use EscolaLms\Core\Models\User;
-use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
