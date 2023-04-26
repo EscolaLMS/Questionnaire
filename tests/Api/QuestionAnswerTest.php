@@ -235,22 +235,22 @@ class QuestionAnswerTest extends TestCase
     {
         $this->question->public_answers = true;
         $this->question->save();
-        QuestionAnswer::factory([
-            'questionnaire_model_id' => $this->questionnaireModel->getKey(),
-            'question_id' => $this->question->getKey(),
-        ])
+        QuestionAnswer::factory()
             ->count(10)
             ->create([
-                'visible_on_front' => true
+                'questionnaire_model_id' => $this->questionnaireModel->getKey(),
+                'question_id' => $this->question->getKey(),
+                'visible_on_front' => true,
+                'note' => 'ok',
             ]);
 
-        QuestionAnswer::factory([
-            'questionnaire_model_id' => $this->questionnaireModel->getKey(),
-            'question_id' => $this->question->getKey(),
-        ])
+        QuestionAnswer::factory()
             ->count(10)
             ->create([
-                'visible_on_front' => false
+                'questionnaire_model_id' => $this->questionnaireModel->getKey(),
+                'question_id' => $this->question->getKey(),
+                'visible_on_front' => false,
+                'note' => 'ok',
             ]);
 
         $this
@@ -369,5 +369,63 @@ class QuestionAnswerTest extends TestCase
             ->assertJsonFragment([
                 'The rate is required in this type of question'
             ]);
+    }
+
+    public function testChangeAnswerVisibilityUnauthorized(): void
+    {
+        $answer = QuestionAnswer::factory()->create([
+            'questionnaire_model_id' => $this->questionnaireModel->getKey(),
+            'question_id' => $this->questionReview->getKey(),
+            'visible_on_front' => true,
+        ]);
+
+        $this
+            ->json('POST', "/api/admin/question-answers/{$answer->getKey()}/change-visibility", ['visible_on_front' => false])
+            ->assertUnauthorized();
+    }
+
+    public function testAdminCanChangeAnswerVisibility(): void
+    {
+        $answer = QuestionAnswer::factory()->create([
+            'questionnaire_model_id' => $this->questionnaireModel->getKey(),
+            'question_id' => $this->questionReview->getKey(),
+            'visible_on_front' => true,
+        ]);
+
+        $this
+            ->actingAs($this->user, 'api')
+            ->json('POST', "/api/admin/question-answers/{$answer->getKey()}/change-visibility", ['visible_on_front' => false])
+            ->assertOk()
+            ->assertJsonFragment([
+                'id' => $answer->getKey(),
+                'questionnaire_model_id' => $this->questionnaireModel->getKey(),
+                'question_id' => $this->questionReview->getKey(),
+                'visible_on_front' => false,
+            ]);
+
+        $this->assertDatabaseHas('question_answers', [
+            'id' => $answer->getKey(),
+            'questionnaire_model_id' => $this->questionnaireModel->getKey(),
+            'question_id' => $this->questionReview->getKey(),
+            'visible_on_front' => false,
+        ]);
+
+        $this
+            ->actingAs($this->user, 'api')
+            ->json('POST', "/api/admin/question-answers/{$answer->getKey()}/change-visibility", ['visible_on_front' => true])
+            ->assertOk()
+            ->assertJsonFragment([
+                'id' => $answer->getKey(),
+                'questionnaire_model_id' => $this->questionnaireModel->getKey(),
+                'question_id' => $this->questionReview->getKey(),
+                'visible_on_front' => true,
+            ]);
+
+        $this->assertDatabaseHas('question_answers', [
+            'id' => $answer->getKey(),
+            'questionnaire_model_id' => $this->questionnaireModel->getKey(),
+            'question_id' => $this->questionReview->getKey(),
+            'visible_on_front' => true,
+        ]);
     }
 }

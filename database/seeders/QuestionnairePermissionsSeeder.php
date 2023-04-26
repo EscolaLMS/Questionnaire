@@ -27,6 +27,8 @@ class QuestionnairePermissionsSeeder extends Seeder
             QuestionnairePermissionsEnum::QUESTION_DELETE,
             QuestionnairePermissionsEnum::QUESTION_UPDATE,
             QuestionnairePermissionsEnum::QUESTION_CREATE,
+
+            QuestionnairePermissionsEnum::QUESTION_ANSWER_VISIBILITY_CHANGE,
         ];
 
         foreach ($permissions as $permission) {

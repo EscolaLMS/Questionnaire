@@ -17,4 +17,6 @@ class QuestionnairePermissionsEnum extends BasicEnum
     const QUESTION_CREATE = 'question_create';
     const QUESTION_DELETE = 'question_delete';
     const QUESTION_UPDATE = 'question_update';
+
+    const QUESTION_ANSWER_VISIBILITY_CHANGE = 'question_answer_visibility_change';
 }
