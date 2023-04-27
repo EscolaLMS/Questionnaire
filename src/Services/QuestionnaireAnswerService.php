@@ -109,7 +109,6 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
                 $criteria,
                 [
                     new WhereCriterion('visible_on_front', true, '='),
-                    new NotNullCriterion('note'),
                 ]
             )
         );
