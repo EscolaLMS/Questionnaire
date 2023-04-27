@@ -3,10 +3,12 @@
 namespace EscolaLms\Questionnaire\Services;
 
 use EscolaLms\Core\Models\User;
+use EscolaLms\Core\Repositories\Criteria\Primitives\NotNullCriterion;
 use EscolaLms\Core\Repositories\Criteria\Primitives\WhereCriterion;
 use EscolaLms\Questionnaire\Enums\QuestionnaireRateMap;
 use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
+use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
@@ -102,13 +104,29 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
 
     public function publicQuestionAnswers(array $criteria): LengthAwarePaginator
     {
-        $criteria[] = new WhereCriterion('visible_on_front', true, '=');
-        return $this->questionAnswerRepository->searchByCriteriaWithPagination($criteria);
+        return $this->questionAnswerRepository->searchByCriteriaWithPagination(
+            array_merge(
+                $criteria,
+                [
+                    new WhereCriterion('visible_on_front', true, '='),
+                ]
+            )
+        );
     }
 
     public function getReviewStars(array $criteria): array
     {
         $criteria[] = new AnswerQuestionReviewCriterion(null, QuestionTypeEnum::REVIEW);
         return $this->questionAnswerRepository->getReviewReport($criteria)->toArray();
+    }
+
+    public function searchAndPaginate(array $search = [], ?int $perPage = null, string $orderDirection = 'asc', string $orderColumn = 'id'): LengthAwarePaginator
+    {
+        return $this->questionAnswerRepository->searchAndPaginate($search, $perPage, $orderDirection, $orderColumn);
+    }
+
+    public function update(array $input, int $id): QuestionAnswer
+    {
+        return $this->questionAnswerRepository->update($input, $id);
     }
 }

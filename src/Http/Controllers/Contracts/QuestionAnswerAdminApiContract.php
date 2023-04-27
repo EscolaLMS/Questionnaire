@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Http\Controllers\Contracts;
 
 use EscolaLms\Questionnaire\Http\Requests\QuestionAnswerListingRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionAnswerVisibilityRequest;
 use Illuminate\Http\JsonResponse;
 
 interface QuestionAnswerAdminApiContract
@@ -71,4 +72,53 @@ interface QuestionAnswerAdminApiContract
      * )
      */
     public function list(QuestionAnswerListingRequest $request): JsonResponse;
+
+    /**
+     * @OA\Post (
+     *     path="/api/admin/question-answers/{id}/change-visiblity",
+     *     summary="Change answer visibility on front",
+     *     tags={"QuestionAnswersForQuestionaire"},
+     *     security={
+     *         {"passport": {}},
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="id of question answer",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Question answer change visibility",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/QuestionnaireAnswerChangeVisibility")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Question answers visibility changed successfully",
+     *         @OA\Schema(
+     *            type="object",
+     *            description="map of questions",
+     *            @OA\AdditionalProperties(
+     *                ref="#/components/schemas/QuestionAnswer"
+     *            )
+     *         )
+     *      ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="endpoint requires authentication",
+     *     ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    public function changeAnswerVisibility(QuestionAnswerVisibilityRequest $request, int $id): JsonResponse;
 }
