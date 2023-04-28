@@ -45,7 +45,7 @@ class QuestionUpdateRequest extends FormRequest
             'type' => [
                 'string',
                 Rule::in(QuestionTypeEnum::getValues()),
-                new LimitQuestionReview($this->input('questionnaire_id'), $this->input('question_id'))
+                new LimitQuestionReview($this->input('questionnaire_id'), $this->input('id'))
             ],
             'public_answers' => 'boolean',
         ];

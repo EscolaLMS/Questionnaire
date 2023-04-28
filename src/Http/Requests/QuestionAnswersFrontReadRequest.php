@@ -47,7 +47,6 @@ class QuestionAnswersFrontReadRequest extends FormRequest
                 'integer',
                 new ModelExist($this->input('model_type_title'), 'id'),
             ],
-            'type' => ['sometimes', 'string', Rule::in(QuestionTypeEnum::getValues())],
             'order_by' => ['sometimes', 'string', 'in:rate,created_at,updated_at'],
             'order' => ['sometimes', 'string', 'in:ASC,DESC'],
         ];
