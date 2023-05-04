@@ -102,7 +102,7 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         );
     }
 
-    public function publicQuestionAnswers(array $criteria): LengthAwarePaginator
+    public function publicQuestionAnswers(array $criteria, ?int $perPage = null): LengthAwarePaginator
     {
         return $this->questionAnswerRepository->searchByCriteriaWithPagination(
             array_merge(
@@ -110,7 +110,8 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
                 [
                     new WhereCriterion('visible_on_front', true, '='),
                 ]
-            )
+            ),
+            $perPage
         );
     }
 

@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
@@ -145,17 +146,17 @@ class QuestionnaireListTest extends TestCase
         $this->assertTrue($response->json('data.1.id') === $questionnaireOne->getKey());
     }
 
-    public function testAnonymousCantListEmptyQuestionnaire(): void
+    public function testAnonymousCanListEmptyQuestionnaire(): void
     {
         $questionnaireModel = QuestionnaireModel::factory()->createOne();
         $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->model_id);
 
         $response = $this->getJson($url);
 
-        $response->assertForbidden();
+        $response->assertOk();
     }
 
-    public function testAnonymousCantListQuestionnaire(): void
+    public function testAnonymousCanListQuestionnaire(): void
     {
         $questionnaireModel = QuestionnaireModel::factory()->createOne();
         $url = sprintf('/api/questionnaire/%s/%d', $questionnaireModel->modelableType->title, $questionnaireModel->model_id);
@@ -165,7 +166,7 @@ class QuestionnaireListTest extends TestCase
 
         $response = $this->getJson($url);
 
-        $response->assertForbidden();
+        $response->assertOk();
     }
 
     public function testListWithActiveAndNotActiveQuestionnaire(): void
@@ -327,6 +328,131 @@ class QuestionnaireListTest extends TestCase
             ->assertJsonFragment([
                 'title' => $hiddenQuestion2->title,
                 'public_answers' => false,
+            ]);
+    }
+
+    public function testListQuestionsType(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaireOnlyRate = Questionnaire::factory(['title' => 'Only rate', 'active' => true])->create();
+        $questionnaireOnlyReview = Questionnaire::factory(['title' => 'Only review', 'active' => true])->create();
+        $questionnaireOnlyText = Questionnaire::factory(['title' => 'Only text', 'active' => true])->create();
+
+        $model = QuestionnaireModel::factory()->createOne([
+            'questionnaire_id' => $questionnaireOnlyRate->getKey(),
+        ]);
+        QuestionnaireModel::factory()->createOne([
+            'questionnaire_id' => $questionnaireOnlyReview->getKey(),
+            'model_type_id' => $model->model_type_id,
+            'model_id' => $model->model_id,
+        ]);
+        QuestionnaireModel::factory()->createOne([
+            'questionnaire_id' => $questionnaireOnlyText->getKey(),
+            'model_type_id' => $model->model_type_id,
+            'model_id' => $model->model_id,
+        ]);
+
+        $rateQuestion = Question::factory()->create([
+            'questionnaire_id' => $questionnaireOnlyRate->getKey(),
+            'public_answers' => true,
+            'active' => true,
+            'title' => 'Only rate question',
+            'type' => QuestionTypeEnum::RATE,
+        ]);
+        $reviewQuestion = Question::factory()->create([
+            'questionnaire_id' => $questionnaireOnlyReview->getKey(),
+            'public_answers' => true,
+            'active' => true,
+            'title' => 'Only review question',
+            'type' => QuestionTypeEnum::REVIEW,
+        ]);
+        $textQuestion = Question::factory()->create([
+            'questionnaire_id' => $questionnaireOnlyText->getKey(),
+            'public_answers' => true,
+            'active' => true,
+            'title' => 'Only text question',
+            'type' => QuestionTypeEnum::TEXT,
+        ]);
+
+        $this
+            ->actingAs($this->user)
+            ->json('GET', '/api/questionnaire/' . $model->modelableType->title . '/' . $model->model_id, ['question_type' => QuestionTypeEnum::RATE])
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'id' => $questionnaireOnlyRate->getKey(),
+                'title' => $questionnaireOnlyRate->title,
+            ])
+            ->assertJsonFragment([
+                'title' => $rateQuestion->title,
+            ])
+            ->assertJsonMissing([
+                'id' => $questionnaireOnlyReview->getKey(),
+                'title' => $questionnaireOnlyReview->title,
+            ])
+            ->assertJsonMissing([
+                'title' => $reviewQuestion->title,
+            ])
+            ->assertJsonMissing([
+                'id' => $questionnaireOnlyText->getKey(),
+                'title' => $questionnaireOnlyText->title,
+            ])
+            ->assertJsonMissing([
+                'title' => $textQuestion->title,
+            ]);
+
+        $this
+            ->actingAs($this->user)
+            ->json('GET', '/api/questionnaire/' . $model->modelableType->title . '/' . $model->model_id, ['question_type' => QuestionTypeEnum::REVIEW])
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonMissing([
+                'id' => $questionnaireOnlyRate->getKey(),
+                'title' => $questionnaireOnlyRate->title,
+            ])
+            ->assertJsonMissing([
+                'title' => $rateQuestion->title,
+            ])
+            ->assertJsonFragment([
+                'id' => $questionnaireOnlyReview->getKey(),
+                'title' => $questionnaireOnlyReview->title,
+            ])
+            ->assertJsonFragment([
+                'title' => $reviewQuestion->title,
+            ])
+            ->assertJsonMissing([
+                'id' => $questionnaireOnlyText->getKey(),
+                'title' => $questionnaireOnlyText->title,
+            ])
+            ->assertJsonMissing([
+                'title' => $textQuestion->title,
+            ]);
+
+        $this
+            ->actingAs($this->user)
+            ->json('GET', '/api/questionnaire/' . $model->modelableType->title . '/' . $model->model_id, ['question_type' => QuestionTypeEnum::TEXT])
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonMissing([
+                'id' => $questionnaireOnlyRate->getKey(),
+                'title' => $questionnaireOnlyRate->title,
+            ])
+            ->assertJsonMissing([
+                'title' => $rateQuestion->title,
+            ])
+            ->assertJsonMissing([
+                'id' => $questionnaireOnlyReview->getKey(),
+                'title' => $questionnaireOnlyReview->title,
+            ])
+            ->assertJsonMissing([
+                'title' => $reviewQuestion->title,
+            ])
+            ->assertJsonFragment([
+                'id' => $questionnaireOnlyText->getKey(),
+                'title' => $questionnaireOnlyText->title,
+            ])
+            ->assertJsonFragment([
+                'title' => $textQuestion->title,
             ]);
     }
 }

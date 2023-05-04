@@ -262,15 +262,6 @@ interface QuestionnaireApiContract
      *         in="path"
      *     ),
      *     @OA\Parameter(
-     *         name="type",
-     *         description="question type (rate, review, text)",
-     *         @OA\Schema(
-     *            type="string",
-     *         ),
-     *         required=false,
-     *         in="query"
-     *     ),
-     *     @OA\Parameter(
      *         name="order_by",
      *         description="order by (created_at, updated_at, rate)",
      *         @OA\Schema(
@@ -284,6 +275,24 @@ interface QuestionnaireApiContract
      *         description="order direction (ASC, DESC)",
      *         @OA\Schema(
      *            type="string",
+     *         ),
+     *         required=false,
+     *         in="query"
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         description="answers on page",
+     *         @OA\Schema(
+     *            type="int",
+     *         ),
+     *         required=false,
+     *         in="query"
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         description="page number",
+     *         @OA\Schema(
+     *            type="int",
      *         ),
      *         required=false,
      *         in="query"
@@ -340,7 +349,7 @@ interface QuestionnaireApiContract
      *     @OA\Response(
      *         response=200,
      *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/QuestionAnswer")
+     *         @OA\JsonContent(ref="#/components/schemas/ModelStarsResponse")
      *      ),
      *     @OA\Response(
      *          response=403,

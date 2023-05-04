@@ -14,7 +14,6 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireStarsFrontRequest;
 use EscolaLms\Questionnaire\Http\Resources\ModelStarsResponse;
 use EscolaLms\Questionnaire\Http\Resources\QuestionAnswerFrontResource;
-use EscolaLms\Questionnaire\Http\Resources\QuestionAnswerResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireFrontResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireStarsResource;
@@ -104,7 +103,7 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
     {
         $answers = $this
             ->questionnaireAnswerService
-            ->publicQuestionAnswers(QuestionAnswersCriteriaDto::instantiateFromRequest($request)->toArray());
+            ->publicQuestionAnswers(QuestionAnswersCriteriaDto::instantiateFromRequest($request)->toArray(), $request->input('per_page'));
         return $this->sendResponseForResource(
             QuestionAnswerFrontResource::collection($answers),
             __('Question answers fetched successfully')

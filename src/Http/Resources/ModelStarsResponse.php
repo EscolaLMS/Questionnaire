@@ -4,6 +4,31 @@ namespace EscolaLms\Questionnaire\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ *     schema="ModelStarsResponse",
+ *     @OA\Property(
+ *          property="avg_rate",
+ *          type="string",
+ *          description="average rate"
+ *     ),
+ *     @OA\Property(
+ *         property="count_answers",
+ *         type="integer",
+ *         description="count all answers for this question"
+ *     ),
+ *     @OA\Property(
+ *         property="count_public_answers",
+ *         type="integer",
+ *         description="count all public answers for this question"
+ *     ),
+ *     @OA\Property(
+ *         property="question_id",
+ *         type="integer",
+ *         description="question identifier"
+ *     ),
+ * )
+ */
 class ModelStarsResponse extends JsonResource
 {
     public function toArray($request)

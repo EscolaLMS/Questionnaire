@@ -75,7 +75,7 @@ interface QuestionAnswerAdminApiContract
 
     /**
      * @OA\Post (
-     *     path="/api/admin/question-answers/{id}/change-visiblity",
+     *     path="/api/admin/question-answers/{id}/change-visibility",
      *     summary="Change answer visibility on front",
      *     tags={"QuestionAnswersForQuestionaire"},
      *     security={

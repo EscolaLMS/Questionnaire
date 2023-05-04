@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use Illuminate\Foundation\Http\FormRequest;
@@ -21,7 +22,7 @@ class QuestionnaireFrontListingRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return Gate::allows('listFront', Questionnaire::class);
+        return true;
     }
 
     public function rules(): array
@@ -35,6 +36,7 @@ class QuestionnaireFrontListingRequest extends FormRequest
                 'integer',
             ],
             'public_answers' => ['boolean'],
+            'question_type' => ['sometimes', 'string', Rule::in(QuestionTypeEnum::getValues())],
         ];
     }
 

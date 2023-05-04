@@ -29,6 +29,15 @@ class QuestionnaireFrontFilterCriteriaDto extends CriteriaDto implements Instant
             );
         }
 
+        if ($request->has('question_type')) {
+            $criteria->push(
+                new HasCriterion(
+                    'questions',
+                    fn (Builder $q) => $q->where('type', '=', $request->input('question_type'))
+                )
+            );
+        }
+
         return new self($criteria);
     }
 }

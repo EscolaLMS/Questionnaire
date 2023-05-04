@@ -19,7 +19,7 @@ interface QuestionnaireAnswerServiceContract
     public function getStars(int $modelTypeId, int $modelId): array;
 
     public function saveAnswer(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array;
-    public function publicQuestionAnswers(array $criteria): LengthAwarePaginator;
+    public function publicQuestionAnswers(array $criteria, ?int $perPage = null): LengthAwarePaginator;
     public function getReviewStars(array $criteria): array;
     public function searchAndPaginate(array $search = [], ?int $perPage = null, string $orderDirection = 'asc', string $orderColumn = 'id'): LengthAwarePaginator;
     public function update(array $input, int $id): QuestionAnswer;

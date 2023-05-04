@@ -117,7 +117,7 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             ->first();
     }
 
-    public function searchByCriteriaWithPagination(array $criteria): LengthAwarePaginator
+    public function searchByCriteriaWithPagination(array $criteria, ?int $perPage = null): LengthAwarePaginator
     {
         $query = $this
             ->model
@@ -125,7 +125,7 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
 
         return $this
             ->applyCriteria($query, $criteria)
-            ->paginate(config(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.per_page', 15));
+            ->paginate($perPage ?? config(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.per_page', 15));
     }
 
     public function getReviewReport(array $criteria): QuestionAnswer
