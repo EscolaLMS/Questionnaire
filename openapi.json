@@ -290,13 +290,13 @@
                 ]
             }
         },
-        "/api/admin/question-answers/{id}/change-visiblity": {
+        "/api/admin/question-answers/{id}/change-visibility": {
             "post": {
                 "tags": [
                     "QuestionAnswersForQuestionaire"
                 ],
                 "summary": "Change answer visibility on front",
-                "operationId": "812cbb0978b06fcfe65f370d404cbaef",
+                "operationId": "1d45856f50c64063ab570ff38a47ca20",
                 "parameters": [
                     {
                         "name": "id",
@@ -1164,15 +1164,6 @@
                         }
                     },
                     {
-                        "name": "type",
-                        "in": "query",
-                        "description": "question type (rate, review, text)",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "name": "order_by",
                         "in": "query",
                         "description": "order by (created_at, updated_at, rate)",
@@ -1188,6 +1179,24 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "answers on page",
+                        "required": false,
+                        "schema": {
+                            "type": "int"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number",
+                        "required": false,
+                        "schema": {
+                            "type": "int"
                         }
                     }
                 ],
@@ -1253,7 +1262,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/QuestionAnswer"
+                                    "$ref": "#/components/schemas/ModelStarsResponse"
                                 }
                             }
                         }
@@ -1292,6 +1301,27 @@
                     "note": {
                         "description": "anser of text type",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ModelStarsResponse": {
+                "properties": {
+                    "avg_rate": {
+                        "description": "average rate",
+                        "type": "string"
+                    },
+                    "count_answers": {
+                        "description": "count all answers for this question",
+                        "type": "integer"
+                    },
+                    "count_public_answers": {
+                        "description": "count all public answers for this question",
+                        "type": "integer"
+                    },
+                    "question_id": {
+                        "description": "question identifier",
+                        "type": "integer"
                     }
                 },
                 "type": "object"
