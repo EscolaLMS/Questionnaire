@@ -19,6 +19,10 @@ class QuestionAnswerFilterCriteriaDto extends CriteriaDto implements Instantiate
             $criteria->push(new EqualCriterion('user_id', $request->input('user_id')));
         }
 
+        if ($request->has('questionnaire_model_id')) {
+            $criteria->push(new EqualCriterion('questionnaire_model_id', $request->input('questionnaire_model_id')));
+        }
+
         return new self($criteria);
     }
 }

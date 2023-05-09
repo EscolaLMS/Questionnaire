@@ -171,7 +171,7 @@ class QuestionAnswerTest extends TestCase
         $this->assertEquals(20, $data->meta->total);
     }
 
-    public function testAdminCanGetAnswerListWithFilters(): void
+    public function testAdminCanGetAnswerListWithFiltersOk(): void
     {
         QuestionAnswer::factory()
             ->count(20)
