@@ -9,12 +9,14 @@ use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionAnswerAdminApiCon
 use EscolaLms\Questionnaire\Http\Requests\QuestionAnswerListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionAnswerVisibilityRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionAnswerResource;
+use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
 use Illuminate\Http\JsonResponse;
 
 class QuestionAnswerAdminApiController extends EscolaLmsBaseController implements QuestionAnswerAdminApiContract
 {
     private QuestionnaireAnswerServiceContract $questionnaireAnswerService;
+    private QuestionAnswerRepositoryContract $questionAnswerRepository;
 
     public function __construct(QuestionnaireAnswerServiceContract $questionnaireAnswerService)
     {
