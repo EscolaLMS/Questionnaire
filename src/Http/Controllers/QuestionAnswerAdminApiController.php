@@ -18,9 +18,10 @@ class QuestionAnswerAdminApiController extends EscolaLmsBaseController implement
     private QuestionnaireAnswerServiceContract $questionnaireAnswerService;
     private QuestionAnswerRepositoryContract $questionAnswerRepository;
 
-    public function __construct(QuestionnaireAnswerServiceContract $questionnaireAnswerService)
+    public function __construct(QuestionnaireAnswerServiceContract $questionnaireAnswerService, QuestionAnswerRepositoryContract $questionAnswerRepository)
     {
         $this->questionnaireAnswerService = $questionnaireAnswerService;
+        $this->questionAnswerRepository = $questionAnswerRepository;
     }
 
     public function list(int $id, QuestionAnswerListingRequest $request): JsonResponse
