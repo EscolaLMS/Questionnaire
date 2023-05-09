@@ -15,7 +15,7 @@ interface QuestionnaireServiceContract
 {
     public function deleteQuestionnaire(Questionnaire $questionnaire): bool;
 
-    public function searchForFront(array $filters, User $user): LengthAwarePaginator;
+    public function searchForFront(array $filters, User $user, ?OrderDto $orderDto = null): LengthAwarePaginator;
 
     public function list(array $criteria, OrderDto $orderDto): LengthAwarePaginator;
 

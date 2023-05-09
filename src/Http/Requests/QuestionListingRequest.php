@@ -15,6 +15,9 @@ class QuestionListingRequest extends FormRequest
 
     public function rules(): array
     {
-        return [];
+        return [
+            'order_by' => ['string', 'in:id,description,title,questionnaire_id,active,type,position'],
+            'order' => ['string', 'in:ASC,DESC'],
+        ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
+use EscolaLms\Core\Models\User;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Foundation\Http\FormRequest;
@@ -40,6 +41,18 @@ class QuestionAnswerListingRequest extends FormRequest
                 'integer',
                 'sometimes',
                 'nullable',
+            ],
+            'order_by' => [
+                'string',
+                'sometimes',
+                'nullable',
+                Rule::in(['id', 'note', 'rate', 'user_id', 'question_title']),
+            ],
+            'user_id' => [
+                'integer',
+                'sometimes',
+                'nullable',
+                Rule::exists('users', 'id'),
             ],
         ];
     }

@@ -57,6 +57,42 @@ interface QuestionAdminApiContract
      *     security={
      *         {"passport": {}},
      *     },
+     *     @OA\Parameter(
+     *         description="Question title",
+     *         in="path",
+     *         name="title",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Questionnaire's id",
+     *         in="path",
+     *         name="questionnaire_id",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Order by field",
+     *         in="path",
+     *         name="order_by",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Order direction",
+     *         in="path",
+     *         name="order",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         description="Question attributes",
      *         required=true,

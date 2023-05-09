@@ -4,7 +4,6 @@ namespace EscolaLms\Questionnaire\Services;
 
 use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Models\User;
-use EscolaLms\Core\Repositories\Criteria\Primitives\HasCriterion;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
@@ -26,11 +25,12 @@ class QuestionnaireService implements QuestionnaireServiceContract
     private QuestionServiceContract $questionService;
 
     public function __construct(
-        QuestionnaireRepositoryContract $questionnaireRepository,
-        QuestionnaireModelServiceContract $questionnaireModelService,
-        QuestionServiceContract $questionService,
+        QuestionnaireRepositoryContract      $questionnaireRepository,
+        QuestionnaireModelServiceContract    $questionnaireModelService,
+        QuestionServiceContract              $questionService,
         QuestionnaireModelRepositoryContract $questionnaireModelRepository
-    ) {
+    )
+    {
         $this->questionnaireRepository = $questionnaireRepository;
         $this->questionnaireModelService = $questionnaireModelService;
         $this->questionService = $questionService;
@@ -52,9 +52,14 @@ class QuestionnaireService implements QuestionnaireServiceContract
         return true;
     }
 
-    public function searchForFront(array $filters, User $user): LengthAwarePaginator
+    public function searchForFront(array $filters, User $user, ?OrderDto $orderDto = null): LengthAwarePaginator
     {
-        return $this->questionnaireRepository->searchAndPaginate($filters);
+        return $this->questionnaireRepository->searchAndPaginate(
+            $filters,
+            null,
+            $orderDto?->getOrder() ?? 'asc',
+            $orderDto?->getOrderBy() ?? 'id'
+        );
     }
 
     public function list(array $criteria, OrderDto $orderDto): LengthAwarePaginator
@@ -99,10 +104,11 @@ class QuestionnaireService implements QuestionnaireServiceContract
     }
 
     private function getAnswerFromQuestionForUser(
-        Question $question,
+        Question            $question,
         ?QuestionnaireModel $model,
-        User $user
-    ): ?QuestionAnswer {
+        User                $user
+    ): ?QuestionAnswer
+    {
         return $model ? $question->answers()->where([
             'user_id' => $user->id,
             'questionnaire_model_id' => $model->id

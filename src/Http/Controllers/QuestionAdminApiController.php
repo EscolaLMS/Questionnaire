@@ -2,7 +2,9 @@
 
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
+use EscolaLms\Questionnaire\Dtos\QuestionFilterCriteriaDto;
 use EscolaLms\Questionnaire\Exceptions\QuestionCanNotDeleteException;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionAdminApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionCreateRequest;
@@ -23,8 +25,9 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
 
     public function __construct(
         QuestionRepositoryContract $questionRepository,
-        QuestionServiceContract $questionService
-    ) {
+        QuestionServiceContract    $questionService
+    )
+    {
         $this->questionRepository = $questionRepository;
         $this->questionService = $questionService;
     }
@@ -32,7 +35,11 @@ class QuestionAdminApiController extends EscolaLmsBaseController implements Ques
     public function list(QuestionListingRequest $request): JsonResponse
     {
         return $this->sendResponseForResource(
-            QuestionResource::collection($this->questionRepository->searchAndPaginate()),
+            QuestionResource::collection($this->questionRepository->listWithCriteriaAndOrder(
+                QuestionFilterCriteriaDto::instantiateFromRequest($request),
+                OrderDto::instantiateFromRequest($request),
+                $request->get('perPage', 20)
+            )),
             __("Question list retrieved successfully")
         );
     }

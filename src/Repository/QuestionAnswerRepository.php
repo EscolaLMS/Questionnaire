@@ -2,7 +2,9 @@
 
 namespace EscolaLms\Questionnaire\Repository;
 
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Repositories\BaseRepository;
+use EscolaLms\Questionnaire\Dtos\QuestionAnswerFilterCriteriaDto;
 use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
@@ -81,6 +83,19 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             ->paginate($perPage);
     }
 
+    public function listWithCriteriaAndOrder(int $questionnaireId, QuestionAnswerFilterCriteriaDto $criteriaDto, OrderDto $orderDto, int $perPage): LengthAwarePaginator
+    {
+        $query =  $this
+            ->queryWithAppliedCriteria($criteriaDto->toArray())
+            ->select($this->model->table.'.*')
+            ->join('questions', 'question_id', '=', 'questions.id')
+            ->where('questions.questionnaire_id', '=', $questionnaireId);
+
+        return $this
+            ->orderBy($query, $orderDto->getOrderBy(), $orderDto->getOrder())
+            ->paginate($perPage);
+    }
+
     public function updateOrCreate(array $attributes, array $values): QuestionAnswer
     {
         return $this->model->updateOrCreate($attributes, $values);
@@ -103,5 +118,17 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
                     ->where('questionnaire_models.model_type_id', '=', $modelTypeId)
                     ->when($modelId, fn ($q) => $q->where('questionnaire_models.model_id', '=', $modelId))
             );
+    }
+
+    private function orderBy(Builder $query, ?string $orderBy, ?string $order): Builder
+    {
+        if (is_null($orderBy)) {
+            return $query;
+        }
+
+        return match ($orderBy) {
+            'question_title' => $query->orderBy('questions.title', $order),
+            default => $query->orderBy($orderBy, $order),
+        };
     }
 }
