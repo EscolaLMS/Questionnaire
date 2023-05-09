@@ -3,14 +3,19 @@
 namespace EscolaLms\Questionnaire\Http\Controllers;
 
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
+use EscolaLms\Questionnaire\Dtos\QuestionAnswersCriteriaDto;
+use EscolaLms\Questionnaire\Dtos\QuestionnaireFrontFilterCriteriaDto;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireApiContract;
+use EscolaLms\Questionnaire\Http\Requests\QuestionAnswersFrontReadRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionAnswersFrontStarsRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontAnswerRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireStarsFrontRequest;
+use EscolaLms\Questionnaire\Http\Resources\ModelStarsResponse;
+use EscolaLms\Questionnaire\Http\Resources\QuestionAnswerFrontResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireFrontResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
-use EscolaLms\Questionnaire\Http\Resources\QuestionnaireStarsCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireStarsResource;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
@@ -33,12 +38,8 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
     public function list(QuestionnaireFrontListingRequest $request): JsonResponse
     {
         $questionnaires = $this->questionnaireService->searchForFront(
-            [
-                'model_type_title' => $request->getParamModelTypeTitle(),
-                'model_id' => $request->getParamModelId(),
-                'active' => true
-            ],
-            $request->user()
+            QuestionnaireFrontFilterCriteriaDto::instantiateFromRequest($request)->toArray(),
+            $request->input('public_answers')
         );
 
         return $this->sendResponseForResource(
@@ -51,7 +52,7 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
     {
         $questionnaire = $this->questionnaireService->findForFront(
             [
-                'id' => $request->getParamId(),
+                'questionnaire_id' => $request->getParamId(),
                 'model_type_title' => $request->getParamModelTypeTitle(),
                 'model_id' => $request->getParamModelId(),
                 'active' => true
@@ -95,6 +96,26 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
         return $this->sendResponseForResource(
             QuestionnaireStarsResource::make($report),
             __("Questionnaire report fetched successfully")
+        );
+    }
+
+    public function questionModelAnswers(QuestionAnswersFrontReadRequest $request): JsonResponse
+    {
+        $answers = $this
+            ->questionnaireAnswerService
+            ->publicQuestionAnswers(QuestionAnswersCriteriaDto::instantiateFromRequest($request)->toArray(), $request->input('per_page'));
+        return $this->sendResponseForResource(
+            QuestionAnswerFrontResource::collection($answers),
+            __('Question answers fetched successfully')
+        );
+    }
+
+    public function modelStars(QuestionAnswersFrontStarsRequest $request): JsonResponse
+    {
+        $result = $this->questionnaireAnswerService->getReviewStars(QuestionAnswersCriteriaDto::instantiateFromRequest($request)->toArray());
+        return $this->sendResponseForResource(
+            ModelStarsResponse::make($result),
+            __('Model stars fetched successfully'),
         );
     }
 }

@@ -24,4 +24,7 @@ interface QuestionAnswerRepositoryContract extends BaseRepositoryContract
     public function searchAndPaginate(array $search = [], ?int $perPage = null, string $orderDirection = 'asc', string $orderColumn = 'id'): LengthAwarePaginator;
     public function listWithCriteriaAndOrder(int $questionnaireId, QuestionAnswerFilterCriteriaDto $criteriaDto, OrderDto $orderDto, int $perPage): LengthAwarePaginator;
     public function updateOrCreate(array $attributes, array $values): QuestionAnswer;
+    public function findAnswer(int $userId, int $questionId, int $questionnaireModelId): ?QuestionAnswer;
+    public function searchByCriteriaWithPagination(array $criteria, ?int $perPage = null): LengthAwarePaginator;
+    public function getReviewReport(array $criteria): QuestionAnswer;
 }

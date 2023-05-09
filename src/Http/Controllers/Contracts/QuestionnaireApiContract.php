@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Questionnaire\Http\Controllers\Contracts;
 
+use EscolaLms\Questionnaire\Http\Requests\QuestionAnswersFrontReadRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionAnswersFrontStarsRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontAnswerRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireFrontReadRequest;
@@ -226,4 +228,138 @@ interface QuestionnaireApiContract
      * )
      */
     public function stars(QuestionnaireStarsFrontRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
+     *     path="/api/questionnaire/{model_type_title}/{model_id}/questions/{question_id}/answers",
+     *     summary="Read a question answers by a given model title and model id identifier",
+     *     tags={"Questionnaire"},
+     *     @OA\Parameter(
+     *         name="model_type_title",
+     *         description="Name of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="model_id",
+     *         description="id of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="question_id",
+     *         description="id of Question",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order_by",
+     *         description="order by (created_at, updated_at, rate)",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         required=false,
+     *         in="query"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         description="order direction (ASC, DESC)",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         required=false,
+     *         in="query"
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         description="answers on page",
+     *         @OA\Schema(
+     *            type="int",
+     *         ),
+     *         required=false,
+     *         in="query"
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         description="page number",
+     *         @OA\Schema(
+     *            type="int",
+     *         ),
+     *         required=false,
+     *         in="query"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/QuestionAnswer")
+     *      ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    public function questionModelAnswers(QuestionAnswersFrontReadRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
+     *     path="/api/questionnaire/{model_type_title}/{model_id}/questions/{question_id}/stars",
+     *     summary="Read a model stars by a given model title, model id identifier and question id.",
+     *     tags={"Questionnaire"},
+     *     @OA\Parameter(
+     *         name="model_type_title",
+     *         description="Name of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="model_id",
+     *         description="id of Model (Course, Webinar etd.)",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="question_id",
+     *         description="id of Question",
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/ModelStarsResponse")
+     *      ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="user doesn't have required access rights",
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="server-side error",
+     *      ),
+     * )
+     */
+    public function modelStars(QuestionAnswersFrontStarsRequest $request): JsonResponse;
 }

@@ -3,7 +3,9 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
+use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -128,5 +130,65 @@ class QuestionUpdateTest extends TestCase
 
         $this->assertEquals($oldTitle, $question->title);
         $this->assertEquals($oldDescription, $question->description);
+    }
+
+    public function testUpdateQuestionReview(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaire = Questionnaire::factory()->createOne();
+
+        $question = Question::factory([
+            'questionnaire_id' => $questionnaire->getKey(),
+            'type' => QuestionTypeEnum::RATE,
+        ])->createOne();
+
+        $this
+            ->actingAs($this->user, 'api')
+            ->json(
+                'PATCH',
+                $this->uri($question->getKey()),
+                [
+                    'title' => 'Opinia',
+                    'questionnaire_id' => $questionnaire->getKey(),
+                    'description' => 'opis',
+                    'position' => 0,
+                    'active' => true,
+                    'type' => QuestionTypeEnum::REVIEW,
+                    'public_answers' => true,
+                ]
+            )
+            ->assertOk();
+    }
+
+    public function testUpdateQuestionAlreadyExistReview(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaire = Questionnaire::factory()->createOne();
+        Question::factory([
+            'questionnaire_id' => $questionnaire->getKey(),
+            'type' => QuestionTypeEnum::REVIEW,
+        ])->createOne();
+
+        $question = Question::factory([
+            'questionnaire_id' => $questionnaire->getKey(),
+            'type' => QuestionTypeEnum::RATE,
+        ])->createOne();
+
+        $this
+            ->actingAs($this->user, 'api')
+            ->json(
+                'PATCH',
+                $this->uri($question->getKey()),
+                [
+                    'title' => 'Opinia',
+                    'questionnaire_id' => $questionnaire->getKey(),
+                    'description' => 'opis',
+                    'position' => 0,
+                    'active' => true,
+                    'type' => QuestionTypeEnum::REVIEW,
+                    'public_answers' => true,
+                ]
+            )
+            ->assertUnprocessable();
     }
 }

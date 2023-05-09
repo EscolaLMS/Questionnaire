@@ -22,6 +22,7 @@ Route::group(['prefix' => 'api/admin', 'middleware' => ['auth:api']], function (
         });
     });
     Route::get('/questionnaire-models', [QuestionnaireAdminApiController::class, 'getModelsType']);
+    Route::post('/question-answers/{id}/change-visibility', [QuestionAnswerAdminApiController::class, 'changeAnswerVisibility']);
     Route::get('/question-answers/{id}', [QuestionAnswerAdminApiController::class, 'list']);
     Route::group(['prefix' => 'question'], function () {
         Route::get('/', [QuestionAdminApiController::class, 'list']);
@@ -37,4 +38,6 @@ Route::group(['prefix' => 'api/questionnaire'], function () {
     Route::get('/{model_type_title}/{model_id}', [QuestionnaireApiController::class, 'list']);
     Route::get('/{model_type_title}/{model_id}/{id}', [QuestionnaireApiController::class, 'read']);
     Route::post('/{model_type_title}/{model_id}/{id}', [QuestionnaireApiController::class, 'answer']);
+    Route::get('/{model_type_title}/{model_id}/questions/{question_id}/answers', [QuestionnaireApiController::class, 'questionModelAnswers']);
+    Route::get('/{model_type_title}/{model_id}/questions/{question_id}/stars', [QuestionnaireApiController::class, 'modelStars']);
 });

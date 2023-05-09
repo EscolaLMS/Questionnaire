@@ -6,6 +6,7 @@ use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Repositories\BaseRepository;
 use EscolaLms\Questionnaire\Dtos\QuestionAnswerFilterCriteriaDto;
 use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
+use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
@@ -101,6 +102,50 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
         return $this->model->updateOrCreate($attributes, $values);
     }
 
+    public function findAnswer(int $userId, int $questionId, int $questionnaireModelId): ?QuestionAnswer
+    {
+        return $this
+            ->model
+            ->newQuery()
+            ->where('user_id', '=', $userId)
+            ->where('question_id', '=', $questionId)
+            ->where('questionnaire_model_id', '=', $questionnaireModelId)
+            ->first();
+    }
+
+    public function searchByCriteriaWithPagination(array $criteria, ?int $perPage = null): LengthAwarePaginator
+    {
+        $query = $this
+            ->model
+            ->newQuery();
+
+        return $this
+            ->applyCriteria($query, $criteria)
+            ->paginate($perPage ?? config(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.per_page', 15));
+    }
+
+    public function getReviewReport(array $criteria): QuestionAnswer
+    {
+        $query = $this->model->newQuery();
+        return $this
+            ->applyCriteria($query, $criteria)
+            ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate, question_id, COUNT(CASE WHEN visible_on_front = true THEN 1 END) as count_public_answers')
+            ->groupBy('question_id')
+            ->firstOrFail();
+    }
+
+    private function orderBy(Builder $query, ?string $orderBy, ?string $order): Builder
+    {
+        if (is_null($orderBy)) {
+            return $query;
+        }
+
+        return match ($orderBy) {
+            'question_title' => $query->orderBy('questions.title', $order),
+            default => $query->orderBy($orderBy, $order),
+        };
+    }
+
     private function getQueryReport(
         ?int $questionnaireId = null,
         ?int $modelTypeId = null,
@@ -114,21 +159,9 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             ->where('questions.type', '=', QuestionTypeEnum::RATE)
             ->when($questionnaireId, fn ($q) => $q->where('questions.questionnaire_id', '=', $questionnaireId))
             ->when($modelTypeId, fn ($q) => $q
-                    ->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
-                    ->where('questionnaire_models.model_type_id', '=', $modelTypeId)
-                    ->when($modelId, fn ($q) => $q->where('questionnaire_models.model_id', '=', $modelId))
+                ->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
+                ->where('questionnaire_models.model_type_id', '=', $modelTypeId)
+                ->when($modelId, fn ($q) => $q->where('questionnaire_models.model_id', '=', $modelId))
             );
-    }
-
-    private function orderBy(Builder $query, ?string $orderBy, ?string $order): Builder
-    {
-        if (is_null($orderBy)) {
-            return $query;
-        }
-
-        return match ($orderBy) {
-            'question_title' => $query->orderBy('questions.title', $order),
-            default => $query->orderBy($orderBy, $order),
-        };
     }
 }

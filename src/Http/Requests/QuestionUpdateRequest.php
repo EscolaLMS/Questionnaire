@@ -5,6 +5,7 @@ namespace EscolaLms\Questionnaire\Http\Requests;
 use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
+use EscolaLms\Questionnaire\Rules\LimitQuestionReview;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -41,7 +42,12 @@ class QuestionUpdateRequest extends FormRequest
             ],
             'position' => 'integer',
             'active' => 'boolean',
-            'type' => ['string', Rule::in(QuestionTypeEnum::getValues())],
+            'type' => [
+                'string',
+                Rule::in(QuestionTypeEnum::getValues()),
+                new LimitQuestionReview($this->input('questionnaire_id'), $this->input('id'))
+            ],
+            'public_answers' => 'boolean',
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Tests\TestCase;
@@ -58,5 +59,32 @@ class QuestionCreateTest extends TestCase
             collect($question->getAttributes())->except('id')->toArray()
         );
         $response->assertUnauthorized();
+    }
+
+    public function testCreateQuestionAlreadyExistReview(): void
+    {
+        $this->authenticateAsAdmin();
+        $questionnaire = Questionnaire::factory()->createOne();
+        Question::factory([
+            'questionnaire_id' => $questionnaire->getKey(),
+            'type' => QuestionTypeEnum::REVIEW,
+        ])->createOne();
+
+        $this
+            ->actingAs($this->user, 'api')
+            ->json(
+                'POST',
+                '/api/admin/question',
+                [
+                    'title' => 'Opinia',
+                    'questionnaire_id' => $questionnaire->getKey(),
+                    'description' => 'opis',
+                    'position' => 0,
+                    'active' => true,
+                    'type' => QuestionTypeEnum::REVIEW,
+                    'public_answers' => true,
+                ]
+            )
+            ->assertUnprocessable();
     }
 }

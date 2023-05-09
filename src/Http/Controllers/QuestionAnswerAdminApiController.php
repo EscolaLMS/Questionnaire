@@ -7,17 +7,18 @@ use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use EscolaLms\Questionnaire\Dtos\QuestionAnswerFilterCriteriaDto;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionAnswerAdminApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionAnswerListingRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionAnswerVisibilityRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionAnswerResource;
-use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
 use Illuminate\Http\JsonResponse;
 
 class QuestionAnswerAdminApiController extends EscolaLmsBaseController implements QuestionAnswerAdminApiContract
 {
-    private QuestionAnswerRepositoryContract $questionAnswerRepository;
+    private QuestionnaireAnswerServiceContract $questionnaireAnswerService;
 
-    public function __construct(QuestionAnswerRepositoryContract $questionAnswerRepository)
+    public function __construct(QuestionnaireAnswerServiceContract $questionnaireAnswerService)
     {
-        $this->questionAnswerRepository = $questionAnswerRepository;
+        $this->questionnaireAnswerService = $questionnaireAnswerService;
     }
 
     public function list(int $id, QuestionAnswerListingRequest $request): JsonResponse
@@ -30,6 +31,14 @@ class QuestionAnswerAdminApiController extends EscolaLmsBaseController implement
                 $request->get('per_page', 20)
             )),
             __("Question answers list retrieved successfully")
+        );
+    }
+
+    public function changeAnswerVisibility(QuestionAnswerVisibilityRequest $request, int $id): JsonResponse
+    {
+        return $this->sendResponseForResource(
+            QuestionAnswerResource::make($this->questionnaireAnswerService->update($request->validated(), $id)),
+            __('Question answers visibility changed successfully')
         );
     }
 }

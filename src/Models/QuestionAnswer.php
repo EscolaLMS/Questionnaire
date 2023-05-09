@@ -36,7 +36,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *          property="note",
  *          type="string",
  *          description="text answer"
- *     )
+ *     ),
+ *     @OA\Property(
+ *          property="visible_on_front",
+ *          type="boolean",
+ *          description="whether answers is visible on front"
+ *     ),
  * )
  *
  * @property integer $id
@@ -45,13 +50,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property integer $question_id
  * @property integer $questionnaire_model_id
  * @property string $note
+ * @property boolean $visible_on_front
  */
 class QuestionAnswer extends Model
 {
     use HasFactory;
 
     public $table = 'question_answers';
-    public $timestamps = false;
 
     /**
      * The attributes that should be casted to native types.
@@ -65,6 +70,7 @@ class QuestionAnswer extends Model
         'questionnaire_model_id' => 'integer',
         'rate' => 'integer',
         'note' => 'string',
+        'visible_on_front' => 'boolean',
     ];
 
     public $fillable = [
@@ -73,6 +79,7 @@ class QuestionAnswer extends Model
         'questionnaire_model_id',
         'rate',
         'note',
+        'visible_on_front',
     ];
 
     public function question(): BelongsTo
