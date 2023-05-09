@@ -180,7 +180,7 @@ class QuestionAnswerTest extends TestCase
         QuestionAnswer::factory()
             ->count(10)
             ->create([
-                'questionnaire_model_id' => $questionnaireModel->id
+                'questionnaire_model_id' => $questionnaireModel->getKey()
             ]);
 
         $response = $this->actingAs($this->user, 'api')->getJson(
