@@ -27,11 +27,12 @@ class QuestionnaireService implements QuestionnaireServiceContract
     private QuestionServiceContract $questionService;
 
     public function __construct(
-        QuestionnaireRepositoryContract $questionnaireRepository,
-        QuestionnaireModelServiceContract $questionnaireModelService,
-        QuestionServiceContract $questionService,
+        QuestionnaireRepositoryContract      $questionnaireRepository,
+        QuestionnaireModelServiceContract    $questionnaireModelService,
+        QuestionServiceContract              $questionService,
         QuestionnaireModelRepositoryContract $questionnaireModelRepository
-    ) {
+    )
+    {
         $this->questionnaireRepository = $questionnaireRepository;
         $this->questionnaireModelService = $questionnaireModelService;
         $this->questionService = $questionService;
@@ -112,10 +113,11 @@ class QuestionnaireService implements QuestionnaireServiceContract
     }
 
     private function getAnswerFromQuestionForUser(
-        Question $question,
+        Question            $question,
         ?QuestionnaireModel $model,
-        User $user
-    ): ?QuestionAnswer {
+        User                $user
+    ): ?QuestionAnswer
+    {
         return $model ? $question->answers()->where([
             'user_id' => $user->id,
             'questionnaire_model_id' => $model->id

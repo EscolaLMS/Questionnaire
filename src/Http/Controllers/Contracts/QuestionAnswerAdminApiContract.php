@@ -43,6 +43,33 @@ interface QuestionAnswerAdminApiContract
      *         in="query",
      *         required=false
      *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         description="Order direction",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         in="query",
+     *         required=false
+     *     ),
+     *     @OA\Parameter(
+     *         name="order_by",
+     *         description="Order by field",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         in="query",
+     *         required=false
+     *     ),
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         description="filter by answer user_id
+     *         @OA\Schema(
+     *            type="integer",
+     *         ),
+     *         in="query",
+     *         required=false
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Lists questions answers for questionaire",
@@ -71,7 +98,7 @@ interface QuestionAnswerAdminApiContract
      *      ),
      * )
      */
-    public function list(QuestionAnswerListingRequest $request): JsonResponse;
+    public function list(int $id, QuestionAnswerListingRequest $request): JsonResponse;
 
     /**
      * @OA\Post (

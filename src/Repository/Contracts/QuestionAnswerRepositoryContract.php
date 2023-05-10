@@ -2,7 +2,9 @@
 
 namespace EscolaLms\Questionnaire\Repository\Contracts;
 
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Repositories\Contracts\BaseRepositoryContract;
+use EscolaLms\Questionnaire\Dtos\QuestionAnswerFilterCriteriaDto;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,6 +22,7 @@ interface QuestionAnswerRepositoryContract extends BaseRepositoryContract
     public function deleteByModelId(int $modelId): bool;
     public function deleteByQuestionId(int $questionId): bool;
     public function searchAndPaginate(array $search = [], ?int $perPage = null, string $orderDirection = 'asc', string $orderColumn = 'id'): LengthAwarePaginator;
+    public function listWithCriteriaAndOrder(int $questionnaireId, QuestionAnswerFilterCriteriaDto $criteriaDto, OrderDto $orderDto, int $perPage): LengthAwarePaginator;
     public function updateOrCreate(array $attributes, array $values): QuestionAnswer;
     public function findAnswer(int $userId, int $questionId, int $questionnaireModelId): ?QuestionAnswer;
     public function searchByCriteriaWithPagination(array $criteria, ?int $perPage = null): LengthAwarePaginator;
