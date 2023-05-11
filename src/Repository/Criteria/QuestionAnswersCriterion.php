@@ -25,18 +25,15 @@ class QuestionAnswersCriterion extends Criterion
                 'question',
                 fn (Builder $q) => $q
                     ->where('id', '=', $this->questionId)
+            )
+            ->whereHas(
+                'questionnaireModel',
+                fn (Builder $q) => $q
+                    ->where('model_id', '=', $this->modelId)
                     ->whereHas(
-                        'questionnaire',
+                        'modelableType',
                         fn (Builder $q) => $q
-                            ->whereHas(
-                                'questionnaireModels',
-                                fn (Builder $q) => $q
-                                    ->where('model_id', '=', $this->modelId)
-                                    ->whereHas(
-                                        'modelableType',
-                                        fn (Builder $q) => $q->where('title', $this->modelTitle)
-                                    )
-                            )
+                            ->where('title', '=', $this->modelTitle)
                     )
             );
     }

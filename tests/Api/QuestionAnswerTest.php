@@ -253,11 +253,27 @@ class QuestionAnswerTest extends TestCase
                 'note' => 'ok',
             ]);
 
+        $anotherModel = QuestionnaireModel::factory([
+            'questionnaire_id' => $this->questionnaire->getKey(),
+        ])->createOne();
+
+        $anotherModelAnswer = QuestionAnswer::factory()
+            ->create([
+                'questionnaire_model_id' => $anotherModel->getKey(),
+                'question_id' => $this->question->getKey(),
+                'visible_on_front' => true,
+                'note' => 'Our answer is in another model',
+            ]);
+
         $this
             ->actingAs($this->user)
             ->json('GET', '/api/questionnaire/' . $this->questionnaireModel->modelableType->title . '/' . $this->questionnaireModel->model_id . '/questions/' . $this->question->getKey() . '/answers')
             ->assertOk()
-            ->assertJsonCount(10, 'data');
+            ->assertJsonCount(10, 'data')
+            ->assertJsonMissing([
+                'id' => $anotherModelAnswer->getKey(),
+                'note' => $anotherModelAnswer->note,
+            ]);
     }
 
     public function publicAnswersProvider(): array
