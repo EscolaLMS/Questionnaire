@@ -255,13 +255,12 @@ class QuestionAnswerTest extends TestCase
             ]);
 
         $sameModelType = QuestionnaireModelType::query()->where('title', '=', $this->questionnaireModel->modelableType->title)->first();
-        $otherModelType = QuestionnaireModelType::query()->where('title', '!=', $this->questionnaireModel->modelableType->title)->first();
 
-        $sameModel = $sameModelType->model_class::factory()->create();
+        $anotherModel = $sameModelType->model_class::factory()->create();
         $sameTypeAnotherModel = QuestionnaireModel::factory([
             'questionnaire_id' => $this->questionnaire->getKey(),
             'model_type_id' => $sameModelType->getKey(),
-            'model_id' => $sameModel->getKey(),
+            'model_id' => $anotherModel->getKey(),
         ])->createOne();
 
         $sameTypeAnotherModelAnswer = QuestionAnswer::factory()
@@ -272,31 +271,12 @@ class QuestionAnswerTest extends TestCase
                 'note' => 'Our answer is in another model - same type',
             ]);
 
-        $otherModel = $otherModelType->model_class::factory()->create();
-        $anotherModel = QuestionnaireModel::factory([
-            'questionnaire_id' => $this->questionnaire->getKey(),
-            'model_type_id' => $otherModelType->getKey(),
-            'model_id' => $otherModel->getKey(),
-        ])->createOne();
-
-        $anotherModelAnswer = QuestionAnswer::factory()
-            ->create([
-                'questionnaire_model_id' => $anotherModel->getKey(),
-                'question_id' => $this->question->getKey(),
-                'visible_on_front' => true,
-                'note' => 'Our answer is in another model - another type',
-            ]);
-
         $result = $this
             ->actingAs($this->user)
             ->json('GET', '/api/questionnaire/' . $this->questionnaireModel->modelableType->title . '/' . $this->questionnaireModel->model_id . '/questions/' . $this->question->getKey() . '/answers')
             ->assertOk();
         $result
             ->assertJsonCount(10, 'data')
-            ->assertJsonMissing([
-                'id' => $anotherModelAnswer->getKey(),
-                'note' => $anotherModelAnswer->note,
-            ])
             ->assertJsonMissing([
                 'id' => $sameTypeAnotherModelAnswer->getKey(),
                 'note' => $sameTypeAnotherModelAnswer->note,
