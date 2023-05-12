@@ -9,6 +9,7 @@ use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Config;
@@ -253,11 +254,33 @@ class QuestionAnswerTest extends TestCase
                 'note' => 'ok',
             ]);
 
-        $this
+        $sameModelType = QuestionnaireModelType::query()->where('title', '=', $this->questionnaireModel->modelableType->title)->first();
+
+        $anotherModel = $sameModelType->model_class::factory()->create();
+        $sameTypeAnotherModel = QuestionnaireModel::factory([
+            'questionnaire_id' => $this->questionnaire->getKey(),
+            'model_type_id' => $sameModelType->getKey(),
+            'model_id' => $anotherModel->getKey(),
+        ])->createOne();
+
+        $sameTypeAnotherModelAnswer = QuestionAnswer::factory()
+            ->create([
+                'questionnaire_model_id' => $sameTypeAnotherModel->getKey(),
+                'question_id' => $this->question->getKey(),
+                'visible_on_front' => true,
+                'note' => 'Our answer is in another model - same type',
+            ]);
+
+        $result = $this
             ->actingAs($this->user)
             ->json('GET', '/api/questionnaire/' . $this->questionnaireModel->modelableType->title . '/' . $this->questionnaireModel->model_id . '/questions/' . $this->question->getKey() . '/answers')
-            ->assertOk()
-            ->assertJsonCount(10, 'data');
+            ->assertOk();
+        $result
+            ->assertJsonCount(10, 'data')
+            ->assertJsonMissing([
+                'id' => $sameTypeAnotherModelAnswer->getKey(),
+                'note' => $sameTypeAnotherModelAnswer->note,
+            ]);
     }
 
     public function publicAnswersProvider(): array

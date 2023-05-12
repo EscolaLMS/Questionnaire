@@ -63,7 +63,7 @@ interface QuestionAnswerAdminApiContract
      *     ),
      *     @OA\Parameter(
      *         name="user_id",
-     *         description="filter by answer user_id
+     *         description="filter by answer user_id",
      *         @OA\Schema(
      *            type="integer",
      *         ),
