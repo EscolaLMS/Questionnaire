@@ -48,6 +48,44 @@
                 ],
                 "summary": "Create a new question identified by id",
                 "operationId": "5d6de858ff457c3341f17371272bd100",
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "path",
+                        "description": "Question title",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "questionnaire_id",
+                        "in": "path",
+                        "description": "Questionnaire's id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "path",
+                        "description": "Order by field",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order direction",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Question attributes",
                     "required": true,
@@ -252,6 +290,33 @@
                         "name": "question_id",
                         "in": "query",
                         "description": "id of question",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order direction",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "description": "Order by field",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "filter by answer user_id",
                         "required": false,
                         "schema": {
                             "type": "integer"
