@@ -9,6 +9,7 @@ use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Config;
@@ -253,8 +254,29 @@ class QuestionAnswerTest extends TestCase
                 'note' => 'ok',
             ]);
 
+        $sameModelType = QuestionnaireModelType::query()->where('title', '=', $this->questionnaireModel->modelableType->title)->first();
+        $otherModelType = QuestionnaireModelType::query()->where('title', '!=', $this->questionnaireModel->modelableType->title)->first();
+
+        $sameModel = $sameModelType->model_class::factory()->create();
+        $sameTypeAnotherModel = QuestionnaireModel::factory([
+            'questionnaire_id' => $this->questionnaire->getKey(),
+            'model_type_id' => $sameModelType->getKey(),
+            'model_id' => $sameModel->getKey(),
+        ])->createOne();
+
+        $sameTypeAnotherModelAnswer = QuestionAnswer::factory()
+            ->create([
+                'questionnaire_model_id' => $sameTypeAnotherModel->getKey(),
+                'question_id' => $this->question->getKey(),
+                'visible_on_front' => true,
+                'note' => 'Our answer is in another model - same type',
+            ]);
+
+        $otherModel = $otherModelType->model_class::factory()->create();
         $anotherModel = QuestionnaireModel::factory([
             'questionnaire_id' => $this->questionnaire->getKey(),
+            'model_type_id' => $otherModelType->getKey(),
+            'model_id' => $otherModel->getKey(),
         ])->createOne();
 
         $anotherModelAnswer = QuestionAnswer::factory()
@@ -262,17 +284,22 @@ class QuestionAnswerTest extends TestCase
                 'questionnaire_model_id' => $anotherModel->getKey(),
                 'question_id' => $this->question->getKey(),
                 'visible_on_front' => true,
-                'note' => 'Our answer is in another model',
+                'note' => 'Our answer is in another model - another type',
             ]);
 
-        $this
+        $result = $this
             ->actingAs($this->user)
             ->json('GET', '/api/questionnaire/' . $this->questionnaireModel->modelableType->title . '/' . $this->questionnaireModel->model_id . '/questions/' . $this->question->getKey() . '/answers')
-            ->assertOk()
+            ->assertOk();
+        $result
             ->assertJsonCount(10, 'data')
             ->assertJsonMissing([
                 'id' => $anotherModelAnswer->getKey(),
                 'note' => $anotherModelAnswer->note,
+            ])
+            ->assertJsonMissing([
+                'id' => $sameTypeAnotherModelAnswer->getKey(),
+                'note' => $sameTypeAnotherModelAnswer->note,
             ]);
     }
 
