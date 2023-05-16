@@ -23,6 +23,9 @@ class QuestionAnswerResource extends JsonResource
             'rate' => $this->rate,
             'note' => $this->note,
             'visible_on_front' => $this->visible_on_front,
+            'user' => AnswerUserResource::make($this->user),
+            'created_at' => $this->create_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace EscolaLms\Questionnaire\Http\Resources;
 use EscolaLms\Core\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AnswerUserResource extends JsonResource
+class AnswerUserFrontResource extends JsonResource
 {
     public function getUser(): User
     {
@@ -18,7 +18,6 @@ class AnswerUserResource extends JsonResource
             'id' => $this->getUser()->getKey(),
             'name' => $this->getUser()->name,
             'avatar' => $this->getUser()->avatar_url,
-            'email' => $this->getUser()->email,
         ];
     }
 }
