@@ -17,7 +17,7 @@ class QuestionnaireListingRequest extends FormRequest
     {
         return [
             'title' => ['sometimes', 'string'],
-            'order_by' => ['sometimes', 'string', 'in:id,title'],
+            'order_by' => ['sometimes', 'string', 'in:id,title,created_at'],
             'order' => ['sometimes', 'string', 'in:ASC,DESC'],
         ];
     }

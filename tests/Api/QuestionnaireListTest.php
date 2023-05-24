@@ -88,11 +88,13 @@ class QuestionnaireListTest extends TestCase
         $questionnaireOne = Questionnaire::factory()->create([
             'title' => 'one',
             'active' => true,
+            'created_at' => now()->subDays(1),
         ]);
 
         $questionnaireTwo = Questionnaire::factory()->create([
             'title' => 'two',
             'active' => true,
+            'created_at' => now(),
         ]);
 
         $this
@@ -104,6 +106,26 @@ class QuestionnaireListTest extends TestCase
             ->assertJsonFragment([
                 'id' => $questionnaireOne->id,
             ]);
+
+        $response = $this
+            ->actingAs($this->user, 'api')
+            ->json('GET', '/api/admin/questionnaire', [
+                'order_by' => 'created_at',
+                'order' => 'ASC',
+            ]);
+
+        $this->assertTrue($response->json('data.0.id') === $questionnaireOne->getKey());
+        $this->assertTrue($response->json('data.1.id') === $questionnaireTwo->getKey());
+
+        $response = $this
+            ->actingAs($this->user, 'api')
+            ->json('GET', '/api/admin/questionnaire', [
+                'order_by' => 'created_at',
+                'order' => 'DESC',
+            ]);
+
+        $this->assertTrue($response->json('data.0.id') === $questionnaireTwo->getKey());
+        $this->assertTrue($response->json('data.1.id') === $questionnaireOne->getKey());
 
         $response = $this
             ->actingAs($this->user, 'api')
