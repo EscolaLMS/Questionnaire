@@ -2,17 +2,20 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
+use EscolaLms\Core\Tests\CreatesUsers;
+use EscolaLms\Courses\Models\Course;
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class QuestionnaireListTest extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseTransactions, CreatesUsers;
 
     protected function setUp(): void
     {
@@ -475,6 +478,43 @@ class QuestionnaireListTest extends TestCase
             ])
             ->assertJsonFragment([
                 'title' => $textQuestion->title,
+            ]);
+    }
+
+    public function testListOnlyAuthoredModels(): void
+    {
+        $tutor = $this->makeInstructor();
+
+        $questionnaire = Questionnaire::factory([
+            'title' => 'Only authored',
+        ])->create();
+
+        $this
+            ->actingAs($tutor, 'api')
+            ->json('GET', '/api/admin/questionnaire')
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
+
+        $course = Course::factory()->create();
+        $course->authors()->sync($tutor);
+
+        $questionnaireModelType = QuestionnaireModelType::query()->where('model_class', '=', Course::class)->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
+
+        $questionnaire->questionnaireModels()->save(QuestionnaireModel::factory()->make([
+            'model_id' => $course->getKey(),
+            'model_type_id' => $questionnaireModelType->getKey(),
+        ]));
+
+        $this
+            ->actingAs($tutor, 'api')
+            ->json('GET', '/api/admin/questionnaire')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'title' => 'Only authored',
             ]);
     }
 }
