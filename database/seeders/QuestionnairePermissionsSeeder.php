@@ -35,7 +35,16 @@ class QuestionnairePermissionsSeeder extends Seeder
             Permission::findOrCreate($permission, 'api');
         }
 
+        $tutorPermissions = [
+            QuestionnairePermissionsEnum::QUESTIONNAIRE_LIST_AUTHORED,
+        ];
+
+        foreach ($tutorPermissions as $permission) {
+            Permission::findOrCreate($permission, 'api');
+        }
+
         $admin->givePermissionTo($permissions);
         $tutor->givePermissionTo($permissions);
+        $tutor->givePermissionTo($tutorPermissions);
     }
 }

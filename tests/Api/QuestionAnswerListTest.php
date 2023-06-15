@@ -3,17 +3,20 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Core\Models\User;
+use EscolaLms\Core\Tests\CreatesUsers;
+use EscolaLms\Courses\Models\Course;
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class QuestionAnswerListTest extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseTransactions, CreatesUsers;
 
     public Questionnaire $questionnaire;
     public QuestionnaireModel $questionnaireModel;
@@ -219,5 +222,75 @@ class QuestionAnswerListTest extends TestCase
         );
         $response->assertJsonCount(1, 'data');
         $this->assertTrue($response->json('data.0.id') === $questionAnswer1->getKey());
+    }
+
+    public function testListAnswersOnlyAuthoredModels(): void
+    {
+        $tutor = $this->makeInstructor();
+        $tutor2 = $this->makeInstructor();
+
+        $questionnaire = Questionnaire::factory([
+            'title' => 'Only authored',
+        ])->create();
+
+        $course1 = Course::factory()->create();
+        $course1->authors()->sync($tutor);
+
+        $course2 = Course::factory()->create();
+        $course2->authors()->sync($tutor2);
+
+        $questionnaireModelType = QuestionnaireModelType::query()->where('model_class', '=', Course::class)->first();
+        if (empty($questionnaireModelType)) {
+            $questionnaireModelType = QuestionnaireModelType::factory()->createOne();
+        }
+
+        $questionnaireModel1 = $questionnaire->questionnaireModels()->save(QuestionnaireModel::factory()->make([
+            'model_id' => $course1->getKey(),
+            'model_type_id' => $questionnaireModelType->getKey(),
+        ]));
+
+        $questionnaireModel2 = $questionnaire->questionnaireModels()->save(QuestionnaireModel::factory()->make([
+            'model_id' => $course2->getKey(),
+            'model_type_id' => $questionnaireModelType->getKey(),
+        ]));
+
+        $question = Question::factory()->create([
+            'questionnaire_id' => $questionnaire->getKey(),
+            'title' => 'Question',
+        ]);
+
+        $student = $this->makeStudent();
+
+        $questionAnswer1 = QuestionAnswer::factory()->create([
+            'rate' => 1,
+            'question_id' => $question->getKey(),
+            'questionnaire_model_id' => $questionnaireModel1->getKey(),
+            'note' => 'aaaa',
+            'user_id' => $student->getKey(),
+        ]);
+
+        $questionAnswer2 = QuestionAnswer::factory()->create([
+            'rate' => 2,
+            'question_id' => $question->getKey(),
+            'questionnaire_model_id' => $questionnaireModel2->getKey(),
+            'note' => 'bbbb',
+            'user_id' => $student->getKey(),
+        ]);
+
+        $this
+            ->actingAs($tutor, 'api')
+            ->json('GET', '/api/admin/question-answers/' . $questionnaire->getKey())
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'id' => $questionAnswer1->getKey(),
+                'rate' => 1,
+                'note' => 'aaaa',
+            ])
+            ->assertJsonMissing([
+                'id' => $questionAnswer2->getKey(),
+                'rate' => 2,
+                'note' => 'bbbb',
+            ]);
     }
 }
