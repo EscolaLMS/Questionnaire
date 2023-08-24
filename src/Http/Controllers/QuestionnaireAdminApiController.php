@@ -46,12 +46,12 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
 
     public function list(QuestionnaireListingRequest $request): JsonResponse
     {
-
         return $this->sendResponseForResource(
             QuestionnaireResource::collection(
                 $this->questionnaireService->list(
                     QuestionnairesFilterCriteriaDto::instantiateFromRequest($request)->toArray(),
-                    OrderDto::instantiateFromRequest($request)
+                    OrderDto::instantiateFromRequest($request),
+                    $request->get('per_page') ?? 15
                 )),
             __("Questionnaire list retrieved successfully")
         );
