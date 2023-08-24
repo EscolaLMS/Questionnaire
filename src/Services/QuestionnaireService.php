@@ -70,14 +70,14 @@ class QuestionnaireService implements QuestionnaireServiceContract
             );
     }
 
-    public function list(array $criteria, OrderDto $orderDto): LengthAwarePaginator
+    public function list(array $criteria, OrderDto $orderDto, int $perPage = 15): LengthAwarePaginator
     {
         $query = $this->questionnaireRepository->queryWithAppliedCriteria($criteria);
         if ($orderDto->getOrderBy()) {
             $query->orderBy($orderDto->getOrderBy(), $orderDto->getOrder() ?? 'asc');
         }
 
-        return $query->paginate();
+        return $query->paginate($perPage);
     }
 
     public function findForFront(array $filters, User $user): ?array

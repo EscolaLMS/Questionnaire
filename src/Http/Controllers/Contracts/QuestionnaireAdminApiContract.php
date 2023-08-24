@@ -21,6 +21,48 @@ interface QuestionnaireAdminApiContract
      *     security={
      *         {"passport": {}},
      *     },
+     *     @OA\Parameter(
+     *          name="page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="per_page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="order_by",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *              enum={"id", "created_at", "title"}
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="order",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *              enum={"ASC", "DESC"}
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="title",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
      *     @OA\Response(
      *         response=200,
      *         description="list of available questionnaires",

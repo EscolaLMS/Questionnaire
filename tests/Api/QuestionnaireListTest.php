@@ -171,6 +171,45 @@ class QuestionnaireListTest extends TestCase
         $this->assertTrue($response->json('data.1.id') === $questionnaireOne->getKey());
     }
 
+    public function testQuestionnaireListPagination(): void
+    {
+        $this->authenticateAsAdmin();
+
+        Questionnaire::factory()
+            ->count(25)
+            ->create();
+
+        $this->actingAs($this->user, 'api')
+            ->getJson('api/admin/questionnaire')
+            ->assertOk()
+            ->assertJsonCount(15, 'data')
+            ->assertJson([
+                'meta' => [
+                    'total' => 25,
+                ],
+            ]);
+
+        $this->actingAs($this->user, 'api')
+            ->getJson('api/admin/questionnaire?per_page=10')
+            ->assertOk()
+            ->assertJsonCount(10, 'data')
+            ->assertJson([
+                'meta' => [
+                    'total' => 25,
+                ],
+            ]);
+
+        $this->actingAs($this->user, 'api')
+            ->getJson('api/admin/questionnaire?per_page=10&page=3')
+            ->assertOk()
+            ->assertJsonCount(5, 'data')
+            ->assertJson([
+                'meta' => [
+                    'total' => 25,
+                ],
+            ]);
+    }
+
     public function testAnonymousCanListEmptyQuestionnaire(): void
     {
         $questionnaireModel = QuestionnaireModel::factory()->createOne();

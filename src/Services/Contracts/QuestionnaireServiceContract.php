@@ -17,7 +17,7 @@ interface QuestionnaireServiceContract
 
     public function searchForFront(array $filters, ?bool $publicAnswers = null): LengthAwarePaginator;
 
-    public function list(array $criteria, OrderDto $orderDto): LengthAwarePaginator;
+    public function list(array $criteria, OrderDto $orderDto, int $perPage = 15): LengthAwarePaginator;
 
     public function findForFront(array $filters, User $user): ?array;
 
