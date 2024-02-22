@@ -3,6 +3,7 @@
 namespace EscolaLms\Questionnaire\Tests\Api;
 
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
+use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\Questionnaire;
@@ -28,7 +29,7 @@ class QuestionnaireReportTest extends TestCase
 
         Question::factory()
             ->count(20)
-            ->create();
+            ->create(['type' => QuestionTypeEnum::REVIEW]);
 
         QuestionAnswer::factory()
             ->count(200)
