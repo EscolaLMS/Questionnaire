@@ -156,7 +156,7 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             ->model
             ->newQuery()
             ->join('questions', 'question_id', '=', 'questions.id')
-            ->where('questions.type', '=', QuestionTypeEnum::RATE)
+            ->where('questions.type', '=', QuestionTypeEnum::REVIEW)
             ->when($questionnaireId, fn ($q) => $q->where('questions.questionnaire_id', '=', $questionnaireId))
             ->when($modelTypeId, fn ($q) => $q
                 ->join('questionnaire_models', 'questionnaire_models.id', '=', 'questionnaire_model_id')
