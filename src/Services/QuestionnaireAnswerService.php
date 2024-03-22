@@ -72,13 +72,14 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
             $public = $question && !$question->public_answers
                 ? false
                 : Config::get(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.new_answers_visible_by_default', false);
+            
             $this
                 ->questionAnswerRepository
                 ->create(
                     array_merge(
                         $data,
                         [
-                            'visible_on_front' => $public,
+                            'visible_on_front' => $public ?? false,
                             'user_id' => $user->getKey(),
                             'question_id' => $questionId,
                             'questionnaire_model_id' => $questionnaireModel->getKey(),
