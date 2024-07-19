@@ -41,11 +41,6 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
             ->paginate($perPage);
     }
 
-    public function insert(Question $question): Question
-    {
-        return $this->createUsingModel($question);
-    }
-
     public function save(Question $question): bool
     {
         return $question->save();

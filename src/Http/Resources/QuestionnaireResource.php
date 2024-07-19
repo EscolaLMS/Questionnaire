@@ -15,11 +15,11 @@ class QuestionnaireResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'active' => $this->active,
-            'questions' => QuestionResource::collection($this->questions),
-            'models' => QuestionnaireModelResource::collection($this->questionnaireModels),
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'active' => $this->resource->active,
+            'questions' => QuestionResource::collection($this->resource->questions),
+            'models' => QuestionnaireModelResource::collection($this->resource->questionnaireModels),
         ];
     }
 }

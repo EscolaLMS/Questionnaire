@@ -39,11 +39,6 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
         return $query->orderBy($orderColumn, $orderDirection)->paginate($perPage);
     }
 
-    public function insert(Questionnaire $questionnaire): Questionnaire
-    {
-        return $this->createUsingModel($questionnaire);
-    }
-
     public function deleteQuestionnaire(int $id): bool
     {
         $questionnaire = $this->find($id);
@@ -61,11 +56,14 @@ class QuestionnaireRepository extends BaseRepository implements QuestionnaireRep
 
     public function findActive(int $id): Questionnaire
     {
-        return $this
+        /** @var Questionnaire $questionnaire */
+        $questionnaire = $this
             ->model
             ->newQuery()
             ->where('active', '=', true)
             ->findOrFail($id);
+
+        return $questionnaire;
     }
 
     public function searchByCriteriaAndPaginate(array $criteria, array $with = []): LengthAwarePaginator

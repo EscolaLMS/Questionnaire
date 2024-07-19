@@ -26,7 +26,8 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
 
     public function findByModelTitleAndModelId(string $title, int $model_id, int $questionnaireId): QuestionnaireModel
     {
-        return $this
+        /** @var QuestionnaireModel $model */
+        $model = $this
             ->model
             ->newQuery()
             ->select('questionnaire_models.*')
@@ -35,11 +36,14 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
             ->where('model_id', '=', $model_id)
             ->where('questionnaire_id', '=', $questionnaireId)
             ->firstOrFail();
+
+        return $model;
     }
 
     public function assignQuestionnaireModel(Questionnaire $questionnaire, int $modelTypeId, int $modelId): QuestionnaireModel
     {
-        return $this
+        /** @var QuestionnaireModel $model */
+        $model = $this
             ->model
             ->newQuery()
         ->firstOrCreate([
@@ -47,6 +51,8 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
             'model_type_id' => $modelTypeId,
             'model_id' => $modelId,
         ]);
+
+        return $model;
     }
 
     public function unassignQuestionnaireModel(Questionnaire $questionnaire, int $modelTypeId, int $modelId): bool

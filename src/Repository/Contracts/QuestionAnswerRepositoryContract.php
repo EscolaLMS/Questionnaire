@@ -6,8 +6,8 @@ use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Repositories\Contracts\BaseRepositoryContract;
 use EscolaLms\Questionnaire\Dtos\QuestionAnswerFilterCriteriaDto;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface QuestionAnswerRepositoryContract extends BaseRepositoryContract
 {

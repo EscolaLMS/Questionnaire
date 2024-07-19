@@ -51,17 +51,23 @@ class QuestionnaireAssignUnassignRequest extends FormRequest
 
     public function getParamId(): int
     {
-        return $this->route('id');
+        /** @var int $id */
+        $id = $this->route('id');
+        return $id;
     }
 
     public function getModelTypeTitle(): string
     {
-        return $this->route('model_type_title');
+        /** @var string $title */
+        $title = $this->route('model_type_title');
+        return $title;
     }
 
     public function getModelId(): int
     {
-        return $this->route('model_id');
+        /** @var int $id */
+        $id = $this->route('model_id');
+        return $id;
     }
 
     public function getQuestionnaire(): Questionnaire
