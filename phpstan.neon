@@ -7,4 +7,4 @@ parameters:
         - src/
 
     # The level 9 is the highest level
-    level: 9
+    level: 4
