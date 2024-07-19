@@ -73,7 +73,7 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $questionId = $data['question_id'];
         $answer = $this->questionAnswerRepository->findAnswer($user->getKey(), $questionId, $questionnaireModel->getKey());
         if (is_null($answer)) {
-            /** @var Question $question */
+            /** @var Question|null $question */
             $question = $this->questionRepository->find($questionId);
             $public = $question && !$question->public_answers
                 ? false
