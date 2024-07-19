@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class QuestionnaireFrontFilterCriteriaDto extends CriteriaDto implements InstantiateFromRequest
 {
-    public static function instantiateFromRequest(Request $request): InstantiateFromRequest
+    public static function instantiateFromRequest(Request $request): self
     {
         $criteria = new Collection();
 

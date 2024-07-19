@@ -13,7 +13,7 @@ class ModelExist implements Rule
 
     public function __construct(?string $modelTypeTitle, ?string $column = 'id')
     {
-        if (is_null($modelTypeTitle)) { return null; }
+        if (is_null($modelTypeTitle)) { return; }
         $this->model = $this->getQuestionnaireModelType($modelTypeTitle)->model_class;
         $this->column = $column;
     }

@@ -34,7 +34,9 @@ class QuestionAnswerVisibilityRequest extends FormRequest
 
     public function getQuestionAnswerId(): ?int
     {
-        return $this->route('id');
+        /** @var int|null $id */
+        $id = $this->route('id');
+        return $id;
     }
 
     public function getQuestionAnswer(): QuestionAnswer

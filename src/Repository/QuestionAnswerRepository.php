@@ -10,9 +10,9 @@ use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerRepositoryContract
 {
@@ -31,11 +31,6 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
             'rate',
             'note',
         ];
-    }
-
-    public function insert(Question $question): Question
-    {
-        return $this->createUsingModel($question);
     }
 
     public function save(Question $question): bool
@@ -77,8 +72,8 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     {
         return $this
             ->allQuery($search)
-            ->select($this->model->table.'.*')
-            ->orderBy($this->model->table.'.'.$orderColumn, $orderDirection)
+            ->select($this->model->getTable() . '.*')
+            ->orderBy($this->model->getTable() . '.'.$orderColumn, $orderDirection)
             ->join('questions', 'question_id', '=', 'questions.id')
             ->where('questions.questionnaire_id', '=', $search['questionnaire_id'])
             ->paginate($perPage);
@@ -88,7 +83,7 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     {
         $query =  $this
             ->queryWithAppliedCriteria($criteriaDto->toArray())
-            ->select($this->model->table.'.*')
+            ->select($this->model->getTable() . '.*')
             ->join('questions', 'question_id', '=', 'questions.id')
             ->where('questions.questionnaire_id', '=', $questionnaireId);
 
@@ -99,18 +94,22 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
 
     public function updateOrCreate(array $attributes, array $values): QuestionAnswer
     {
-        return $this->model->updateOrCreate($attributes, $values);
+        /** @var QuestionAnswer $questionAnswer */
+        $questionAnswer = $this->model->updateOrCreate($attributes, $values);
+        return $questionAnswer;
     }
 
     public function findAnswer(int $userId, int $questionId, int $questionnaireModelId): ?QuestionAnswer
     {
-        return $this
+        /** @var QuestionAnswer|null $questionAnswer */
+        $questionAnswer = $this
             ->model
             ->newQuery()
             ->where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
             ->where('questionnaire_model_id', '=', $questionnaireModelId)
             ->first();
+        return $questionAnswer;
     }
 
     public function searchByCriteriaWithPagination(array $criteria, ?int $perPage = null): LengthAwarePaginator
@@ -127,11 +126,14 @@ class QuestionAnswerRepository extends BaseRepository implements QuestionAnswerR
     public function getReviewReport(array $criteria): QuestionAnswer
     {
         $query = $this->model->newQuery();
-        return $this
+        /** @var QuestionAnswer $questionAnswer */
+        $questionAnswer = $this
             ->applyCriteria($query, $criteria)
             ->selectRaw('SUM(rate) as sum_rate, COUNT(rate) as count_answers, AVG(rate) as avg_rate, question_id, COUNT(CASE WHEN visible_on_front = true THEN 1 END) as count_public_answers')
             ->groupBy('question_id')
             ->firstOrFail();
+
+        return $questionAnswer;
     }
 
     private function orderBy(Builder $query, ?string $orderBy, ?string $order): Builder

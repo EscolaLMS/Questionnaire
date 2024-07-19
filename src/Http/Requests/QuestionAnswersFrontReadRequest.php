@@ -54,17 +54,23 @@ class QuestionAnswersFrontReadRequest extends FormRequest
 
     public function getParamId(): int
     {
-        return $this->route('question_id');
+        /** @var int $id */
+        $id = $this->route('question_id');
+        return $id;
     }
 
     public function getParamModelTypeTitle(): string
     {
-        return $this->route('model_type_title');
+        /** @var string $result */
+        $result = $this->route('model_type_title');
+        return $result;
     }
 
     public function getParamModelId(): int
     {
-        return $this->route('model_id');
+        /** @var int $id */
+        $id = $this->route('model_id');
+        return $id;
     }
 
     public function getQuestion(): Question

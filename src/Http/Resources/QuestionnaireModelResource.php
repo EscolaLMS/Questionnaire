@@ -15,12 +15,12 @@ class QuestionnaireModelResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'model_type_title' => $this->modelableType->title ?? '',
-            'model_type_class' => $this->modelableType->model_class ?? '',
-            'model_type_id' => $this->model_type_id,
-            'model_id' => $this->model_id,
-            'model_title' => $this->foreignModel->title ?? $this->foreignModel->name ?? $this->model_id,
+            'id' => $this->resource->id,
+            'model_type_title' => $this->resource->modelableType->title ?? '',
+            'model_type_class' => $this->resource->modelableType->model_class ?? '',
+            'model_type_id' => $this->resource->model_type_id,
+            'model_id' => $this->resource->model_id,
+            'model_title' => $this->resource->foreignModel->title ?? $this->resource->foreignModel->name ?? $this->resource->model_id,
         ];
     }
 }

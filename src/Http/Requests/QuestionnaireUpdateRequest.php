@@ -41,7 +41,9 @@ class QuestionnaireUpdateRequest extends FormRequest
 
     public function getParamId(): int
     {
-        return $this->route('id');
+        /** @var int $id */
+        $id = $this->route('id');
+        return $id;
     }
 
     public function getQuestionnaire(): Questionnaire

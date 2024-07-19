@@ -57,6 +57,7 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
     private function prepareArrayQuestionnaireModel(Collection $questionnaireModel): array
     {
         $arrayQuestionnaireModel = [];
+        /** @var QuestionnaireModel $model */
         foreach ($questionnaireModel as $model) {
             $arrayQuestionnaireModel[$model->model_type_id.'_'.$model->model_id] = $model;
         }

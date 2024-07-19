@@ -90,10 +90,6 @@ class QuestionnaireService implements QuestionnaireServiceContract
             $filters['questionnaire_id']
         );
 
-        if (!$questionnaire) {
-            return null;
-        }
-
         $questionnaireReturn = $questionnaire->toArray();
         foreach ($questionnaire->questions as $key => $question) {
             $questionnaireReturn['questions'][$key] = $question->toArray();

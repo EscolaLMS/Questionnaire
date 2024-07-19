@@ -15,14 +15,14 @@ class QuestionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'questionnaire_id' => $this->questionnaire_id,
-            'position' => $this->position,
-            'active' => $this->active,
-            'type' => $this->type,
-            'public_answers' => $this->public_answers,
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'description' => $this->resource->description,
+            'questionnaire_id' => $this->resource->questionnaire_id,
+            'position' => $this->resource->position,
+            'active' => $this->resource->active,
+            'type' => $this->resource->type,
+            'public_answers' => $this->resource->public_answers,
         ];
     }
 }

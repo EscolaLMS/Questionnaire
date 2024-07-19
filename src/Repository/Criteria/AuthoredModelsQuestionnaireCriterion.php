@@ -40,6 +40,7 @@ class AuthoredModelsQuestionnaireCriterion extends Criterion
                 $query->orWhere(function (Builder $query) use ($user) {
                     return $query->whereHas($this->key, function (Builder $q) use ($user) {
                         $q->whereHas('modelableType', fn(Builder $q) => $q
+                            // @phpstan-ignore-next-line
                             ->where('model_class', '=', Consultation::class))
                             ->join('consultations', function (JoinClause $join) use ($user) {
                                 $join->on('consultations.id', '=', 'questionnaire_models.model_id')
@@ -52,6 +53,7 @@ class AuthoredModelsQuestionnaireCriterion extends Criterion
                 $query->orWhere(function (Builder $query) use ($user) {
                     return $query->whereHas($this->key, function (Builder $q) use ($user) {
                         $q->whereHas('modelableType', fn(Builder $q) => $q
+                            // @phpstan-ignore-next-line
                             ->where('model_class', '=', Webinar::class))
                             ->join('webinars', function (JoinClause $join) {
                                 $join->on('webinars.id', '=', 'questionnaire_models.model_id');

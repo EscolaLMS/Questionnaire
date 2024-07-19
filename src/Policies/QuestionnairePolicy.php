@@ -23,12 +23,12 @@ class QuestionnairePolicy
 
     public function listFront(User $user): bool
     {
-        return !empty($user);
+        return true;
     }
 
     public function readFront(User $user, Questionnaire $questionnaire): bool
     {
-        return !empty($user) && $questionnaire->active;
+        return $questionnaire->active;
     }
 
     public function create(User $user): bool

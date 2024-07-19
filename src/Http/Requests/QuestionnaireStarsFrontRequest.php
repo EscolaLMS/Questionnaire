@@ -41,12 +41,16 @@ class QuestionnaireStarsFrontRequest extends FormRequest
 
     public function getParamModelTypeTitle(): string
     {
-        return $this->route('model_type_title');
+        /** @var string $title */
+        $title = $this->route('model_type_title');
+        return $title;
     }
 
     public function getParamModelId(): ?int
     {
-        return $this->route('model_id');
+        /** @var int|null $id */
+        $id = $this->route('model_id');
+        return $id;
     }
 
     public function getQuestionnaireModelType(): QuestionnaireModelType

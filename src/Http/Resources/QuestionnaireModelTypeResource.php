@@ -15,9 +15,9 @@ class QuestionnaireModelTypeResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'model_class' => $this->model_class,
-            'title' => $this->title,
+            'id' => $this->resource->id,
+            'model_class' => $this->resource->model_class,
+            'title' => $this->resource->title,
         ];
     }
 }

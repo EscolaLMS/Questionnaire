@@ -8,6 +8,7 @@ use EscolaLms\Core\Repositories\Criteria\Primitives\WhereCriterion;
 use EscolaLms\Questionnaire\Enums\QuestionnaireRateMap;
 use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
+use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
@@ -49,9 +50,13 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $sumRates = 0;
         $rateMap = QuestionnaireRateMap::RATE_MAP;
         $report->each(function ($rates) use(&$rateMap, &$sumRates, &$countRates) {
+            // @phpstan-ignore-next-line
             if (isset($rateMap[$rates->rate])) {
+                // @phpstan-ignore-next-line
                 $rateMap[$rates->rate] += $rates->count_rate ?? 0;
+                // @phpstan-ignore-next-line
                 $sumRates += ($rates->rate * $rates->count_rate);
+                // @phpstan-ignore-next-line
                 $countRates += $rates->count_rate;
             }
         });
@@ -68,11 +73,12 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $questionId = $data['question_id'];
         $answer = $this->questionAnswerRepository->findAnswer($user->getKey(), $questionId, $questionnaireModel->getKey());
         if (is_null($answer)) {
+            /** @var Question|null $question */
             $question = $this->questionRepository->find($questionId);
             $public = $question && !$question->public_answers
                 ? false
                 : Config::get(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.new_answers_visible_by_default', false);
-            
+
             $this
                 ->questionAnswerRepository
                 ->create(
@@ -129,6 +135,9 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
 
     public function update(array $input, int $id): QuestionAnswer
     {
-        return $this->questionAnswerRepository->update($input, $id);
+        /** @var QuestionAnswer $model */
+        $model = $this->questionAnswerRepository->update($input, $id);
+
+        return $model;
     }
 }
