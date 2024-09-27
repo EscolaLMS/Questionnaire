@@ -52,7 +52,6 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $report->each(function ($rates) use(&$rateMap, &$sumRates, &$countRates) {
             // @phpstan-ignore-next-line
             if (isset($rateMap[$rates->rate])) {
-                // @phpstan-ignore-next-line
                 $rateMap[$rates->rate] += $rates->count_rate ?? 0;
                 // @phpstan-ignore-next-line
                 $sumRates += ($rates->rate * $rates->count_rate);
