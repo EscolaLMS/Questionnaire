@@ -34,34 +34,28 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
 
     public function saveModelsForQuestionnaire(int $questionnaireId, array $models): void
     {
-        $questionnaireModel = $this->prepareArrayQuestionnaireModel(
-            $this->questionnaireModelRepository->all(['questionnaire_id' => $questionnaireId])
-        );
+        $questionnaireModels = $this->questionnaireModelRepository->all(['questionnaire_id' => $questionnaireId]);
+
+        $existingModels = [];
         foreach ($models as $model) {
-            $key = $model['model_type_id'].'_'.$model['model_id'];
-            if (!isset($questionnaireModel[$key])) {
-                QuestionnaireModel::create([
+            $existingModels[] = QuestionnaireModel::updateOrCreate(
+                [
                     'questionnaire_id' => $questionnaireId,
                     'model_type_id' => $model['model_type_id'],
                     'model_id' => $model['model_id'],
+                    'target_group' => $model['target_group'] ?? null,
+                ],
+                [
+                    'display_frequency_minutes' => $model['display_frequency_minutes'] ?? null,
                 ]);
-            } else {
-                unset($questionnaireModel[$key]);
-            }
         }
-        foreach ($questionnaireModel as $model) {
+
+        $questionnaireModels = $questionnaireModels->diffUsing(collect($existingModels), function ($a, $b) {
+            return $a->id <=> $b->id;
+        });
+
+        foreach ($questionnaireModels as $model) {
             $this->deleteQuestionnaireModel($model);
         }
-    }
-
-    private function prepareArrayQuestionnaireModel(Collection $questionnaireModel): array
-    {
-        $arrayQuestionnaireModel = [];
-        /** @var QuestionnaireModel $model */
-        foreach ($questionnaireModel as $model) {
-            $arrayQuestionnaireModel[$model->model_type_id.'_'.$model->model_id] = $model;
-        }
-
-        return $arrayQuestionnaireModel;
     }
 }

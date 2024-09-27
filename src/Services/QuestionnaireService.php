@@ -133,6 +133,8 @@ class QuestionnaireService implements QuestionnaireServiceContract
                 'questionnaire_id' => $questionnaire->getKey(),
                 'model_type_id' => $model['model_type_id'],
                 'model_id' => $model['model_id'],
+                'target_group' => $model['target_group']  ?? null,
+                'display_frequency_minutes' => $model['display_frequency_minutes'] ?? null,
             ]);
         }
 
