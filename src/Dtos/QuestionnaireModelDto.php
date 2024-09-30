@@ -64,9 +64,9 @@ class QuestionnaireModelDto implements DtoContract, InstantiateFromRequest
         ];
     }
 
-    public static function instantiateFromRequest(Request $request): static
+    public static function instantiateFromRequest(Request $request): self
     {
-        return new static(
+        return new self(
             $request->route('id'),
             $request->route('model_type_title'),
             $request->route('model_id'),
