@@ -81,7 +81,7 @@ class QuestionnaireAssignUnassignRequest extends FormRequest
 
     public function getTargetGroup(): ?string
     {
-        /** @var int */
+        /** @var ?string */
         return $this->route('target_group');
     }
 
