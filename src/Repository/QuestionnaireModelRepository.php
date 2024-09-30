@@ -21,6 +21,7 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
             'questionnaire_id',
             'model_type_id',
             'model_id',
+            'target_group',
         ];
     }
 
@@ -66,5 +67,14 @@ class QuestionnaireModelRepository extends BaseRepository implements Questionnai
                 ['model_id', '=', $modelId],
             ])
             ->delete();
+    }
+
+    public function updateOrCreate(array $attributes, array $values = []): QuestionnaireModel
+    {
+        /** @var QuestionnaireModel */
+        return $this
+            ->model
+            ->newQuery()
+            ->updateOrCreate($attributes, $values);
     }
 }

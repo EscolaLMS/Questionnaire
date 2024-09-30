@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'api/admin', 'middleware' => ['auth:api']], function () {
     Route::group(['prefix' => 'questionnaire'], function () {
         Route::get('/', [QuestionnaireAdminApiController::class, 'list']);
-        Route::delete('/unassign/{model_type_title}/{model_id}/{id}', [QuestionnaireAdminApiController::class, 'unassign']);
-        Route::patch('/assign/{model_type_title}/{model_id}/{id}', [QuestionnaireAdminApiController::class, 'assign']);
+        Route::delete('/unassign/{model_type_title}/{model_id}/{id}/{target_group?}', [QuestionnaireAdminApiController::class, 'unassign']);
+        Route::patch('/assign/{model_type_title}/{model_id}/{id}/{target_group?}', [QuestionnaireAdminApiController::class, 'assign']);
         Route::get('/{id}', [QuestionnaireAdminApiController::class, 'read']);
         Route::post('/', [QuestionnaireAdminApiController::class, 'create']);
         Route::delete('/{id}', [QuestionnaireAdminApiController::class, 'delete']);
