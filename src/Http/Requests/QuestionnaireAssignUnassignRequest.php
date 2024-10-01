@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
+use EscolaLms\Questionnaire\Dtos\QuestionnaireModelDto;
+use EscolaLms\Questionnaire\Enums\QuestionnaireTargetGroupEnum;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Rules\ClassExist;
@@ -16,9 +18,10 @@ class QuestionnaireAssignUnassignRequest extends FormRequest
     {
         parent::prepareForValidation();
         $this->merge([
-            'id' => $this->route('id'),
-            'model_type_title' => $this->route('model_type_title'),
-            'model_id' => $this->route('model_id')
+            'id' => $this->getParamId(),
+            'model_type_title' => $this->getModelTypeTitle(),
+            'model_id' => $this->getModelId(),
+            'target_group' => $this->getTargetGroup(),
         ]);
     }
 
@@ -46,28 +49,40 @@ class QuestionnaireAssignUnassignRequest extends FormRequest
                 'integer',
                 new ModelExist($this->input('model_type_title'), 'id'),
             ],
+            'target_group' => [
+                'nullable',
+                Rule::in(QuestionnaireTargetGroupEnum::getValues()),
+            ],
+            'display_frequency_minutes' => [
+                'nullable',
+                'integer',
+                'min:0',
+            ],
         ];
     }
 
     public function getParamId(): int
     {
-        /** @var int $id */
-        $id = $this->route('id');
-        return $id;
+        /** @var int */
+        return $this->route('id');
     }
 
     public function getModelTypeTitle(): string
     {
-        /** @var string $title */
-        $title = $this->route('model_type_title');
-        return $title;
+        /** @var string */
+        return $this->route('model_type_title');
     }
 
     public function getModelId(): int
     {
-        /** @var int $id */
-        $id = $this->route('model_id');
-        return $id;
+        /** @var int */
+        return $this->route('model_id');
+    }
+
+    public function getTargetGroup(): ?string
+    {
+        /** @var ?string */
+        return $this->route('target_group');
     }
 
     public function getQuestionnaire(): Questionnaire
@@ -77,6 +92,14 @@ class QuestionnaireAssignUnassignRequest extends FormRequest
 
     public function getQuestionnaireModelType(): QuestionnaireModelType
     {
-        return QuestionnaireModelType::query()->where('title', $this->getModelTypeTitle())->firstOrFail();
+        /** @var QuestionnaireModelType */
+        return QuestionnaireModelType::query()
+            ->where('title', $this->getModelTypeTitle())
+            ->firstOrFail();
+    }
+
+    public function toDto(): QuestionnaireModelDto
+    {
+        return QuestionnaireModelDto::instantiateFromRequest($this);
     }
 }

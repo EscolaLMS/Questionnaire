@@ -440,7 +440,7 @@ interface QuestionnaireAdminApiContract
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/questionnaire/assign/{model_type_title}/{model_id}/{id}",
+     *     path="/api/admin/questionnaire/assign/{model_type_title}/{model_id}/{id}/{target_group}",
      *     summary="assign a questionnaire model",
      *     tags={"Questionnaire"},
      *     security={
@@ -473,6 +473,25 @@ interface QuestionnaireAdminApiContract
      *         required=true,
      *         in="path"
      *     ),
+     *     @OA\Parameter(
+     *         name="target_group",
+     *         description="Target Group: user or author",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         required=false,
+     *         in="path"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="display_frequency_minutes",
+     *                 type="integer",
+     *                 description="Display frequency in minutes"
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(
      *          response=200,
      *          description="Questionnaire model assign successfully",
@@ -499,7 +518,7 @@ interface QuestionnaireAdminApiContract
 
     /**
      * @OA\Delete(
-     *     path="/api/admin/questionnaire/unassign/{model_type_title}/{model_id}/{id}",
+     *     path="/api/admin/questionnaire/unassign/{model_type_title}/{model_id}/{id}/{target_group}",
      *     summary="unassign a questionnaire model",
      *     tags={"Questionnaire"},
      *     security={
@@ -530,6 +549,15 @@ interface QuestionnaireAdminApiContract
      *            type="integer",
      *         ),
      *         required=true,
+     *         in="path"
+     *     ),
+     *     @OA\Parameter(
+     *         name="target_group",
+     *         description="Target Group: user or author",
+     *         @OA\Schema(
+     *            type="string",
+     *         ),
+     *         required=false,
      *         in="path"
      *     ),
      *     @OA\Response(

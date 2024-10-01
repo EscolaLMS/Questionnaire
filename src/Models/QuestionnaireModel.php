@@ -31,12 +31,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *          type="integer",
  *          description="model_title"
  *     ),
+ *     @OA\Property(
+ *          property="target_group",
+ *          type="string",
+ *          example="author",
+ *          description="Targer group user/author"
+ *      ),
+ *      @OA\Property(
+ *          property="display_frequency_minutes",
+ *          type="integer",
+ *          example="5",
+ *          description="Time in minutes after which the questionnaire should be displayed"
+ *      ),
  * )
  *
  * @property integer $id
  * @property integer $questionnaire_id
  * @property integer $model_type_id
  * @property integer $model_id
+ * @property ?string $target_group
+ * @property ?int $display_frequency_minutes
  */
 class QuestionnaireModel extends Model
 {
@@ -61,6 +75,8 @@ class QuestionnaireModel extends Model
         'questionnaire_id',
         'model_type_id',
         'model_id',
+        'target_group',
+        'display_frequency_minutes',
     ];
 
     public function questionnaire(): BelongsTo

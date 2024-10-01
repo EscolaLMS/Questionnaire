@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Http\Requests;
 
+use EscolaLms\Questionnaire\Enums\QuestionnaireTargetGroupEnum;
 use EscolaLms\Questionnaire\Models\Questionnaire;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -36,6 +37,8 @@ class QuestionnaireUpdateRequest extends FormRequest
             'models.*' => ['sometimes', 'array'],
             'models.*.model_type_id' => ['integer'],
             'models.*.model_id' => ['integer'],
+            'models.*.target_group' => ['nullable', Rule::in(QuestionnaireTargetGroupEnum::getValues())],
+            'models.*.display_frequency_minutes' => ['nullable', 'integer', 'min:0'],
         ];
     }
 

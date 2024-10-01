@@ -2,11 +2,13 @@
 
 namespace EscolaLms\Questionnaire\Services;
 
+use EscolaLms\Questionnaire\Dtos\QuestionnaireModelDto;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
+use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireModelServiceContract;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class QuestionnaireModelService implements QuestionnaireModelServiceContract
@@ -15,9 +17,10 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
     private QuestionnaireModelRepositoryContract $questionnaireModelRepository;
 
     public function __construct(
-        QuestionAnswerRepositoryContract $questionAnswerRepository,
+        QuestionAnswerRepositoryContract     $questionAnswerRepository,
         QuestionnaireModelRepositoryContract $questionnaireModelRepository
-    ) {
+    )
+    {
         $this->questionAnswerRepository = $questionAnswerRepository;
         $this->questionnaireModelRepository = $questionnaireModelRepository;
     }
@@ -34,34 +37,54 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
 
     public function saveModelsForQuestionnaire(int $questionnaireId, array $models): void
     {
-        $questionnaireModel = $this->prepareArrayQuestionnaireModel(
-            $this->questionnaireModelRepository->all(['questionnaire_id' => $questionnaireId])
-        );
+        $questionnaireModels = $this->questionnaireModelRepository->all(['questionnaire_id' => $questionnaireId]);
+
+        $existingModels = [];
         foreach ($models as $model) {
-            $key = $model['model_type_id'].'_'.$model['model_id'];
-            if (!isset($questionnaireModel[$key])) {
-                QuestionnaireModel::create([
+            $existingModels[] = $this->questionnaireModelRepository->updateOrCreate(
+                [
                     'questionnaire_id' => $questionnaireId,
                     'model_type_id' => $model['model_type_id'],
                     'model_id' => $model['model_id'],
+                    'target_group' => $model['target_group'] ?? null,
+                ],
+                [
+                    'display_frequency_minutes' => $model['display_frequency_minutes'] ?? null,
                 ]);
-            } else {
-                unset($questionnaireModel[$key]);
-            }
         }
-        foreach ($questionnaireModel as $model) {
+
+        $questionnaireModels = $questionnaireModels->diffUsing(collect($existingModels), function ($a, $b) {
+            return $a->id <=> $b->id;
+        });
+
+        foreach ($questionnaireModels as $model) {
             $this->deleteQuestionnaireModel($model);
         }
     }
 
-    private function prepareArrayQuestionnaireModel(Collection $questionnaireModel): array
+    public function assign(QuestionnaireModelType $questionnaireModelType, QuestionnaireModelDto $dto): QuestionnaireModel
     {
-        $arrayQuestionnaireModel = [];
-        /** @var QuestionnaireModel $model */
-        foreach ($questionnaireModel as $model) {
-            $arrayQuestionnaireModel[$model->model_type_id.'_'.$model->model_id] = $model;
-        }
+        return $this->questionnaireModelRepository->updateOrCreate(
+            [
+                'questionnaire_id' => $dto->getId(),
+                'model_type_id' => $questionnaireModelType->getKey(),
+                'model_id' => $dto->getModelId(),
+                'target_group' => $dto->getTargetGroup(),
+            ],
+            [
+                'display_frequency_minutes' => $dto->getDisplayFrequencyMinutes(),
+            ]
+        );
+    }
 
-        return $arrayQuestionnaireModel;
+    public function unassign(QuestionnaireModelType $questionnaireModelType, QuestionnaireModelDto $dto): void
+    {
+         $this->questionnaireModelRepository->allQuery([
+            'questionnaire_id' => $dto->getId(),
+            'model_type_id' => $questionnaireModelType->getKey(),
+            'model_id' => $dto->getModelId(),
+        ])
+         ->when($dto->getTargetGroup(), fn(Builder $query) => $query->where('target_group', $dto->getTargetGroup()))
+         ->delete();
     }
 }
