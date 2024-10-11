@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Questionnaire\Tests\Api;
 
+use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\Questionnaire\Database\Seeders\QuestionnairePermissionsSeeder;
 use EscolaLms\Questionnaire\Enums\QuestionTypeEnum;
 use EscolaLms\Questionnaire\EscolaLmsQuestionnaireServiceProvider;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Config;
 class QuestionAnswerTest extends TestCase
 {
     use DatabaseTransactions;
+    use CreatesUsers;
 
     public Questionnaire $questionnaire;
     public QuestionnaireModel $questionnaireModel;
@@ -114,6 +116,84 @@ class QuestionAnswerTest extends TestCase
             ]);
         $data = json_decode($response->getContent());
         $this->assertEquals($data->data->id, $this->questionnaire->id);
+    }
+
+    public function testStudentCanAnswerSameQuestionMultipleTimes(): void
+    {
+        $user = $this->makeStudent();
+        $this->questionnaireModel->update([
+            'target_group' => 'user',
+            'display_frequency_minutes' => 5,
+        ]);
+
+        $this->actingAs($user, 'api')->postJson(
+            $this->uri(
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            ),
+            [
+                'question_id' => $this->question->getKey(),
+                'rate' => 5,
+            ]
+        )
+            ->assertOk();
+
+        $this->actingAs($user, 'api')->postJson(
+            $this->uri(
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            ),
+            [
+                'question_id' => $this->question->getKey(),
+                'rate' => 2,
+            ]
+        )
+            ->assertOk();
+
+        $this->actingAs($this->user, 'api')
+            ->getJson('/api/admin/question-answers/' . $this->questionnaire->getKey())
+            ->assertJsonCount(2, 'data');
+    }
+
+    public function testStudentCanAnswerQuestions(): void
+    {
+        $user = $this->makeStudent();
+        $this->questionnaireModel->update([
+            'target_group' => null,
+            'display_frequency_minutes' => null,
+        ]);
+
+        $this->actingAs($user, 'api')->postJson(
+            $this->uri(
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            ),
+            [
+                'question_id' => $this->question->getKey(),
+                'rate' => 5,
+            ]
+        )
+            ->assertOk();
+
+        $this->actingAs($user, 'api')->postJson(
+            $this->uri(
+                $this->questionnaire->id,
+                $this->questionnaireModel->modelableType->title,
+                $this->questionnaireModel->model_id
+            ),
+            [
+                'question_id' => $this->question->getKey(),
+                'rate' => 1,
+            ]
+        )
+            ->assertOk();
+
+        $this->actingAs($this->user, 'api')
+            ->getJson('/api/admin/question-answers/' . $this->questionnaire->getKey())
+            ->assertJsonCount(1, 'data');
     }
 
     public function testAdminCannotAnswerMissingQuestion(): void
