@@ -27,7 +27,7 @@ class QuestionCreateRequest extends FormRequest
                 'required',
                 Rule::exists(Questionnaire::class, 'id'),
             ],
-            'position' => 'integer',
+            'position' => 'required|integer',
             'active' => 'boolean',
             'type' => [
                 'string',

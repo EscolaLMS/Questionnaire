@@ -70,10 +70,12 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
     public function saveAnswer(QuestionnaireModel $questionnaireModel, array $data, User $user): ?array
     {
         $questionId = $data['question_id'];
+
+        /** @var Question|null $question */
+        $question = $this->questionRepository->find($questionId);
         $answer = $this->questionAnswerRepository->findAnswer($user->getKey(), $questionId, $questionnaireModel->getKey());
-        if (is_null($answer)) {
-            /** @var Question|null $question */
-            $question = $this->questionRepository->find($questionId);
+
+        if ($questionnaireModel->display_frequency_minutes || !$answer) {
             $public = $question && !$question->public_answers
                 ? false
                 : Config::get(EscolaLmsQuestionnaireServiceProvider::CONFIG_KEY . '.new_answers_visible_by_default', false);
