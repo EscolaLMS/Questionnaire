@@ -6,6 +6,7 @@ use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionAnswerRepositoryContract;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class QuestionService implements QuestionServiceContract
@@ -43,5 +44,10 @@ class QuestionService implements QuestionServiceContract
         /** @var Question $question */
         $question = $this->questionRepository->update($data, $question->getKey());
         return $question;
+    }
+
+    public function getAllQuestionnaireQuestions(int $id): Collection
+    {
+        return $this->questionRepository->getAllQuestionnaireQuestions($id);
     }
 }

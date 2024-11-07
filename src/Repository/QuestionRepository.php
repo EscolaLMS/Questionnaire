@@ -8,6 +8,7 @@ use EscolaLms\Questionnaire\Dtos\QuestionFilterCriteriaDto;
 use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class QuestionRepository extends BaseRepository implements QuestionRepositoryContract
 {
@@ -44,5 +45,10 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryCon
     public function save(Question $question): bool
     {
         return $question->save();
+    }
+
+    public function getAllQuestionnaireQuestions(int $id): Collection
+    {
+        return $this->model->newQuery()->where('questionnaire_id', '=', $id)->get();
     }
 }

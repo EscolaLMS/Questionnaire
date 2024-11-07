@@ -6,10 +6,13 @@ use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use EscolaLms\Questionnaire\Dtos\QuestionnairesFilterCriteriaDto;
 use EscolaLms\Questionnaire\Exceptions\QuestionnaireCanNotDeleteException;
+use EscolaLms\Questionnaire\Exports\QuestionnaireExport;
+use EscolaLms\Questionnaire\Exports\QuestionnaireExportSheet;
 use EscolaLms\Questionnaire\Http\Controllers\Contracts\QuestionnaireAdminApiContract;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireAssignUnassignRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireCreateRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireDeleteRequest;
+use EscolaLms\Questionnaire\Http\Requests\QuestionnaireExportRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireListingRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReadRequest;
 use EscolaLms\Questionnaire\Http\Requests\QuestionnaireReportRequest;
@@ -17,13 +20,16 @@ use EscolaLms\Questionnaire\Http\Requests\QuestionnaireUpdateRequest;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireModelTypeCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireReportCollection;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
+use EscolaLms\Questionnaire\Models\QuestionAnswer;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Repository\Contracts\QuestionnaireModelTypeRepositoryContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireModelServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Maatwebsite\Excel\Facades\Excel;
 
 class QuestionnaireAdminApiController extends EscolaLmsBaseController implements QuestionnaireAdminApiContract
 {
@@ -31,18 +37,21 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
     private QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository;
     private QuestionnaireServiceContract $questionnaireService;
     private QuestionnaireModelServiceContract $questionnaireModelService;
+    private QuestionServiceContract $questionService;
 
     public function __construct(
         QuestionnaireAnswerServiceContract       $questionAnswerService,
         QuestionnaireModelTypeRepositoryContract $questionnaireModelTypeRepository,
         QuestionnaireServiceContract             $questionnaireService,
-        QuestionnaireModelServiceContract        $questionnaireModelService
+        QuestionnaireModelServiceContract        $questionnaireModelService,
+        QuestionServiceContract                  $questionService,
     )
     {
         $this->questionAnswerService = $questionAnswerService;
         $this->questionnaireModelTypeRepository = $questionnaireModelTypeRepository;
         $this->questionnaireService = $questionnaireService;
         $this->questionnaireModelService = $questionnaireModelService;
+        $this->questionService = $questionService;
     }
 
     public function list(QuestionnaireListingRequest $request): JsonResponse
@@ -136,5 +145,16 @@ class QuestionnaireAdminApiController extends EscolaLmsBaseController implements
         $this->questionnaireModelService->unassign($request->getQuestionnaireModelType(), $request->toDto());
 
         return $this->sendResponse(true, __('Questionnaire model unassign successfully'));
+    }
+
+    public function exportReport(QuestionnaireExportRequest $request)
+    {
+        $dto = $request->toDto();
+        $data = $this->questionnaireModelService->getQuestionnaireDataToExport($dto, $request->getQuestionnaireModelType());
+        $questions = $this->questionService->getAllQuestionnaireQuestions($dto->getId());
+
+        $title = 'questionnaire_' . $dto->getId() . '_' . $dto->getModelTypeTitle() . '_' .$dto->getModelId() . '.xlsx';
+
+        return Excel::download(new QuestionnaireExport($data, $questions), $title);
     }
 }
