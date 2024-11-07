@@ -347,7 +347,7 @@ class QuestionAnswerListTest extends TestCase
 
         $response = $this->actingAs($this->user, 'api')->json(
             'get',
-            '/api/admin/questionnaire/' . $questionnaireModel->modelableType->title . '/' . $questionnaireModel->model_id . '/' . $questionnaire->getKey(),
+            '/api/admin/questionnaire/' . $questionnaireModel->modelableType->title . '/' . $questionnaireModel->model_id . '/' . $questionnaire->getKey() . '/export',
         )->assertOk();
     }
 }
