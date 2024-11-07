@@ -13,6 +13,7 @@ use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Models\QuestionnaireModelType;
 use EscolaLms\Questionnaire\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Maatwebsite\Excel\Facades\Excel;
 
 class QuestionAnswerListTest extends TestCase
 {
@@ -345,7 +346,8 @@ class QuestionAnswerListTest extends TestCase
             'user_id' => $user4->getKey(),
         ]);
 
-        $response = $this->actingAs($this->user, 'api')->json(
+        Excel::fake();
+        $this->actingAs($this->user, 'api')->json(
             'get',
             '/api/admin/questionnaire/' . $questionnaireModel->modelableType->title . '/' . $questionnaireModel->model_id . '/' . $questionnaire->getKey() . '/export',
         )->assertOk();

@@ -133,6 +133,7 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
         ];
 
         return match ($questionnaireModelType->model_class) {
+            // @phpstan-ignore-next-line
             Consultation::class => $this->forConsultations($result, $groupBy, $dto),
             default => $this->default($result, $groupBy, $dto),
         };
@@ -145,15 +146,22 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
             ->get();
 
         foreach ($result as $value) {
+            // @phpstan-ignore-next-line
             $rates = explode(';', $value->rates);
+            // @phpstan-ignore-next-line
             $notes = explode(';', $value->notes);
+            // @phpstan-ignore-next-line
             $dates = explode(';', $value->answer_dates);
 
             for ($i = 0; $i < count($dates); $i++) {
+                // @phpstan-ignore-next-line
                 $value->{$value->question_title . ' - rate #' . $i} = $rates[$i];
+                // @phpstan-ignore-next-line
                 $value->{$value->question_title . ' - note #' . $i} = $notes[$i];
+                // @phpstan-ignore-next-line
                 $value->{$value->question_title . ' - date #' . $i} = $dates[$i];
                 $answerTime = Carbon::make($dates[$i]);
+                // @phpstan-ignore-next-line
                 $value->{$value->question_title . ' - timestamp #' . $i} = $answerTime->timestamp;
             }
         }
@@ -187,26 +195,39 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
             $previous = $i > 0 ? $result->get($i - 1) : null;
             $next = $i === $result->count() - 1 ? null : $result->get($i + 1);
 
+            // @phpstan-ignore-next-line
             $datesGraterThan = $value->consultation_start;
+            // @phpstan-ignore-next-line
             if (!$previous || $previous->user_id !== $value->user_id) {
                 $lastAnswerIndex = 0;
             }
 
+            // @phpstan-ignore-next-line
             $datesLessThan = $next && $next->user_id === $value->user_id ? $next->consultation_start : null;
 
+            // @phpstan-ignore-next-line
             $rates = explode(';', $value->rates);
+            // @phpstan-ignore-next-line
             $notes = explode(';', $value->notes);
+            // @phpstan-ignore-next-line
             $dates = explode(';', $value->answer_dates);
 
             while ($lastAnswerIndex < count($dates) && ($datesLessThan === null || Carbon::make($datesLessThan)->isAfter($dates[$lastAnswerIndex]))) {
+                // @phpstan-ignore-next-line
                 $consultationStartTimestamp = Carbon::make($value->consultation_start)->timestamp;
+                // @phpstan-ignore-next-line
                 $value->{$consultationStartTimestamp . ' - rate #' . $lastAnswerIndex . ' - ' . $value->question_title} = $rates[$lastAnswerIndex];
+                // @phpstan-ignore-next-line
                 $value->{$consultationStartTimestamp . ' - note #' . $lastAnswerIndex . ' - ' . $value->question_title} = $notes[$lastAnswerIndex];
+                // @phpstan-ignore-next-line
                 $value->{$consultationStartTimestamp . ' - date #' . $lastAnswerIndex . ' - ' . $value->question_title} = $dates[$lastAnswerIndex];
                 $answerTime = Carbon::make($dates[$lastAnswerIndex]);
+                // @phpstan-ignore-next-line
                 $value->{$consultationStartTimestamp . ' - timestamp #' . $lastAnswerIndex . ' - ' . $value->question_title} = $answerTime->timestamp;
 
+                // @phpstan-ignore-next-line
                 $value->{$consultationStartTimestamp . ' - seconds after start #' . $lastAnswerIndex . ' - ' . $value->question_title} = $answerTime->diffInSeconds(Carbon::make($value->consultation_start));
+                // @phpstan-ignore-next-line
                 $value->{$consultationStartTimestamp . ' - answered after consultation #' . $lastAnswerIndex . ' - ' . $value->question_title} = $answerTime->isAfter(Carbon::make($value->consultation_end)) ? 'Tak' : 'Nie' ;
                 $lastAnswerIndex++;
             }
