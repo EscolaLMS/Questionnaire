@@ -15,6 +15,7 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use PDO;
 
 class QuestionnaireModelService implements QuestionnaireModelServiceContract
 {
@@ -95,8 +96,18 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
 
     public function getQuestionnaireDataToExport(QuestionnaireModelDto $dto, QuestionnaireModelType $questionnaireModelType): Collection
     {
+        $agg = DB::connection()->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql' ? [
+            DB::raw("STRING_AGG(COALESCE(question_answers.rate::text, ''), ';' ORDER BY question_answers.created_at) as rates"),
+            DB::raw("STRING_AGG(COALESCE(question_answers.note, ''), ';' ORDER BY question_answers.created_at) as notes"),
+            DB::raw("STRING_AGG(COALESCE(question_answers.created_at::text, ''), ';' ORDER BY question_answers.created_at) as answer_dates"),
+        ] : [
+            DB::raw("GROUP_CONCAT(IFNULL(question_answers.rate, '') ORDER BY question_answers.created_at SEPARATOR ';') as rates"),
+            DB::raw("GROUP_CONCAT(IFNULL(question_answers.note, '') ORDER BY question_answers.created_at SEPARATOR ';') as notes"),
+            DB::raw("GROUP_CONCAT(IFNULL(question_answers.created_at, '') ORDER BY question_answers.created_at SEPARATOR ';') as answer_dates"),
+        ];
+
         $result = QuestionAnswer::query()
-            ->select([
+            ->select(array_merge([
                 'question_answers.user_id',
                 'users.email',
                 'users.first_name',
@@ -106,10 +117,7 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
                 'question_answers.question_id',
                 'questions.title as question_title',
                 'questions.type as question_type',
-                DB::raw("STRING_AGG(COALESCE(question_answers.rate::text, ''), ';' ORDER BY question_answers.created_at) as rates"), // najwyższy rate dla użytkownika w danym kwestionariuszu
-                DB::raw("STRING_AGG(COALESCE(question_answers.note, ''), ';' ORDER BY question_answers.created_at) as notes"), // łączy notatki z separatorami
-                DB::raw("STRING_AGG(COALESCE(question_answers.created_at::text, ''), ';' ORDER BY question_answers.created_at) as answer_dates") // najnowsza odpowiedź
-            ])
+            ], $agg))
             ->leftJoin('questionnaire_models', 'questionnaire_models.id', '=', 'question_answers.questionnaire_model_id')
             ->leftJoin('questionnaires', 'questionnaires.id', '=', 'questionnaire_models.questionnaire_id')
             ->leftJoin('questions', 'questions.id', '=', 'question_answers.question_id')
