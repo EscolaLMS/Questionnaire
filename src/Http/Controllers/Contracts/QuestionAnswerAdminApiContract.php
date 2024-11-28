@@ -70,6 +70,26 @@ interface QuestionAnswerAdminApiContract
      *         in="query",
      *         required=false
      *     ),
+     *     @OA\Parameter(
+     *         name="updated_at_from",
+     *         description="From date filter",
+     *         required=false,
+     *         in="query",
+     *         @OA\Schema(
+     *           type="string",
+     *           format="date-time"
+     *         ),
+     *      ),
+     *     @OA\Parameter(
+     *         name="updated_at_to",
+     *         description="To date filter",
+     *         required=false,
+     *         in="query",
+     *         @OA\Schema(
+     *           type="string",
+     *           format="date-time"
+     *         ),
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Lists questions answers for questionaire",

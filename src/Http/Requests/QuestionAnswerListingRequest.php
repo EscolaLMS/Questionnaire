@@ -54,6 +54,14 @@ class QuestionAnswerListingRequest extends FormRequest
                 'nullable',
                 Rule::exists('users', 'id'),
             ],
+            'updated_at_from' => [
+                'sometimes',
+                'date',
+            ],
+            'updated_at_to' => [
+                'sometimes',
+                'date',
+            ],
         ];
     }
 }
