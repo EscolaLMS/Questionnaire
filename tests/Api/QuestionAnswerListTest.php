@@ -225,6 +225,54 @@ class QuestionAnswerListTest extends TestCase
         $this->assertTrue($response->json('data.0.id') === $questionAnswer1->getKey());
     }
 
+    public function testAnswersListWithDateFilters(): void
+    {
+        $questionnaireModel = QuestionnaireModel::factory()->createOne();
+        $questionnaire = Questionnaire::factory()->create();
+        $question1 = Question::factory()->create([
+            'questionnaire_id' => $questionnaire->getKey(),
+            'title' => 'aaaa',
+        ]);
+
+        QuestionAnswer::factory()
+            ->count(5)
+            ->sequence(
+                ['updated_at' => now()->subDays(2)],
+                ['updated_at' => now()->subDays(15)],
+                ['updated_at' => now()->subDays(30)],
+                ['updated_at' => now()->subDays(40)],
+                ['updated_at' => now()->subDays(50)],
+            )
+            ->state([
+                'question_id' => $question1->getKey(),
+                'questionnaire_model_id' => $questionnaireModel->getKey(),
+            ])
+            ->create();
+
+        $this->actingAs($this->user, 'api')->json(
+            'get',
+            '/api/admin/question-answers/' . $questionnaire->getKey(),
+            [
+                'questionnaire_model_id' => $questionnaireModel->getKey(),
+                'updated_at_from' => now()->subDays(35),
+            ]
+        )
+            ->assertOk()
+            ->assertJsonCount(3, 'data');
+
+        $this->actingAs($this->user, 'api')->json(
+            'get',
+            '/api/admin/question-answers/' . $questionnaire->getKey(),
+            [
+                'questionnaire_model_id' => $questionnaireModel->getKey(),
+                'updated_at_from' => now()->subDays(35),
+                'updated_at_to' => now()->subDays(10),
+            ]
+        )
+            ->assertOk()
+            ->assertJsonCount(2, 'data');
+    }
+
     public function testListAnswersOnlyAuthoredModels(): void
     {
         $tutor = $this->makeInstructor();
