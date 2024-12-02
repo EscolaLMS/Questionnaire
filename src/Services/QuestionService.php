@@ -53,6 +53,6 @@ class QuestionService implements QuestionServiceContract
 
     public function getQuestionMaxScore(int $id): int
     {
-        return $this->questionRepository->find($id)->max_score;
+        return (int)$this->questionRepository->find($id)->getAttribute('max_score');
     }
 }
