@@ -8,18 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('questionnaire_models', function (Blueprint $table) {
-            $table->string('target_group')->nullable();
-            $table->unsignedInteger('display_frequency_minutes')->nullable();
+        Schema::table('questions', function (Blueprint $table) {
+            $table->unsignedInteger('max_score')->nullable()->default(5);
         });
     }
 
     public function down(): void
     {
-        Schema::table('questionnaire_models', function (Blueprint $table) {
+        Schema::table('questions', function (Blueprint $table) {
             $table->dropColumn([
-                'target_group',
-                'display_frequency_minutes',
+                'max_score',
             ]);
         });
     }
