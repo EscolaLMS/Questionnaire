@@ -38,6 +38,7 @@ class ModelStarsResponse extends JsonResource
             'count_answers' => $this['count_answers'] ?? null,
             'question_id' => $this['question_id'] ?? null,
             'count_public_answers' => $this['count_public_answers'] ?? null,
+            'max_score' => $this['max_score'] ?? null,
         ];
     }
 }

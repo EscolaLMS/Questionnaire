@@ -23,6 +23,7 @@ class QuestionResource extends JsonResource
             'active' => $this->resource->active,
             'type' => $this->resource->type,
             'public_answers' => $this->resource->public_answers,
+            'max_score' => $this->resource->max_score,
         ];
     }
 }

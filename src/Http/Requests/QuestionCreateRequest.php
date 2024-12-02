@@ -35,6 +35,7 @@ class QuestionCreateRequest extends FormRequest
                 new LimitQuestionReview($this->input('questionnaire_id'))
             ],
             'public_answers' => 'boolean',
+            'max_score' => 'integer',
         ];
     }
 }
