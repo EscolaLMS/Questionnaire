@@ -48,7 +48,9 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $report = $this->questionAnswerRepository->getStars($modelTypeId, $modelId);
         $countRates = 0;
         $sumRates = 0;
+        // TODO: this map should be dynamic and calculated from the max score of the question
         $rateMap = QuestionnaireRateMap::RATE_MAP;
+
         $report->each(function ($rates) use (&$rateMap, &$sumRates, &$countRates) {
             // @phpstan-ignore-next-line
             if (isset($rateMap[$rates->rate])) {
