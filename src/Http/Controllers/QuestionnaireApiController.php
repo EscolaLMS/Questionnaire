@@ -17,21 +17,25 @@ use EscolaLms\Questionnaire\Http\Resources\QuestionAnswerFrontResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireFrontResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireResource;
 use EscolaLms\Questionnaire\Http\Resources\QuestionnaireStarsResource;
+use EscolaLms\Questionnaire\Models\Question;
 use EscolaLms\Questionnaire\Models\QuestionnaireModel;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireAnswerServiceContract;
 use EscolaLms\Questionnaire\Services\Contracts\QuestionnaireServiceContract;
+use EscolaLms\Questionnaire\Services\Contracts\QuestionServiceContract;
 use Illuminate\Http\JsonResponse;
 
 class QuestionnaireApiController extends EscolaLmsBaseController implements QuestionnaireApiContract
 {
     private QuestionnaireServiceContract $questionnaireService;
     private QuestionnaireAnswerServiceContract $questionnaireAnswerService;
-
+    private QuestionServiceContract $questionService;
     public function __construct(
         QuestionnaireServiceContract $questionnaireService,
-        QuestionnaireAnswerServiceContract $questionnaireAnswerService
+        QuestionnaireAnswerServiceContract $questionnaireAnswerService,
+        QuestionServiceContract $questionService
     ) {
         $this->questionnaireService = $questionnaireService;
+        $this->questionService = $questionService;
         $this->questionnaireAnswerService = $questionnaireAnswerService;
     }
 
@@ -87,7 +91,8 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
         );
     }
 
-    public function stars(QuestionnaireStarsFrontRequest $request): JsonResponse {
+    public function stars(QuestionnaireStarsFrontRequest $request): JsonResponse
+    {
         $report = $this->questionnaireAnswerService->getStars(
             $request->getQuestionnaireModelType()->id,
             $request->getParamModelId()
@@ -113,6 +118,7 @@ class QuestionnaireApiController extends EscolaLmsBaseController implements Ques
     public function modelStars(QuestionAnswersFrontStarsRequest $request): JsonResponse
     {
         $result = $this->questionnaireAnswerService->getReviewStars(QuestionAnswersCriteriaDto::instantiateFromRequest($request)->toArray());
+        $result['max_score'] = $this->questionService->getQuestionMaxScore($request->question_id);
         return $this->sendResponseForResource(
             ModelStarsResponse::make($result),
             __('Model stars fetched successfully'),

@@ -48,8 +48,10 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
         $report = $this->questionAnswerRepository->getStars($modelTypeId, $modelId);
         $countRates = 0;
         $sumRates = 0;
+        // TODO: this map should be dynamic and calculated from the max score of the question
         $rateMap = QuestionnaireRateMap::RATE_MAP;
-        $report->each(function ($rates) use(&$rateMap, &$sumRates, &$countRates) {
+
+        $report->each(function ($rates) use (&$rateMap, &$sumRates, &$countRates) {
             // @phpstan-ignore-next-line
             if (isset($rateMap[$rates->rate])) {
                 $rateMap[$rates->rate] += $rates->count_rate ?? 0;
@@ -60,7 +62,8 @@ class QuestionnaireAnswerService implements QuestionnaireAnswerServiceContract
             }
         });
         return [
-            'avg_rate' => $sumRates/max(1, $countRates),
+            'max_score' => 666,
+            'avg_rate' => $sumRates / max(1, $countRates),
             'count_answers' => $countRates,
             'sum_rates' => $sumRates,
             'rates' => $rateMap

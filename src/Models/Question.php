@@ -47,6 +47,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *          type="boolean",
  *          description="whether answers to questions are public"
  *     ),
+ *     @OA\Property(
+ *         property="max_score",
+ *         type="integer",
+ *         description="maximum score for question"
+ *     ),
  * )
  *
  * @property integer $id
@@ -57,6 +62,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property boolean $active
  * @property string $type
  * @property boolean $public_answers
+ * @property integer $max_score
  */
 class Question extends Model
 {
@@ -79,6 +85,7 @@ class Question extends Model
         'active' => 'boolean',
         'type' => 'string',
         'public_answers' => 'boolean',
+        'max_score' => 'integer',
     ];
 
     public $fillable = [
@@ -89,6 +96,7 @@ class Question extends Model
         'active',
         'type',
         'public_answers',
+        'max_score',
     ];
 
     public function questionnaire(): BelongsTo

@@ -17,4 +17,5 @@ interface QuestionServiceContract
 
     public function updateQuestion(Question $question, array $data): Question;
     public function getAllQuestionnaireQuestions(int $id): Collection;
+    public function getQuestionMaxScore(int $id): int;
 }
