@@ -221,7 +221,6 @@ class QuestionnaireModelService implements QuestionnaireModelServiceContract
             $dates = explode(';', $value->answer_dates);
 
             while ($lastAnswerIndex < count($dates) && ($datesLessThan === null || Carbon::make($datesLessThan)->isAfter($dates[$lastAnswerIndex]))) {
-                // @phpstan-ignore-next-line
                 $consultationStartTimestamp = Carbon::make($value->consultation_start ?? min($dates))->timestamp;
                 // @phpstan-ignore-next-line
                 $value->{$consultationStartTimestamp . ' - rate #' . $lastAnswerIndex . ' - ' . $value->question_title} = $rates[$lastAnswerIndex];
