@@ -1,16 +1,27 @@
 name: Generate Swagger Documentation
 
 on:
-  push:
-    branches:
-      - main
-      - master
+ push:
+   branches:
+     - main
 
 jobs:
   swagger-gh-pages:
     runs-on: ubuntu-latest
     container:
       image: escolalms/php:8.2
+      
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: database
+          MYSQL_PASSWORD: password
+          MYSQL_USER: username
+        ports:
+          - 33306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Instantiate package
@@ -23,10 +34,10 @@ jobs:
         run: php -r "file_put_contents('src/EscolaLmsQuestionnaireServiceProvider.php', str_replace('SWAGGER_VERSION', '@OA\Info(title=\"EscolaLMS\", version=\"0.0.1\")', file_get_contents('src/EscolaLmsQuestionnaireServiceProvider.php')));"
 
       - name: Update composer
-        run: composer update
+        run: COMPOSER_ROOT_VERSION=0.9.9 composer update
 
       - name: Require composer swagger package
-        run: composer require darkaonline/l5-swagger
+        run: composer require darkaonline/l5-swagger zircote/swagger-php swagger-api/swagger-ui
 
       - name: Discover packages
         run: vendor/bin/testbench package:discover --ansi
@@ -36,6 +47,8 @@ jobs:
 
       - name: Generate Swagger UI
         uses: Legion2/swagger-ui-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           output: swagger-ui
           spec-file: openapi.json
