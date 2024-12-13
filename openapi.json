@@ -11,6 +11,7 @@
                     "Question"
                 ],
                 "summary": "Lists available questions",
+                "operationId": "252796bcdd58d7f018801cc129c62de1",
                 "responses": {
                     "200": {
                         "description": "list of available questions",
@@ -267,6 +268,7 @@
                     "QuestionAnswersForQuestionaire"
                 ],
                 "summary": "Lists questions answers for questionaire",
+                "operationId": "ab6195379af18f4eb20f2f6e277ef997",
                 "parameters": [
                     {
                         "name": "id",
@@ -320,6 +322,26 @@
                         "required": false,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "updated_at_from",
+                        "in": "query",
+                        "description": "From date filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "updated_at_to",
+                        "in": "query",
+                        "description": "To date filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
                         }
                     }
                 ],
@@ -411,6 +433,7 @@
                     "Questionnaire"
                 ],
                 "summary": "Lists available questionnaires",
+                "operationId": "cb4a7db5bf5494209a50d32e945c6b9e",
                 "parameters": [
                     {
                         "name": "page",
@@ -716,105 +739,6 @@
                 ]
             }
         },
-        "/api/admin/questionnaire/report/{id}": {
-            "get": {
-                "tags": [
-                    "QuestionnaireReport"
-                ],
-                "summary": "Read a questionnaire report identified by a given id identifier",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "questionnaire identifier",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/QuestionnaireReportResource"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "endpoint requires authentication"
-                    },
-                    "403": {
-                        "description": "user doesn't have required access rights"
-                    },
-                    "500": {
-                        "description": "server-side error"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/questionnaire/report/{id}/{model_type_id}": {
-            "get": {
-                "tags": [
-                    "QuestionnaireReportForModelType"
-                ],
-                "summary": "Read a questionnaire report identified by a given id identifier and model type",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "questionnaire identifier",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "model_type_id",
-                        "in": "path",
-                        "description": "questionnaire model type identified",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/QuestionnaireReportResource"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "endpoint requires authentication"
-                    },
-                    "403": {
-                        "description": "user doesn't have required access rights"
-                    },
-                    "500": {
-                        "description": "server-side error"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
         "/api/admin/questionnaire/report/{id}/{model_type_id}/{model_id}": {
             "get": {
                 "tags": [
@@ -879,13 +803,13 @@
                 ]
             }
         },
-        "/api/admin/questionnaire/assign/{model_type_title}/{model_id}/{id}": {
+        "/api/admin/questionnaire/assign/{model_type_title}/{model_id}/{id}/{target_group}": {
             "patch": {
                 "tags": [
                     "Questionnaire"
                 ],
                 "summary": "assign a questionnaire model",
-                "operationId": "073fab3ba15a1049488dfcc8cb28bd24",
+                "operationId": "bd63423231ba9d9fceb311c7298a403f",
                 "parameters": [
                     {
                         "name": "model_type_title",
@@ -913,8 +837,33 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "target_group",
+                        "in": "path",
+                        "description": "Target Group: user or author",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "display_frequency_minutes": {
+                                        "description": "Display frequency in minutes",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Questionnaire model assign successfully"
@@ -939,13 +888,13 @@
                 ]
             }
         },
-        "/api/admin/questionnaire/unassign/{model_type_title}/{model_id}/{id}": {
+        "/api/admin/questionnaire/unassign/{model_type_title}/{model_id}/{id}/{target_group}": {
             "delete": {
                 "tags": [
                     "Questionnaire"
                 ],
                 "summary": "unassign a questionnaire model",
-                "operationId": "c8edc4a3e2950aa9c718bdbf4ac15506",
+                "operationId": "812e6647a9175be311193f7d35e98bfc",
                 "parameters": [
                     {
                         "name": "model_type_title",
@@ -972,6 +921,15 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "target_group",
+                        "in": "path",
+                        "description": "Target Group: user or author",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -1005,6 +963,7 @@
                     "Questionnaire"
                 ],
                 "summary": "Lists available questionnaires",
+                "operationId": "e24bed1a37f476febaae50ff1c89e260",
                 "parameters": [
                     {
                         "name": "model_type_title",
@@ -1517,6 +1476,10 @@
                     "public_answers": {
                         "description": "whether answers to questions are public",
                         "type": "boolean"
+                    },
+                    "max_score": {
+                        "description": "maximum score for question",
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -1606,6 +1569,16 @@
                     "model_title": {
                         "description": "model_title",
                         "type": "integer"
+                    },
+                    "target_group": {
+                        "description": "Targer group user/author",
+                        "type": "string",
+                        "example": "author"
+                    },
+                    "display_frequency_minutes": {
+                        "description": "Time in minutes after which the questionnaire should be displayed",
+                        "type": "integer",
+                        "example": "5"
                     }
                 },
                 "type": "object"
@@ -1628,5 +1601,31 @@
                 "type": "object"
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Question",
+            "description": "Question"
+        },
+        {
+            "name": "QuestionAnswersForQuestionaire",
+            "description": "QuestionAnswersForQuestionaire"
+        },
+        {
+            "name": "Questionnaire",
+            "description": "Questionnaire"
+        },
+        {
+            "name": "QuestionnaireModelType",
+            "description": "QuestionnaireModelType"
+        },
+        {
+            "name": "QuestionnaireReportForModel",
+            "description": "QuestionnaireReportForModel"
+        },
+        {
+            "name": "QuestionnaireStars",
+            "description": "QuestionnaireStars"
+        }
+    ]
 }
