@@ -155,9 +155,13 @@ class QuestionUpdateTest extends TestCase
                     'active' => true,
                     'type' => QuestionTypeEnum::REVIEW,
                     'public_answers' => true,
+                    'max_score' => 10,
                 ]
             )
-            ->assertOk();
+            ->assertOk()
+            ->assertJsonFragment([
+                'max_score' => 10,
+            ]);
     }
 
     public function testUpdateQuestionAlreadyExistReview(): void

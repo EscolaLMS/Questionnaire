@@ -48,6 +48,7 @@ class QuestionUpdateRequest extends FormRequest
                 new LimitQuestionReview($this->input('questionnaire_id'), $this->input('id'))
             ],
             'public_answers' => 'boolean',
+            'max_score' => 'integer',
         ];
     }
 
